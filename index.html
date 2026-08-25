@@ -1003,58 +1003,48 @@ async function compressOcrImage(file, maxDim=1600, quality=0.85){
 async function runOCR(){
  const branch=document.getElementById('ocr-br').value,dt=document.getElementById('ocr-dt').value;
  if(!ocrFile){toast('Upload an invoice photo first','err');return;}
- if(!branch){toast('Select a branch','err');return;}if(!dt){toast('Select a date','err');return;}
- if(!OPENAI_KEY){toast('OpenAI API key missing','err');return;}
+ if(!branch){toast('Select a branch','err');return;}
+ if(!dt){toast('Select a date','err');return;}
  document.getElementById('ocr-s1').style.display='none';document.getElementById('ocr-s2').style.display='block';document.getElementById('ocr-analyze-btn').style.display='none';
  document.getElementById('ocr-msg').textContent=' Optimizing image for AI analysis...';
  try{
- const imgData=await compressOcrImage(ocrFile);
- document.getElementById('ocr-msg').textContent=' AI is analyzing document...';
- const isSale=ocrType==='sale';
- const prompt=`You are analyzing a ${isSale?'sales invoice/receipt':'supplier/purchase invoice'}, likely in Hebrew.
-Extract ALL line items from this document.
-Return ONLY a valid JSON array of objects with these fields:
-- "sku": product code or item number (string, may be on the receipt/invoice)
-- "description": product name/description in original language
-- "qty": quantity as integer
-- "unit_price": unit price as number (sale price for sales, cost price for supplier invoice, use 0 if not shown)
-- "supplier": supplier or store name from the document header (same for every item)
-${isSale?'- "customer_name": customer full name if shown (empty string if not shown)\n- "customer_phone": customer phone number if shown (empty string if not shown)\n- "customer_email": customer email address if shown (empty string if not shown)':''}
-
-Return ONLY the JSON array, no explanation. Example:
- let resp;
- try{
-  resp=await fetch('/api/ocr',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,image_data_url:`data:${imgData.mime};base64,${imgData.base64}`})});
-  if(!resp.ok&&resp.status===404)throw new Error('API 404');
- }catch(apiErr){
-  resp=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Authorization':`Bearer ${OPENAI_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({model:'gpt-4o',messages:[{role:'user',content:[{type:'text',text:prompt},{type:'image_url',image_url:{url:`data:${imgData.mime};base64,${imgData.base64}`}}]}],max_tokens:2500})});
- }
- if(!resp.ok){const errTxt=await resp.text();throw new Error(`OpenAI ${resp.status}: ${errTxt}`);}
- const data=await resp.json();
- const content=data.choices?data.choices[0].message.content:'';
- document.getElementById('ocr-msg').textContent=' Analysis complete!';document.getElementById('ocr-raw').style.display='block';document.getElementById('ocr-raw').textContent=content;
- const jm=content.match(/\[[\s\S]*\]/);if(!jm)throw new Error('No JSON array found in response');
- function sanitizeJson(raw){
-  let out='',inStr=false,escape=false;
-  for(let i=0;i<raw.length;i++){
-   const c=raw[i];
-   if(escape){out+=c;escape=false;continue;}
-   if(c==='\\'&&inStr){out+=c;escape=true;continue;}
-   if(c==='"'){inStr=!inStr;out+=c;continue;}
-   if(inStr&&(c==='\n'||c==='\r'||c==='\t')){out+=' ';continue;}
-   out+=c;
+  const imgData=await compressOcrImage(ocrFile);
+  document.getElementById('ocr-msg').textContent=' AI is analyzing document...';
+  const isSale=ocrType==='sale';
+  const prompt=`You are analyzing a ${isSale?'sales invoice/receipt':'supplier/purchase invoice'}, likely in Hebrew.\nExtract ALL line items from this document.\nReturn ONLY a valid JSON array of objects with these fields:\n- "sku": product code or item number (string)\n- "description": product name/description in original language\n- "qty": quantity as integer\n- "unit_price": unit price as number (use 0 if not shown)\n- "supplier": supplier or store name from document header (same for every item)\n${isSale?'- "customer_name": customer full name if shown (empty string if not shown)\n- "customer_phone": customer phone number if shown (empty string if not shown)\n- "customer_email": customer email if shown (empty string if not shown)':''}\nReturn ONLY the JSON array, no explanation.`;
+  let resp;
+  try{
+   resp=await fetch('/api/ocr',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,image_data_url:`data:${imgData.mime};base64,${imgData.base64}`})});
+   if(!resp.ok&&resp.status===404)throw new Error('no proxy');
+  }catch(proxyErr){
+   resp=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Authorization':`Bearer ${OPENAI_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({model:'gpt-4o',messages:[{role:'user',content:[{type:'text',text:prompt},{type:'image_url',image_url:{url:`data:${imgData.mime};base64,${imgData.base64}`}}]}],max_tokens:2500})});
   }
-  return out.replace(/,(\s*[}\]])/g,'$1');
- }
- ocrItems=JSON.parse(sanitizeJson(jm[0]));
- if(!ocrItems.length)throw new Error('No items found in invoice');
- const sup=ocrItems[0].supplier||'';document.getElementById('ocr-sup').value=sup;
- if(isSale){const nm=ocrItems[0].customer_name||'';const ph=ocrItems[0].customer_phone||'';const em=ocrItems[0].customer_email||'';document.getElementById('ocr-cust-name').value=nm;document.getElementById('ocr-cust-phone').value=ph;document.getElementById('ocr-cust-email').value=em;}
- document.getElementById('ocr-s2').style.display='none';document.getElementById('ocr-s3').style.display='block';
- document.getElementById('ocr-import-btn').style.display='inline-flex';
- document.getElementById('ocr-imp-lbl').textContent=isSale?'Deduct from Stock & Save':'Create PO & Add to Stock';
- document.getElementById('ocr-res-banner').textContent=` AI extracted ${ocrItems.length} item(s) from the ${isSale?'sale receipt':'supplier invoice'}. Review before importing.`;
- renderOcrItems(isSale);
+  if(!resp.ok){const errTxt=await resp.text();throw new Error(`OpenAI ${resp.status}: ${errTxt}`);}
+  const data=await resp.json();
+  const content=data.choices?data.choices[0].message.content:'';
+  document.getElementById('ocr-msg').textContent=' Analysis complete!';document.getElementById('ocr-raw').style.display='block';document.getElementById('ocr-raw').textContent=content;
+  const jm=content.match(/\[[\s\S]*\]/);if(!jm)throw new Error('No JSON array found in response');
+  function sanitizeJson(raw){
+   let out='',inStr=false,escape=false;
+   for(let i=0;i<raw.length;i++){
+    const c=raw[i];
+    if(escape){out+=c;escape=false;continue;}
+    if(c==='\\'&&inStr){out+=c;escape=true;continue;}
+    if(c==='"'){inStr=!inStr;out+=c;continue;}
+    if(inStr&&(c==='\n'||c==='\r'||c==='\t')){out+=' ';continue;}
+    out+=c;
+   }
+   return out.replace(/,(\s*[}\]])/g,'$1');
+  }
+  ocrItems=JSON.parse(sanitizeJson(jm[0]));
+  if(!ocrItems.length)throw new Error('No items found in invoice');
+  const sup=ocrItems[0].supplier||'';document.getElementById('ocr-sup').value=sup;
+  if(isSale){const nm=ocrItems[0].customer_name||'';const ph=ocrItems[0].customer_phone||'';const em=ocrItems[0].customer_email||'';document.getElementById('ocr-cust-name').value=nm;document.getElementById('ocr-cust-phone').value=ph;document.getElementById('ocr-cust-email').value=em;}
+  document.getElementById('ocr-s2').style.display='none';document.getElementById('ocr-s3').style.display='block';
+  document.getElementById('ocr-import-btn').style.display='inline-flex';
+  document.getElementById('ocr-imp-lbl').textContent=isSale?'Deduct from Stock & Save':'Create PO & Add to Stock';
+  document.getElementById('ocr-res-banner').textContent=` AI extracted ${ocrItems.length} item(s) from the ${isSale?'sale receipt':'supplier invoice'}. Review before importing.`;
+  renderOcrItems(isSale);
  }catch(e){document.getElementById('ocr-msg').textContent=' Error: '+e.message;toast('OCR error: '+e.message,'err');}
 }
 
