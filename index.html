@@ -563,7 +563,6 @@
 <div id="toast-c"></div>
 
 <!-- ════ JAVASCRIPT ════════════════════════════════════════════ -->
-<script src="config.local.js"></script>
 <script>
 'use strict';
 
@@ -1269,10 +1268,18 @@ async function submitRPO(){
 }
 
 // ── INIT ───────────────────────────────────────────────────────
-document.querySelectorAll('input[type=date]').forEach(e=>{e.value=today();});
-document.getElementById('po-num').value=`PO-${new Date().getFullYear()}-${uid()}`;
-setOcrType('sale');posSetStep(1);
-loadAll();
+function initApp(){
+ try{
+  document.querySelectorAll('input[type=date]').forEach(e=>{if(e)e.value=today();});
+  const poNumEl=document.getElementById('po-num');
+  if(poNumEl)poNumEl.value=`PO-${new Date().getFullYear()}-${uid()}`;
+  if(typeof setOcrType==='function')setOcrType('sale');
+  if(typeof posSetStep==='function')posSetStep(1);
+ }catch(err){console.error('Init warning:',err);}
+ loadAll();
+}
+if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',initApp);}
+else{initApp();}
 </script>
 </body>
 </html>
