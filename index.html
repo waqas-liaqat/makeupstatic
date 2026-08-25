@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8" />
+ <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+ <title>makeupstatic · Inventory Dashboard</title>
+ <script src="https://cdn.tailwindcss.com"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+ <style>
+ *{font-family:'Inter',-apple-system,sans-serif;box-sizing:border-box;}
+ body{margin:0;background:#f1f5f9;}
+ #app{display:flex;height:100vh;overflow:hidden;}
+ /* Sidebar */
+ #sidebar{width:230px;background:#0f172a;display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;}
+ .nav-sec{font-size:10px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.1em;padding:14px 16px 4px;}
+ .nav-item{display:flex;align-items:center;gap:10px;padding:9px 14px;border-radius:8px;margin:1px 8px;color:#94a3b8;cursor:pointer;font-size:13.5px;font-weight:500;transition:all .15s;}
+ .nav-item:hover{color:#e2e8f0;background:rgba(255,255,255,.07);}
+ .nav-item.active{color:#fff;background:#4f46e5;}
+ /* Main area */
+ #main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+ #topbar{background:#fff;border-bottom:1px solid #e2e8f0;padding:0 20px;height:58px;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-shrink:0;}
+ #page-title{font-size:17px;font-weight:700;color:#0f172a;white-space:nowrap;}
+ #content{flex:1;overflow-y:auto;padding:20px;}
+ .page{display:none;}.page.active{display:block;}
+ /* Cards */
+ .card{background:#fff;border-radius:12px;border:1px solid #e2e8f0;overflow:hidden;}
+ .card-hdr{padding:14px 18px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between;}
+ .card-hdr h3{font-size:14px;font-weight:700;color:#0f172a;margin:0;}
+ .cl{font-size:12px;color:#4f46e5;cursor:pointer;}.cl:hover{text-decoration:underline;}
+ .kpi{background:#fff;border-radius:12px;padding:18px 20px;border:1px solid #e2e8f0;}
+ .kpi-lbl{font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
+ .kpi-val{font-size:30px;font-weight:800;color:#0f172a;line-height:1;}
+ .kpi-sub{font-size:12px;color:#94a3b8;margin-top:5px;}
+ /* Table */
+ table{border-collapse:collapse;width:100%;}
+ th{background:#f8fafc;padding:9px 12px;text-align:left;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #e2e8f0;white-space:nowrap;}
+ td{padding:10px 12px;font-size:13.5px;color:#1e293b;border-bottom:1px solid #f1f5f9;vertical-align:middle;}
+ tr:last-child td{border-bottom:none;}tbody tr:hover td{background:#f8fafc;}
+ .row-low td:first-child{border-left:3px solid #f97316;padding-left:9px;}
+ /* Badges */
+ .badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:9999px;font-size:11.5px;font-weight:600;white-space:nowrap;}
+ .bb{background:#dbeafe;color:#1e40af;}.bg{background:#dcfce7;color:#15803d;}.br{background:#fee2e2;color:#991b1b;}
+ .by{background:#fef3c7;color:#92400e;}.bp{background:#ede9fe;color:#6d28d9;}.bt{background:#ccfbf1;color:#0f766e;}
+ .bo{background:#ffedd5;color:#9a3412;}.bgr{background:#f1f5f9;color:#475569;}.bi{background:#e0e7ff;color:#3730a3;}
+ /* Buttons */
+ button{cursor:pointer;}
+ .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;border:none;transition:all .15s;white-space:nowrap;}
+ .btn:disabled{opacity:.55;cursor:not-allowed;}
+ .btn-p{background:#4f46e5;color:#fff;}.btn-p:hover:not(:disabled){background:#4338ca;}
+ .btn-s{background:#fff;color:#374151;border:1px solid #d1d5db;}.btn-s:hover:not(:disabled){background:#f9fafb;}
+ .btn-ok{background:#10b981;color:#fff;}.btn-ok:hover:not(:disabled){background:#059669;}
+ .btn-d{background:#ef4444;color:#fff;}.btn-d:hover:not(:disabled){background:#dc2626;}
+ .btn-sm{padding:5px 10px;font-size:12px;}.btn-xs{padding:3px 8px;font-size:11px;border-radius:6px;}
+ /* Forms */
+ .fld{margin-bottom:14px;}.fld label{display:block;font-size:12.5px;font-weight:600;color:#374151;margin-bottom:5px;}
+ .fld input,.fld select,.fld textarea{width:100%;padding:8px 11px;border:1px solid #d1d5db;border-radius:8px;font-size:13.5px;color:#0f172a;background:#fff;outline:none;transition:border-color .15s;}
+ .fld input:focus,.fld select:focus,.fld textarea:focus{border-color:#4f46e5;box-shadow:0 0 0 3px rgba(79,70,229,.1);}
+ .fld textarea{resize:vertical;min-height:60px;}
+ .g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+ .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+ /* Modals */
+ .modal-ov{display:none;position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:200;align-items:center;justify-content:center;padding:16px;}
+ .modal-ov.open{display:flex;}
+ .modal{background:#fff;border-radius:16px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 25px 60px rgba(0,0,0,.3);}
+ .m-sm{max-width:440px;}.m-md{max-width:540px;}.m-lg{max-width:680px;}.m-xl{max-width:820px;}
+ .m-hdr{padding:20px 24px 16px;border-bottom:1px solid #f1f5f9;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+ .m-hdr h2{font-size:16px;font-weight:700;color:#0f172a;margin:0;}
+ .m-hdr p{font-size:12.5px;color:#64748b;margin:4px 0 0;}
+ .m-x{background:none;border:none;font-size:20px;color:#94a3b8;cursor:pointer;padding:0;flex-shrink:0;}.m-x:hover{color:#0f172a;}
+ .m-body{padding:20px 24px;}.m-foot{padding:16px 24px;border-top:1px solid #f1f5f9;display:flex;justify-content:flex-end;gap:8px;}
+ /* Autocomplete */
+ .ac-wrap{position:relative;}
+ .ac-dd{display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid #e2e8f0;border-radius:10px;box-shadow:0 12px 32px rgba(0,0,0,.12);z-index:500;max-height:220px;overflow-y:auto;}
+ .ac-item{padding:9px 14px;cursor:pointer;font-size:13px;border-bottom:1px solid #f8fafc;}.ac-item:last-child{border-bottom:none;}.ac-item:hover{background:#f0f9ff;}
+ .ac-sku{font-weight:700;color:#4f46e5;font-size:12px;}.ac-nm{color:#0f172a;font-weight:500;}.ac-sub{color:#94a3b8;font-size:11.5px;margin-top:2px;}
+ /* Dropzone */
+ .dz{border:2px dashed #cbd5e1;border-radius:12px;padding:28px 20px;text-align:center;cursor:pointer;transition:all .15s;}
+ .dz:hover,.dz.dg{border-color:#4f46e5;background:#eef2ff;}
+ /* Steps */
+ .step-wrap{display:flex;align-items:flex-start;gap:0;margin-bottom:20px;}
+ .step-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin:0 auto;}
+ .s-done{background:#10b981;color:#fff;}.s-act{background:#4f46e5;color:#fff;}.s-pend{background:#e2e8f0;color:#94a3b8;}
+ .step-line{flex:1;height:2px;background:#e2e8f0;margin-top:14px;}.step-line.done{background:#10b981;}
+ .step-lbl{font-size:11px;font-weight:600;color:#64748b;text-align:center;margin-top:4px;}
+ /* Filters */
+ .fbar{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:12px 16px;margin-bottom:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+ .fbar input,.fbar select{padding:7px 11px;border:1px solid #d1d5db;border-radius:8px;font-size:13px;color:#0f172a;outline:none;}
+ .fbar input:focus,.fbar select:focus{border-color:#4f46e5;}
+ .fsrch{flex:1;min-width:200px;}
+ /* Tabs */
+ .tab-bar{background:#f1f5f9;border-radius:10px;padding:3px;display:inline-flex;margin-bottom:14px;}
+ .tab-btn{padding:7px 16px;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;color:#64748b;border:none;background:transparent;transition:all .15s;}
+ .tab-btn.active{background:#fff;color:#4f46e5;box-shadow:0 1px 4px rgba(0,0,0,.1);font-weight:600;}
+ /* Toast */
+ #toast-c{position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;}
+ .toast{padding:12px 18px;border-radius:10px;font-size:13.5px;font-weight:500;color:#fff;box-shadow:0 8px 24px rgba(0,0,0,.18);max-width:380px;animation:tIn .3s ease;display:flex;align-items:center;gap:8px;}
+ @keyframes tIn{from{transform:translateX(110%);opacity:0;}to{transform:none;opacity:1;}}
+ .t-ok{background:#10b981;}.t-err{background:#ef4444;}.t-info{background:#3b82f6;}.t-warn{background:#f59e0b;}
+ /* Spinner */
+ .spin{width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:sp .65s linear infinite;display:inline-block;flex-shrink:0;}
+ .spin-d{width:20px;height:20px;border:2px solid #e2e8f0;border-top-color:#4f46e5;border-radius:50%;animation:sp .65s linear infinite;display:inline-block;}
+ @keyframes sp{to{transform:rotate(360deg);}}
+ /* Pager */
+ .pager{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;border-top:1px solid #f1f5f9;}
+ .pager-info{font-size:13px;color:#64748b;}
+ /* Misc */
+ .empty{text-align:center;padding:48px 24px;color:#94a3b8;font-size:14px;}
+ .ei{font-size:36px;margin-bottom:10px;}
+ .mono{font-family:'Courier New',monospace;font-size:12.5px;}
+ .a-i{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:10px 14px;font-size:13px;color:#1d4ed8;}
+ .a-w{background:#fef3c7;border:1px solid #fcd34d;border-radius:8px;padding:10px 14px;font-size:13px;color:#92400e;}
+ .a-ok{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:10px 14px;font-size:13px;color:#15803d;}
+ .a-err{background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:10px 14px;font-size:13px;color:#991b1b;}
+ .cust-tag{display:inline-flex;align-items:center;gap:4px;background:#e0e7ff;color:#3730a3;border-radius:6px;padding:2px 8px;font-size:12px;font-weight:600;}
+ .anon-tag{display:inline-flex;align-items:center;gap:4px;background:#f1f5f9;color:#64748b;border-radius:6px;padding:2px 8px;font-size:12px;}
+ .conf-tag{display:inline-flex;align-items:center;gap:4px;background:#fef3c7;color:#92400e;border-radius:6px;padding:2px 8px;font-size:12px;font-weight:600;}
+ .img-prev{max-width:100%;max-height:200px;border-radius:8px;border:1px solid #e2e8f0;display:block;margin:0 auto 12px;}
+ .ocr-raw{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px;font-size:12.5px;line-height:1.7;white-space:pre-wrap;max-height:200px;overflow-y:auto;}
+ ::-webkit-scrollbar{width:5px;height:5px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px;}
+ </style>
+</head>
+<body>
+<div id="app">
+
+<!-- ════ SIDEBAR ════════════════════════════════════════════ -->
+<div id="sidebar">
+ <div style="padding:18px 16px 12px;border-bottom:1px solid rgba(255,255,255,.07);">
+ <div style="display:flex;align-items:center;gap:10px;">
+ <div style="width:36px;height:36px;background:linear-gradient(135deg,#4f46e5,#7c3aed);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">&#128132;</div>
+ <div><div style="color:#fff;font-weight:700;font-size:14px;line-height:1.2;">&#128132; makeupstatic</div><div style="color:#64748b;font-size:11px;">Inventory Dashboard</div></div>
+ </div>
+ </div>
+ <nav style="flex:1;padding:8px 0;">
+ <div class="nav-sec">Overview</div>
+ <div class="nav-item active" id="nav-overview" onclick="showPage('overview')"><span></span>Overview</div>
+ <div class="nav-sec">Inventory</div>
+ <div class="nav-item" id="nav-products" onclick="showPage('products')"><span></span>Products</div>
+ <div class="nav-item" id="nav-transactions" onclick="showPage('transactions')"><span></span>Transactions</div>
+ <div class="nav-item" id="nav-purchase-orders" onclick="showPage('purchase-orders')"><span></span>Purchase Orders</div>
+ <div class="nav-sec">Customers</div>
+ <div class="nav-item" id="nav-customers" onclick="showPage('customers')"><span></span>Customers</div>
+ <div class="nav-item" id="nav-approvals" onclick="showPage('approvals')">
+ <span></span><span style="flex:1;">Approvals</span>
+ <span id="appr-badge" style="background:#ef4444;color:#fff;border-radius:9999px;font-size:10.5px;font-weight:700;padding:1px 7px;display:none;">0</span>
+ </div>
+ </nav>
+ <div style="padding:12px;border-top:1px solid rgba(255,255,255,.07);">
+ <button onclick="refreshAll()" id="refresh-btn"
+ style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:#94a3b8;padding:8px;border-radius:8px;font-size:12.5px;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;"
+ onmouseover="this.style.background='rgba(255,255,255,.11)'" onmouseout="this.style.background='rgba(255,255,255,.06)'">
+ <span id="r-ico"></span> Refresh Data
+ </button>
+ <div style="text-align:center;margin-top:6px;font-size:11px;color:#475569;">Updated: <span id="last-upd">--</span></div>
+ </div>
+</div>
+
+<!-- ════ MAIN ════════════════════════════════════════════════ -->
+<div id="main">
+ <div id="topbar">
+ <h1 id="page-title">Overview</h1>
+ <div style="display:flex;gap:7px;flex-wrap:wrap;align-items:center;">
+ <button class="btn btn-p" onclick="openModal('m-pos')"> Upload POS Files</button>
+ <button class="btn btn-s" onclick="openModal('m-ocr')" title="Upload invoice photo (sale or new stock) — AI extracts details"> Invoice OCR</button>
+ <button class="btn btn-s" onclick="openModal('m-tx')" title="Record a single manual transaction"> Manual Transaction</button>
+ <button class="btn btn-s" onclick="openModal('m-trf')"> Transfer</button>
+ <button class="btn btn-s" onclick="openModal('m-po')"> New PO</button>
+ </div>
+ </div>
+
+ <div id="content">
+
+ <!-- ── OVERVIEW ─────────────────────────────────────── -->
+ <div class="page active" id="page-overview">
+ <div id="low-banner" style="display:none;background:#fef3c7;border:1px solid #f59e0b;border-radius:10px;padding:11px 16px;margin-bottom:16px;display:none;align-items:center;gap:10px;font-size:13.5px;color:#92400e;">
+ <strong><span id="low-cnt">0</span> products</strong> below minimum stock. <span class="cl" onclick="showPage('products')">View Products &rarr;</span>
+ </div>
+ <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px;">
+ <div class="kpi" style="border-top:3px solid #3b82f6;"><div class="kpi-lbl"> Beitar</div><div class="kpi-val" id="k-b">--</div><div class="kpi-sub">Total units</div></div>
+ <div class="kpi" style="border-top:3px solid #10b981;"><div class="kpi-lbl"> Beit Shemesh</div><div class="kpi-val" id="k-bs">--</div><div class="kpi-sub">Total units</div></div>
+ <div class="kpi" style="border-top:3px solid #8b5cf6;"><div class="kpi-lbl"> Jerusalem</div><div class="kpi-val" id="k-j">--</div><div class="kpi-sub">Total units</div></div>
+ <div class="kpi" style="border-top:3px solid #f59e0b;"><div class="kpi-lbl"> SKUs</div><div class="kpi-val" id="k-p">--</div><div class="kpi-sub">Products in catalogue</div></div>
+ </div>
+ <div style="display:grid;grid-template-columns:220px 1fr;gap:14px;margin-bottom:16px;">
+ <div class="card">
+ <div class="card-hdr"><h3>Status</h3></div>
+ <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:#f1f5f9;">
+ <div onclick="showPage('approvals')" style="background:#fff;padding:16px;text-align:center;cursor:pointer;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='#fff'">
+ <div id="k-appr" style="font-size:26px;font-weight:800;color:#f59e0b;">--</div><div style="font-size:12px;color:#64748b;margin-top:3px;">Needs Approval</div>
+ </div>
+ <div onclick="showPage('approvals')" style="background:#fff;padding:16px;text-align:center;cursor:pointer;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='#fff'">
+ <div id="k-err" style="font-size:26px;font-weight:800;color:#ef4444;">--</div><div style="font-size:12px;color:#64748b;margin-top:3px;">Errors</div>
+ </div>
+ <div onclick="showPage('purchase-orders')" style="background:#fff;padding:16px;text-align:center;cursor:pointer;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='#fff'">
+ <div id="k-po" style="font-size:26px;font-weight:800;color:#3b82f6;">--</div><div style="font-size:12px;color:#64748b;margin-top:3px;">Open POs</div>
+ </div>
+ <div onclick="showPage('products')" style="background:#fff;padding:16px;text-align:center;cursor:pointer;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='#fff'">
+ <div id="k-low" style="font-size:26px;font-weight:800;color:#ef4444;">--</div><div style="font-size:12px;color:#64748b;margin-top:3px;">Low Stock</div>
+ </div>
+ </div>
+ </div>
+ <div class="card">
+ <div class="card-hdr"><h3> Below Minimum Stock</h3><span class="cl" onclick="showPage('products')">All products &rarr;</span></div>
+ <div id="low-list" style="max-height:200px;overflow-y:auto;"><div class="empty" style="padding:20px;">Loading...</div></div>
+ </div>
+ </div>
+ <div class="card">
+ <div class="card-hdr"><h3>Recent Transactions</h3><span class="cl" onclick="showPage('transactions')">All transactions &rarr;</span></div>
+ <div style="overflow-x:auto;"><table><thead><tr><th>Date &amp; Time</th><th>Product</th><th>Branch</th><th>Type</th><th>Qty</th><th>Source</th><th>Reference</th><th>Customer</th></tr></thead><tbody id="recent-tx"></tbody></table></div>
+ </div>
+ </div>
+
+ <!-- ── PRODUCTS ──────────────────────────────────────── -->
+ <div class="page" id="page-products">
+ <div class="fbar">
+ <input class="fsrch" type="text" id="p-q" placeholder=" Search SKU, name, brand, shade..." oninput="filterProds()"/>
+ <select id="p-br" onchange="filterProds()" style="min-width:140px;"><option value="">All Brands</option></select>
+ <select id="p-st" onchange="filterProds()" style="min-width:140px;"><option value="">All Stock Levels</option><option value="low"> Low Stock</option><option value="ok"> OK</option></select>
+ <span style="font-size:13px;color:#64748b;margin-left:auto;white-space:nowrap;"><span id="p-cnt">--</span> products</span>
+ </div>
+ <div class="card"><div style="overflow-x:auto;"><table><thead><tr>
+ <th>SKU</th><th>Brand</th><th>Product Name</th><th>Shade</th>
+ <th style="text-align:center;"> Beitar</th><th style="text-align:center;"> Beit Sh.</th><th style="text-align:center;"> Jerusalem</th>
+ <th style="text-align:center;">Total</th><th style="text-align:right;">Price &#8362;</th><th>Status</th>
+ </tr></thead><tbody id="prod-body"></tbody></table></div></div>
+ </div>
+
+ <!-- ── TRANSACTIONS ──────────────────────────────────── -->
+ <div class="page" id="page-transactions">
+ <div class="fbar">
+ <select id="tx-br" onchange="filterTx()" style="min-width:140px;"><option value="">All Branches</option><option>Beitar</option><option>Beit Shemesh</option><option>Jerusalem</option></select>
+ <select id="tx-ty" onchange="filterTx()" style="min-width:155px;"><option value="">All Types</option><option>Sale</option><option>Stock Received</option><option>Transfer</option><option>Manual Correction</option></select>
+ <select id="tx-src" onchange="filterTx()" style="min-width:145px;"><option value="">All Sources</option><option>POS</option><option>AI Message</option><option>Purchase Order</option><option>Manual</option></select>
+ <input type="date" id="tx-fr" onchange="filterTx()" style="min-width:130px;"/>
+ <input type="date" id="tx-to" onchange="filterTx()" style="min-width:130px;"/>
+ <button class="btn btn-s btn-sm" onclick="clrTxF()">Clear</button>
+ <span style="font-size:13px;color:#64748b;margin-left:auto;white-space:nowrap;"><span id="tx-cnt">--</span> records</span>
+ </div>
+ <div class="card">
+ <div style="overflow-x:auto;"><table><thead><tr>
+ <th>Date &amp; Time</th><th>Product</th><th>Branch</th><th>Type</th><th style="text-align:center;">Qty</th><th>Source</th><th>Reference</th><th>Customer</th><th>Notes</th>
+ </tr></thead><tbody id="tx-body"></tbody></table></div>
+ <div class="pager">
+ <button class="btn btn-s btn-sm" id="tx-prev" onclick="chgPg(-1)">&larr; Prev</button>
+ <span class="pager-info" id="tx-pgi">Page 1 of 1</span>
+ <button class="btn btn-s btn-sm" id="tx-next" onclick="chgPg(1)">Next &rarr;</button>
+ </div>
+ </div>
+ </div>
+
+ <!-- ── PURCHASE ORDERS ───────────────────────────────── -->
+ <div class="page" id="page-purchase-orders">
+ <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+ <div class="tab-bar">
+ <button class="tab-btn active" onclick="filPOs('all',this)">All</button>
+ <button class="tab-btn" onclick="filPOs('Draft',this)">Draft</button>
+ <button class="tab-btn" onclick="filPOs('Ordered',this)">Ordered</button>
+ <button class="tab-btn" onclick="filPOs('Received',this)">Received</button>
+ </div>
+ <button class="btn btn-p" onclick="openModal('m-po')">+ New PO</button>
+ </div>
+ <div class="card"><div style="overflow-x:auto;"><table><thead><tr>
+ <th>Order #</th><th>Supplier</th><th>Product</th><th>Date</th>
+ <th style="text-align:center;">Qty</th><th style="text-align:right;">Cost &#8362;</th><th>Branch</th><th>Status</th><th>Actions</th>
+ </tr></thead><tbody id="po-body"></tbody></table></div></div>
+ </div>
+
+ <!-- ── CUSTOMERS ─────────────────────────────────────── -->
+ <div class="page" id="page-customers">
+ <div class="fbar">
+ <input class="fsrch" type="text" id="cu-q" placeholder=" Search name, phone, email..." oninput="filterCusts()"/>
+ <span style="font-size:13px;color:#64748b;margin-left:auto;white-space:nowrap;"><span id="cu-cnt">--</span> customers</span>
+ </div>
+ <div class="card"><div style="overflow-x:auto;"><table><thead><tr>
+ <th>Name</th><th>Phone</th><th>Email</th><th>Type</th><th>Points</th><th>Source</th><th>Created</th>
+ </tr></thead><tbody id="cu-body"></tbody></table></div></div>
+ </div>
+
+ <!-- ── APPROVALS ─────────────────────────────────────── -->
+ <div class="page" id="page-approvals">
+ <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+ <div class="card">
+ <div class="card-hdr" style="background:#fffbeb;"><h3 style="color:#92400e;"> Needs Approval</h3><span id="appr-cnt" class="badge by">0</span></div>
+ <div id="appr-list" style="padding:12px;max-height:calc(100vh-240px);overflow-y:auto;"><div class="empty">Loading...</div></div>
+ </div>
+ <div class="card">
+ <div class="card-hdr" style="background:#fef2f2;"><h3 style="color:#991b1b;"> Errors</h3><span id="errs-cnt" class="badge br">0</span></div>
+ <div id="errs-list" style="padding:12px;max-height:calc(100vh-240px);overflow-y:auto;"><div class="empty">Loading...</div></div>
+ </div>
+ </div>
+ </div>
+
+ </div><!-- /content -->
+</div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ════ MODALS ════════════════════════════════════════════════ -->
+
+<!-- ── 1. POS DUAL UPLOAD ────────────────────────────────── -->
+<div class="modal-ov" id="m-pos">
+ <div class="modal m-xl">
+ <div class="m-hdr">
+ <div><h2> Upload POS Files — Daily Sales Import</h2>
+ <p>Upload <strong>2 files</strong> from the cash register. File 1 = product lines (for inventory). File 2 = customer identification (for linking customers).</p>
+ </div>
+ <button class="m-x" onclick="closeModal('m-pos')">&times;</button>
+ </div>
+ <div class="m-body">
+ <!-- Steps -->
+ <div class="step-wrap">
+ <div style="flex:1;text-align:center;"><div id="ps1-dot" class="step-dot s-act" style="margin:0 auto;">1</div><div class="step-lbl">Branch &amp; Date</div></div>
+ <div class="step-line" id="ps1-ln"></div>
+ <div style="flex:1;text-align:center;"><div id="ps2-dot" class="step-dot s-pend" style="margin:0 auto;">2</div><div class="step-lbl">File 1: Products</div></div>
+ <div class="step-line" id="ps2-ln"></div>
+ <div style="flex:1;text-align:center;"><div id="ps3-dot" class="step-dot s-pend" style="margin:0 auto;">3</div><div class="step-lbl">File 2: Customers</div></div>
+ <div class="step-line" id="ps3-ln"></div>
+ <div style="flex:1;text-align:center;"><div id="ps4-dot" class="step-dot s-pend" style="margin:0 auto;">4</div><div class="step-lbl">Preview &amp; Import</div></div>
+ </div>
+ <!-- Step 1 -->
+ <div id="ps-1">
+ <div class="a-i" style="margin-bottom:14px;"> Upload <strong>both</strong> POS Excel files together. They are linked by Invoice Number to match each product line to the correct customer.</div>
+ <div class="g2">
+ <div class="fld"><label>Branch *</label><select id="pos-br"><option value="">Select branch...</option><option>Beitar</option><option>Beit Shemesh</option><option>Jerusalem</option></select></div>
+ <div class="fld"><label>Sale Date *</label><input type="date" id="pos-dt"/></div>
+ </div>
+ <div class="fld"><label>Notes (optional)</label><input type="text" id="pos-note" placeholder="e.g. Daily sales 19 Aug"/></div>
+ </div>
+ <!-- Step 2 -->
+ <div id="ps-2" style="display:none;">
+ <div class="a-i" style="margin-bottom:12px;"><strong>File 1 — Product Lines</strong> (&#1491;&#1493;&#1495; &#1502;&#1499;&#1497;&#1512;&#1493;&#1514; &#1513;&#1493;&#1512;&#1493;&#1514; &#1500;&#1495;&#1504;&#1493;&#1514;)<br>One row per product sold. Headers at row 7: &#1502;&#1505;&#1508;&#1512; &#1495;&#1513;&#1489;&#1493;&#1504;&#1497;&#1514; · &#1511;&#1493;&#1491; &#1508;&#1512;&#1497;&#1496; · &#1499;&#1502;&#1493;&#1514; · &#1514;&#1488;&#1512;&#1497;&#1498;</div>
+ <div class="dz" id="dz1" onclick="document.getElementById('fi1').click()"
+ ondragover="event.preventDefault();this.classList.add('dg')" ondragleave="this.classList.remove('dg')" ondrop="drop1(event)">
+ <div style="font-size:36px;margin-bottom:8px;" id="dz1-ico"></div>
+ <div style="font-size:14px;font-weight:600;color:#374151;" id="dz1-ttl">Drop File 1 here or click to browse</div>
+ <div style="font-size:12px;color:#94a3b8;margin-top:4px;">.xlsx · .xls</div>
+ <input type="file" id="fi1" accept=".xlsx,.xls" style="display:none" onchange="setF1(this.files[0])"/>
+ </div>
+ <div id="f1-st" style="display:none;margin-top:10px;" class="a-ok"></div>
+ </div>
+ <!-- Step 3 -->
+ <div id="ps-3" style="display:none;">
+ <div class="a-i" style="margin-bottom:12px;"><strong>File 2 — Customer Identification</strong> (&#1502;&#1499;&#1497;&#1512;&#1493;&#1514; &#1511;&#1493;&#1508;&#1492; &#1500;&#1508;&#1497; &#1495;&#1514;&#1498;)<br>One row per invoice. Headers at row 3: &#1502;&#1505;&#1508;&#1512; &#1508;&#1514;&#1511;&#1497;&#1514; · &#1513;&#1501; &#1500;&#1511;&#1493;&#1495; · &#1496;&#1500;&#1508;&#1493;&#1503; &#1500;&#1511;&#1493;&#1495;</div>
+ <div class="dz" id="dz2" onclick="document.getElementById('fi2').click()"
+ ondragover="event.preventDefault();this.classList.add('dg')" ondragleave="this.classList.remove('dg')" ondrop="drop2(event)">
+ <div style="font-size:36px;margin-bottom:8px;" id="dz2-ico"></div>
+ <div style="font-size:14px;font-weight:600;color:#374151;" id="dz2-ttl">Drop File 2 here or click to browse</div>
+ <div style="font-size:12px;color:#94a3b8;margin-top:4px;">.xlsx · .xls</div>
+ <input type="file" id="fi2" accept=".xlsx,.xls" style="display:none" onchange="setF2(this.files[0])"/>
+ </div>
+ <div id="f2-st" style="display:none;margin-top:10px;" class="a-ok"></div>
+ <div style="margin-top:12px;" class="a-w"> If File 2 is not available yet, click <strong>"Skip Customer File"</strong> — sales will be imported without customer linking.</div>
+ </div>
+ <!-- Step 4 Preview -->
+ <div id="ps-4" style="display:none;">
+ <div id="pos-stats" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;"></div>
+ <div id="pos-conf" style="display:none;margin-bottom:12px;" class="a-w"></div>
+ <div style="max-height:340px;overflow-y:auto;border:1px solid #e2e8f0;border-radius:8px;">
+ <table><thead><tr><th>Invoice</th><th>SKU</th><th>Product</th><th>Qty</th><th>Price &#8362;</th><th>Date &amp; Time</th><th>Customer</th><th>Phone</th></tr></thead>
+ <tbody id="pos-prev"></tbody></table>
+ </div>
+ </div>
+ </div>
+ <div class="m-foot">
+ <button class="btn btn-s" onclick="closeModal('m-pos')" id="pos-cancel">Cancel</button>
+ <button class="btn btn-s" id="pos-skip" onclick="posSkipF2()" style="display:none;">Skip Customer File</button>
+ <button class="btn btn-s" id="pos-back" onclick="posBack()" style="display:none;">&larr; Back</button>
+ <button class="btn btn-p" id="pos-next" onclick="posNext()">Next &rarr;</button>
+ <button class="btn btn-ok" id="pos-imp" onclick="posImport()" style="display:none;"> Import Transactions</button>
+ </div>
+ </div>
+</div>
+
+<!-- ── 2. INVOICE OCR (Sale receipt OR Supplier invoice) ──── -->
+<div class="modal-ov" id="m-ocr">
+ <div class="modal m-lg">
+ <div class="m-hdr">
+ <div><h2> Invoice OCR — AI Reads Invoice Photo</h2>
+ <p>Upload a photo of any invoice. Choose the type so the system knows what action to take.</p>
+ </div>
+ <button class="m-x" onclick="closeModal('m-ocr')">&times;</button>
+ </div>
+ <div class="m-body">
+ <div id="ocr-s1">
+ <!-- Type selector -->
+ <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+ <div id="ocr-type-sale" onclick="setOcrType('sale')" style="border:2px solid #4f46e5;background:#eef2ff;border-radius:12px;padding:16px;cursor:pointer;text-align:center;">
+ <div style="font-size:28px;margin-bottom:6px;"></div>
+ <div style="font-weight:700;color:#4f46e5;font-size:13.5px;">Sale Invoice</div>
+ <div style="font-size:12px;color:#6d28d9;margin-top:3px;">Cash sale outside POS<br>Deducts from inventory</div>
+ </div>
+ <div id="ocr-type-stock" onclick="setOcrType('stock')" style="border:2px solid #e2e8f0;background:#f8fafc;border-radius:12px;padding:16px;cursor:pointer;text-align:center;">
+ <div style="font-size:28px;margin-bottom:6px;"></div>
+ <div style="font-weight:700;color:#374151;font-size:13.5px;">Supplier Invoice</div>
+ <div style="font-size:12px;color:#64748b;margin-top:3px;">New inventory arriving<br>Adds to stock</div>
+ </div>
+ </div>
+ <div class="dz" id="ocr-dz" onclick="document.getElementById('ocr-fi').click()"
+ ondragover="event.preventDefault();this.classList.add('dg')" ondragleave="this.classList.remove('dg')" ondrop="ocrDrop(event)">
+ <div style="font-size:36px;margin-bottom:8px;" id="ocr-ico"></div>
+ <div style="font-size:14px;font-weight:600;color:#374151;" id="ocr-ttl">Drop invoice photo here or click to browse</div>
+ <div style="font-size:12px;color:#94a3b8;margin-top:4px;">.jpg · .jpeg · .png · .webp</div>
+ <input type="file" id="ocr-fi" accept="image/*" style="display:none" onchange="setOcrFile(this.files[0])"/>
+ </div>
+ <img id="ocr-img" class="img-prev" style="display:none;margin-top:12px;"/>
+ <div style="margin-top:14px;" class="g2">
+ <div class="fld"><label>Branch *</label><select id="ocr-br"><option value="">Select branch...</option><option>Beitar</option><option>Beit Shemesh</option><option>Jerusalem</option></select></div>
+ <div class="fld"><label>Date *</label><input type="date" id="ocr-dt"/></div>
+ </div>
+ <!-- Customer field (shown for Sale type only) -->
+ <div id="ocr-cust-row" style="display:none;">
+ <div class="g3">
+ <div class="fld"><label>Customer Name <span style="font-weight:400;color:#94a3b8;">from invoice</span></label><input type="text" id="ocr-cust-name" placeholder="Customer name"/></div>
+ <div class="fld"><label>Customer Phone <span style="font-weight:400;color:#94a3b8;">from invoice</span></label><input type="text" id="ocr-cust-phone" placeholder="Phone number"/></div>
+ <div class="fld"><label>Customer Email <span style="font-weight:400;color:#94a3b8;">from invoice</span></label><input type="text" id="ocr-cust-email" placeholder="email@example.com"/></div>
+ </div>
+ </div>
+ </div>
+ <!-- OCR processing -->
+ <div id="ocr-s2" style="display:none;">
+ <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;"><div class="spin-d"></div><span id="ocr-msg" style="font-size:13.5px;color:#374151;">Analyzing invoice with AI...</span></div>
+ <div id="ocr-raw" class="ocr-raw" style="display:none;"></div>
+ </div>
+ <!-- OCR results -->
+ <div id="ocr-s3" style="display:none;">
+ <div id="ocr-res-banner" class="a-ok" style="margin-bottom:12px;"></div>
+ <div class="fld"><label>Supplier / From</label><input type="text" id="ocr-sup" placeholder="Supplier or seller name"/></div>
+ <div style="border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;margin-bottom:10px;">
+ <table><thead><tr><th>SKU / Code</th><th>Description</th><th style="text-align:center;">Qty</th><th style="text-align:right;">Price &#8362;</th><th>Match</th><th></th></tr></thead>
+ <tbody id="ocr-items"></tbody></table>
+ </div>
+ <button class="btn btn-s btn-sm" onclick="ocrAddRow()">+ Add Row</button>
+ </div>
+ </div>
+ <div class="m-foot">
+ <button class="btn btn-s" onclick="closeModal('m-ocr')">Cancel</button>
+ <button class="btn btn-p" id="ocr-analyze-btn" onclick="runOCR()" style="display:none;"> Analyze Invoice</button>
+ <button class="btn btn-ok" id="ocr-import-btn" onclick="ocrImport()" style="display:none;"><span id="ocr-imp-lbl">Import</span></button>
+ </div>
+ </div>
+</div>
+
+<!-- ── 3. MANUAL TRANSACTION ──────────────────────────────── -->
+<div class="modal-ov" id="m-tx">
+ <div class="modal m-md">
+ <div class="m-hdr">
+ <div><h2> Manual Transaction</h2><p>Record a single inventory movement: sale, receive, or manual correction.</p></div>
+ <button class="m-x" onclick="closeModal('m-tx')">&times;</button>
+ </div>
+ <div class="m-body">
+ <div class="fld"><label>Transaction Type *</label>
+ <select id="tx-type" onchange="updateTxType()">
+ <option value="">Select type...</option>
+ <option value="Sale">Sale (reduces stock)</option>
+ <option value="Stock Received">Receive Stock (increases stock)</option>
+ <option value="Manual Correction">Manual Correction</option>
+ </select>
+ </div>
+ <div class="fld"><label>Product *</label>
+ <div class="ac-wrap"><input type="text" id="tx-pi" placeholder="Type SKU or product name..." autocomplete="off" oninput="acSrch(this,'tx-dd','tx-pid')"/><input type="hidden" id="tx-pid"/><div class="ac-dd" id="tx-dd"></div></div>
+ </div>
+ <div class="g2">
+ <div class="fld"><label>Branch *</label><select id="tx-br2"><option value="">Select...</option><option>Beitar</option><option>Beit Shemesh</option><option>Jerusalem</option></select></div>
+ <div class="fld"><label id="tx-qty-lbl">Quantity *</label><input type="number" id="tx-qty" min="1" placeholder="1"/></div>
+ </div>
+ <div class="g2">
+ <div class="fld"><label>Date *</label><input type="date" id="tx-dt2"/></div>
+ <div class="fld"><label>Reference / Invoice #</label><input type="text" id="tx-ref" placeholder="e.g. INV-001"/></div>
+ </div>
+ <!-- Customer (shown only for Sale) -->
+ <div id="tx-cust-row" style="display:none;">
+ <div class="g3">
+ <div class="fld"><label>Customer Name <span style="font-weight:400;color:#94a3b8;">optional</span></label><input type="text" id="tx-cname" placeholder="Customer name"/></div>
+ <div class="fld"><label>Customer Phone <span style="font-weight:400;color:#94a3b8;">optional</span></label><input type="text" id="tx-cphone" placeholder="Phone"/></div>
+ <div class="fld"><label>Customer Email <span style="font-weight:400;color:#94a3b8;">optional</span></label><input type="text" id="tx-cemail" placeholder="email@example.com"/></div>
+ </div>
+ <div class="a-i" style="font-size:12px;padding:8px 12px;margin-bottom:0;">Customer is looked up by phone → email → name. If not found, transaction is saved without customer link.</div>
+ </div>
+ <div class="fld"><label>Notes</label><textarea id="tx-notes" placeholder="Any notes..."></textarea></div>
+ </div>
+ <div class="m-foot">
+ <button class="btn btn-s" onclick="closeModal('m-tx')">Cancel</button>
+ <button class="btn btn-p" id="tx-sub" onclick="submitTx()">Save Transaction</button>
+ </div>
+ </div>
+</div>
+
+<!-- ── 4. TRANSFER ────────────────────────────────────────── -->
+<div class="modal-ov" id="m-trf">
+ <div class="modal m-md">
+ <div class="m-hdr"><div><h2> Transfer Stock Between Branches</h2><p>Creates 2 transactions: OUT (source) + IN (destination).</p></div><button class="m-x" onclick="closeModal('m-trf')">&times;</button></div>
+ <div class="m-body">
+ <div class="fld"><label>Product *</label>
+ <div class="ac-wrap"><input type="text" id="trf-pi" placeholder="Type SKU or product name..." autocomplete="off" oninput="acSrch(this,'trf-dd','trf-pid','trf')"/><input type="hidden" id="trf-pid"/><div class="ac-dd" id="trf-dd"></div></div>
+ </div>
+ <div id="trf-stk" style="display:none;margin-bottom:12px;" class="a-i">
+ <div style="font-size:12px;font-weight:600;margin-bottom:4px;">Current Stock:</div>
+ <div style="display:flex;gap:16px;font-size:13px;"><span> Beitar: <strong id="ts-b">--</strong></span><span> Beit Sh: <strong id="ts-bs">--</strong></span><span> Jerusalem: <strong id="ts-j">--</strong></span></div>
+ </div>
+ <div style="display:grid;grid-template-columns:1fr 28px 1fr;gap:6px;align-items:flex-end;margin-bottom:12px;">
+ <div class="fld" style="margin:0;"><label>From *</label><select id="trf-fr"><option value="">Select...</option><option>Beitar</option><option>Beit Shemesh</option><option>Jerusalem</option></select></div>
+ <div style="text-align:center;font-size:20px;padding-bottom:8px;">&rarr;</div>
+ <div class="fld" style="margin:0;"><label>To *</label><select id="trf-to"><option value="">Select...</option><option>Beitar</option><option>Beit Shemesh</option><option>Jerusalem</option></select></div>
+ </div>
+ <div class="g2">
+ <div class="fld"><label>Quantity *</label><input type="number" id="trf-qty" min="1" placeholder="1"/></div>
+ <div class="fld"><label>Date *</label><input type="date" id="trf-dt"/></div>
+ </div>
+ <div class="fld"><label>Notes</label><textarea id="trf-notes" placeholder="Reason for transfer..."></textarea></div>
+ </div>
+ <div class="m-foot">
+ <button class="btn btn-s" onclick="closeModal('m-trf')">Cancel</button>
+ <button class="btn btn-p" id="trf-sub" onclick="submitTrf()">Transfer Stock</button>
+ </div>
+ </div>
+</div>
+
+<!-- ── 5. NEW PO ───────────────────────────────────────────── -->
+<div class="modal-ov" id="m-po">
+ <div class="modal m-md">
+ <div class="m-hdr"><div><h2> New Purchase Order</h2></div><button class="m-x" onclick="closeModal('m-po')">&times;</button></div>
+ <div class="m-body">
+ <div class="g2">
+ <div class="fld"><label>Order Number *</label><input type="text" id="po-num" placeholder="e.g. PO-2026-001"/></div>
+ <div class="fld"><label>Supplier *</label><input type="text" id="po-sup" placeholder="Supplier name"/></div>
+ </div>
+ <div class="fld"><label>Product *</label>
+ <div class="ac-wrap"><input type="text" id="po-pi" placeholder="Type SKU or product name..." autocomplete="off" oninput="acSrch(this,'po-dd','po-pid')"/><input type="hidden" id="po-pid"/><div class="ac-dd" id="po-dd"></div></div>
+ </div>
+ <div class="g3">
+ <div class="fld"><label>Qty *</label><input type="number" id="po-qty" min="1" placeholder="1"/></div>
+ <div class="fld"><label>Cost &#8362;</label><input type="number" id="po-cost" step="0.01" placeholder="0.00"/></div>
+ <div class="fld"><label>Order Date *</label><input type="date" id="po-dt"/></div>
+ </div>
+ <div class="g2">
+ <div class="fld"><label>Destination Branch *</label><select id="po-br"><option value="">Select...</option><option>Beitar</option><option>Beit Shemesh</option><option>Jerusalem</option></select></div>
+ <div class="fld"><label>Status</label><select id="po-st"><option value="Draft">Draft</option><option value="Ordered">Ordered</option></select></div>
+ </div>
+ </div>
+ <div class="m-foot">
+ <button class="btn btn-s" onclick="closeModal('m-po')">Cancel</button>
+ <button class="btn btn-p" id="po-sub" onclick="submitPO()">Create Order</button>
+ </div>
+ </div>
+</div>
+
+<!-- ── 6. RECEIVE PO ──────────────────────────────────────── -->
+<div class="modal-ov" id="m-rpo">
+ <div class="modal m-sm">
+ <div class="m-hdr"><div><h2> Mark PO as Received</h2></div><button class="m-x" onclick="closeModal('m-rpo')">&times;</button></div>
+ <div class="m-body">
+ <input type="hidden" id="rpo-id"/><input type="hidden" id="rpo-pid"/><input type="hidden" id="rpo-br"/><input type="hidden" id="rpo-onum"/>
+ <div id="rpo-info" class="a-i" style="margin-bottom:14px;"></div>
+ <div class="fld"><label>Quantity Received *</label><input type="number" id="rpo-qty" min="1"/></div>
+ <div class="fld"><label>Received Date *</label><input type="date" id="rpo-dt"/></div>
+ </div>
+ <div class="m-foot">
+ <button class="btn btn-s" onclick="closeModal('m-rpo')">Cancel</button>
+ <button class="btn btn-ok" id="rpo-sub" onclick="submitRPO()">Confirm &amp; Add Stock</button>
+ </div>
+ </div>
+</div>
+
+<div id="toast-c"></div>
+
+<!-- ════ JAVASCRIPT ════════════════════════════════════════════ -->
+<script src="config.local.js"></script>
+<script>
+'use strict';
+
+// ── CONFIG ─────────────────────────────────────────────────────
+const LOCAL_CONFIG = window.MAKEUPSTATIC_CONFIG || {};
+const AT_TOKEN = LOCAL_CONFIG.AT_TOKEN || '';
+const AT_BASE = 'appivKVm0EYXvid1p';
+const OPENAI_KEY = LOCAL_CONFIG.OPENAI_KEY || '';
+const API = `https://api.airtable.com/v0/${AT_BASE}`;
+
+const TBL = { P:'tbldVXyKnRuW3OAVe', TX:'tblRTwZRoIn1k08Ji', PO:'tblp1lQYKMRK44vTl', AI:'tbl0ZFGabsWg9wAHP', CU:'tblA5Z7T3thkn9Nc0' };
+const F = {
+ P:{ SKU:'fldiHXqL3ExYvt3dU', BR:'fldrO0lnqgov4vqEb', NM:'fldhyiTalaEOFE3jM', SH:'fldVs7xsItdmFj7wF',
+ SP:'fldQLqGLBuKovTAa5', CP:'fldZRTHKmKp5xCKpQ',
+ B:'fldQ4jd5RoGp45uuv', BS:'fldTQCSPyDOaxZT17', J:'fldleBxfDdweZxlCE',
+ MB:'fld9ytZWyBuRXm2gO', MBS:'fldsSiHbOzGSjYUyM', MJ:'fldOwr2DRusvS0fJH',
+ TOT:'fldpQOh3bVFTM9Wxt', SHT:'fldFKJKfZVIYVB89l' },
+ TX:{ NM:'fldTrE9Kiajfe4rJa', DT:'fldfj9G2GgZS5Y3Z3', PR:'fldStPdh8o2q8j6Zm',
+ SKUL:'fldw11ubYvklx7R7y', BR:'fldm9vu1AG4tSW3S3', QTY:'fldNefmLEUUcVkqnG',
+ TY:'fldG1JylhezoDAOMS', SRC:'fldGG9lkSAEcivu7w', REF:'fldJE0y4EGZh3Rrrh',
+ NO:'flduYxBCHqj8Dc3ZZ', CU:'fldMrGJKZGRrHo9xn' },
+ PO:{ NUM:'fldWlUsOswthVR6xs', SUP:'fldFu1bj5QbQDxJda', DT:'fldSgj01Zf6wIxhHi',
+ PR:'fldzQFcjQphapvfm1', SKUL:'fldNGbCLPUhyKtsS9', QTY:'fldKKVhaxyzE2bwxb',
+ COST:'fldMjaMDspM0rBzsA', DEST:'fldqTydOJAvIMY0Lx', STAT:'fldND3CHtp4EqLjF7',
+ QREC:'fldFls9QLAGU0Sq3o', RDATE:'fldy5vNdfJ0JJHKng' },
+ AI:{ NM:'fldNOUQTLHK8u1aIs', DT:'flduhyjrb9OUVffQX', MSG:'fldKCRa9AXxq15dM1',
+ BR:'fldGkk5SDxlACYBYy', PARSED:'fldmb8ivV1x2FGRYh', PR:'fldBAIbaDipcdSNh3',
+ SKUL:'fldLoQLjNy1vpHwHK', STAT:'fldbmOQEh8Gxpa8UT', NO:'fldPIJh0GXBM9CZwy' },
+ CU:{ NM:'fldLKEIjLVt0TFt2J', PH:'fldN78raSm0DPH8uD', PHE:'fld3bPeDGBbFNVtei',
+ EM:'fldjatXhElOS0qJWq', TY:'fldqWu2l1yAZ81X33', PT:'fldYZWjJk2IhH9ebk',
+ SRC:'fldaPlVKpRh99sfbi', CR:'fldKD0zOi3uBQ1TIS' }
+};
+
+// ── STATE ──────────────────────────────────────────────────────
+let allP=[],allTX=[],allPO=[],allAI=[],allCU=[];
+let filtP=[],filtTX=[],filtPO=[],filtCU=[];
+let txPage=1; const TX_PP=50;
+
+// POS state
+let posStep=1,posF1=null,posF2=null,posF2Skip=false,posRows=[],posInvMap={},posPreview=[];
+
+// OCR state
+let ocrFile=null,ocrType='sale',ocrItems=[];
+
+// ── AIRTABLE API ────────────────────────────────────────────────
+const HDR = {'Authorization':`Bearer ${AT_TOKEN}`,'Content-Type':'application/json'};
+async function atGet(tbl,extra={}) {
+ let recs=[],off=null;
+ do {
+ const u=new URL(`${API}/${tbl}`);u.searchParams.set('returnFieldsByFieldId','true');
+ for(const[k,v]of Object.entries(extra))u.searchParams.set(k,v);
+ if(off)u.searchParams.set('offset',off);
+ const r=await fetch(u,{headers:HDR});if(!r.ok)throw new Error(`AT ${r.status}`);
+ const d=await r.json();recs=recs.concat(d.records||[]);off=d.offset||null;
+ } while(off);
+ return recs;
+}
+async function atPost(tbl,fields){const r=await fetch(`${API}/${tbl}`,{method:'POST',headers:HDR,body:JSON.stringify({records:[{fields}]})});if(!r.ok)throw new Error(`AT ${r.status}: ${await r.text()}`);return(await r.json()).records[0];}
+async function atPatch(tbl,id,fields){const r=await fetch(`${API}/${tbl}/${id}`,{method:'PATCH',headers:HDR,body:JSON.stringify({fields})});if(!r.ok)throw new Error(`AT ${r.status}: ${await r.text()}`);return await r.json();}
+async function atPostMany(tbl,farr){const res=[];for(let i=0;i<farr.length;i+=10){const ch=farr.slice(i,i+10);const r=await fetch(`${API}/${tbl}`,{method:'POST',headers:HDR,body:JSON.stringify({records:ch.map(f=>({fields:f}))})});if(!r.ok)throw new Error(`AT ${r.status}: ${await r.text()}`);res.push(...(await r.json()).records);}return res;}
+async function atSearch(tbl,formula,maxR=5){const u=new URL(`${API}/${tbl}`);u.searchParams.set('filterByFormula',formula);u.searchParams.set('returnFieldsByFieldId','true');u.searchParams.set('maxRecords',maxR);const r=await fetch(u,{headers:HDR});if(!r.ok)throw new Error(`AT ${r.status}`);return(await r.json()).records||[];}
+
+// ── STOCK UPDATE ─────────────────────────────────────────────────
+// Products stock fields are plain editable numbers (NOT rollups).
+// Every transaction must PATCH the product's branch stock directly.
+// Branch field map: Beitar→F.P.B, Beit Shemesh→F.P.BS, Jerusalem→F.P.J
+const BRANCH_FIELD = {'Beitar':F.P.B,'Beit Shemesh':F.P.BS,'Jerusalem':F.P.J};
+async function updateStock(productId, branch, qtyChange) {
+ if(!productId||!branch||!qtyChange)return;
+ const fld=BRANCH_FIELD[branch];if(!fld){console.warn('Unknown branch:',branch);return;}
+ // Get current stock value
+ const prod=allP.find(p=>p.id===productId);
+ const cur=(prod?.fields[fld])??0;
+ const newVal=Math.max(0,cur+qtyChange);// never go below 0
+ await atPatch(TBL.P,productId,{[fld]:newVal});
+ // Update local cache so UI reflects change immediately
+ if(prod)prod.fields[fld]=newVal;
+}
+async function updateStockMany(ops) {
+ // ops = [{productId, branch, qtyChange}, ...]
+ // Group by productId to batch patches correctly
+ const byProd={};
+ for(const op of ops){
+ if(!op.productId||!op.branch||!op.qtyChange)continue;
+ if(!byProd[op.productId])byProd[op.productId]={};
+ const fld=BRANCH_FIELD[op.branch];if(!fld)continue;
+ byProd[op.productId][fld]=(byProd[op.productId][fld]||0)+op.qtyChange;
+ }
+ // Apply each product's accumulated changes
+ for(const[pid,changes]of Object.entries(byProd)){
+ const prod=allP.find(p=>p.id===pid);if(!prod)continue;
+ const patch={};
+ for(const[fld,delta]of Object.entries(changes)){
+ const cur=(prod.fields[fld])??0;patch[fld]=Math.max(0,cur+delta);prod.fields[fld]=patch[fld];
+ }
+ await atPatch(TBL.P,pid,patch);
+ }
+}
+
+// ── NAV ────────────────────────────────────────────────────────
+const PT={'overview':'Overview','products':'Products','transactions':'Inventory Transactions','purchase-orders':'Purchase Orders','customers':'Customers','approvals':'Approvals & Errors'};
+function showPage(n){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));document.getElementById(`page-${n}`).classList.add('active');document.getElementById(`nav-${n}`).classList.add('active');document.getElementById('page-title').textContent=PT[n]||n;}
+
+// ── MODALS ─────────────────────────────────────────────────────
+function openModal(id){document.getElementById(id).classList.add('open');document.getElementById(id).querySelectorAll('input[type=date]').forEach(e=>{if(!e.value)e.value=today();});}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-ov').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open');}));
+
+// ── TOAST ──────────────────────────────────────────────────────
+function toast(msg,type='ok'){const ic={ok:'',err:'',info:'',warn:''};const el=document.createElement('div');el.className=`toast t-${type}`;el.innerHTML=`<span>${ic[type]||''}</span><span>${esc(msg)}</span>`;document.getElementById('toast-c').appendChild(el);setTimeout(()=>{el.style.transition='opacity .4s';el.style.opacity='0';setTimeout(()=>el.remove(),420);},4200);}
+
+// ── UTILS ──────────────────────────────────────────────────────
+const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const today=()=>new Date().toISOString().split('T')[0];
+const dtISO=d=>new Date(`${d}T12:00:00`).toISOString();
+const uid=()=>Date.now().toString(36).slice(-5).toUpperCase();
+function fmtDT(dt){if(!dt)return'--';try{const d=new Date(dt);return d.toLocaleDateString('en-GB',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});}catch{return dt;}}
+function fmtD(d){if(!d)return'--';try{return new Date(d+'T00:00:00').toLocaleDateString('en-GB');}catch{return d;}}
+function setLd(btn,on,lbl){btn.disabled=on;if(on)btn.innerHTML='<span class="spin"></span>';else if(lbl!=null)btn.innerHTML=lbl;}
+function clr(ids){ids.forEach(id=>{const e=document.getElementById(id);if(e)e.value=''});}
+function parseHebDate(s){if(!s)return null;try{const[d,m,y]=String(s).split('/');if(y&&m&&d)return`${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;return null;}catch{return null;}}
+function normPhone(p){if(!p)return'';const d=String(p).replace(/\D/g,'');return d.length>=9?d.slice(-9):d;}
+function isLow(f){return(f[F.P.MB]>0&&(f[F.P.B]??0)<f[F.P.MB])||(f[F.P.MBS]>0&&(f[F.P.BS]??0)<f[F.P.MBS])||(f[F.P.MJ]>0&&(f[F.P.J]??0)<f[F.P.MJ])||((f[F.P.SHT]||0)>0);}
+
+// ── BADGES ─────────────────────────────────────────────────────
+function brB(b){const m={'Beitar':'bb','Beit Shemesh':'bg','Jerusalem':'bp'};return b?`<span class="badge ${m[b]||'bgr'}">${esc(b)}</span>`:'--';}
+function tyB(t){const m={'Sale':'br','Stock Received':'bg','Transfer':'bb','Manual Correction':'bo'};return t?`<span class="badge ${m[t]||'bgr'}">${esc(t)}</span>`:'--';}
+function srcB(s){const m={'POS':'bt','AI Message':'bp','Purchase Order':'bi','Manual':'bgr'};return s?`<span class="badge ${m[s]||'bgr'}">${esc(s)}</span>`:'--';}
+function stB(s){const m={'Processed':'bg','Needs Approval':'by','Error':'br','Draft':'bgr','Ordered':'bb','Received':'bg'};return s?`<span class="badge ${m[s]||'bgr'}">${esc(s)}</span>`:'--';}
+
+// ── AUTOCOMPLETE ───────────────────────────────────────────────
+function acSrch(inp,ddId,hidId,extra){
+ const q=inp.value.toLowerCase().trim();const dd=document.getElementById(ddId);
+ document.getElementById(hidId).value='';
+ if(q.length<2){dd.style.display='none';return;}
+ const hits=allP.filter(p=>[p.fields[F.P.SKU],p.fields[F.P.NM],p.fields[F.P.BR],p.fields[F.P.SH]].some(v=>v&&String(v).toLowerCase().includes(q))).slice(0,14);
+ if(!hits.length){dd.innerHTML='<div style="padding:12px;font-size:13px;color:#94a3b8;">No products found</div>';dd.style.display='block';return;}
+ dd.innerHTML=hits.map(p=>{const f=p.fields,sku=esc(f[F.P.SKU]||''),nm=esc(f[F.P.NM]||''),sh=esc(f[F.P.SH]||'');const b=f[F.P.B]??0,bs=f[F.P.BS]??0,j=f[F.P.J]??0;const df=JSON.stringify({b,bs,j}).replace(/'/g,"&#39;");return`<div class="ac-item" data-id="${p.id}" data-lbl="${sku} — ${nm}${sh?' — '+sh:''}" data-f='${df}' data-ex="${esc(extra||'')}" onclick="acSel(this,'${ddId}','${hidId}')"><div class="ac-sku">${sku}</div><div class="ac-nm">${nm}${sh?` <span style="color:#94a3b8;">— ${sh}</span>`:''}</div><div class="ac-sub">Beitar:${b} · Beit Sh:${bs} · Jerusalem:${j}${f[F.P.SP]?' · ₪'+f[F.P.SP]:''}</div></div>`;}).join('');
+ dd.style.display='block';
+}
+function acSel(item,ddId,hidId){item.closest('.ac-wrap').querySelector('input[type=text]').value=item.dataset.lbl;document.getElementById(hidId).value=item.dataset.id;document.getElementById(ddId).style.display='none';if(item.dataset.ex==='trf'){try{const f=JSON.parse(item.dataset.f);document.getElementById('trf-stk').style.display='block';['b','bs','j'].forEach((k,i)=>document.getElementById('ts-'+k).textContent=f[k]??0);}catch{}}}
+document.addEventListener('click',e=>{if(!e.target.closest('.ac-wrap'))document.querySelectorAll('.ac-dd').forEach(d=>d.style.display='none');});
+
+// ── HELPERS ────────────────────────────────────────────────────
+function pNmTx(tx){const f=tx.fields,skus=f[F.TX.SKUL];if(skus&&skus.length){const p=allP.find(x=>x.id===(f[F.TX.PR]||[])[0]);return p?`${skus[0]} — ${p.fields[F.P.NM]||''}`:skus[0];}const lnk=f[F.TX.PR];if(lnk&&lnk.length){const p=allP.find(x=>x.id===lnk[0]);if(p)return`${p.fields[F.P.SKU]||''} — ${p.fields[F.P.NM]||''}`;}return f[F.TX.NM]||'--';}
+function cuHtml(tx){const cs=tx.fields[F.TX.CU];if(!cs||!cs.length)return`<span class="anon-tag"> Anonymous</span>`;const c=allCU.find(x=>x.id===cs[0]);return c?`<span class="cust-tag"> ${esc(c.fields[F.CU.NM]||'?')}</span>`:`<span class="cust-tag"> Customer</span>`;}
+function pNmPO(po){const f=po.fields,skus=f[F.PO.SKUL];if(skus&&skus.length)return skus[0];const lnk=f[F.PO.PR];if(lnk&&lnk.length){const p=allP.find(x=>x.id===lnk[0]);if(p)return`${p.fields[F.P.SKU]||''} — ${p.fields[F.P.NM]||''}`;}return'--';}
+
+// ── DATA LOAD ──────────────────────────────────────────────────
+async function loadAll(){
+ document.getElementById('last-upd').textContent='Loading...';
+ try{
+ await Promise.all([ldP(),ldTX(),ldPO(),ldAI(),ldCU()]);
+ document.getElementById('last-upd').textContent=new Date().toLocaleTimeString('en-GB');
+ renderOverview();
+ }catch(e){toast('Error loading: '+e.message,'err');document.getElementById('last-upd').textContent='Error';}
+}
+async function ldP(){allP=await atGet(TBL.P,{'sort[0][field]':F.P.NM,'sort[0][direction]':'asc'});filtP=[...allP];renderProds();popBrands();}
+async function ldTX(){allTX=await atGet(TBL.TX,{'sort[0][field]':F.TX.DT,'sort[0][direction]':'desc'});filtTX=[...allTX];renderTX();}
+async function ldPO(){allPO=await atGet(TBL.PO,{'sort[0][field]':F.PO.DT,'sort[0][direction]':'desc'});filtPO=[...allPO];renderPOs();}
+async function ldAI(){allAI=await atGet(TBL.AI,{'sort[0][field]':F.AI.DT,'sort[0][direction]':'desc'});renderApprov();updApprBadge();}
+async function ldCU(){allCU=await atGet(TBL.CU,{'sort[0][field]':F.CU.CR,'sort[0][direction]':'desc'});filtCU=[...allCU];renderCusts();}
+async function refreshAll(){const b=document.getElementById('refresh-btn');b.disabled=true;document.getElementById('r-ico').textContent='';await loadAll();document.getElementById('r-ico').textContent='';b.disabled=false;}
+
+// ── RENDER OVERVIEW ────────────────────────────────────────────
+function renderOverview(){
+ let bT=0,bsT=0,jT=0;const low=[];
+ allP.forEach(p=>{const f=p.fields;bT+=(f[F.P.B]??0);bsT+=(f[F.P.BS]??0);jT+=(f[F.P.J]??0);if(isLow(f))low.push(p);});
+ document.getElementById('k-b').textContent=bT.toLocaleString();
+ document.getElementById('k-bs').textContent=bsT.toLocaleString();
+ document.getElementById('k-j').textContent=jT.toLocaleString();
+ document.getElementById('k-p').textContent=allP.length;
+ const apN=allAI.filter(r=>r.fields[F.AI.STAT]==='Needs Approval').length;
+ const erN=allAI.filter(r=>r.fields[F.AI.STAT]==='Error').length;
+ const poN=allPO.filter(r=>['Draft','Ordered'].includes(r.fields[F.PO.STAT])).length;
+ ['k-appr','k-err','k-po','k-low'].forEach((id,i)=>document.getElementById(id).textContent=[apN,erN,poN,low.length][i]);
+ const banner=document.getElementById('low-banner');
+ if(low.length){banner.style.display='flex';document.getElementById('low-cnt').textContent=low.length;}else{banner.style.display='none';}
+ const ll=document.getElementById('low-list');
+ if(!low.length){ll.innerHTML='<div class="empty" style="color:#10b981;padding:20px;"> All products above minimum</div>';}
+ else{ll.innerHTML=`<table style="font-size:12.5px;"><thead><tr><th>Product</th><th style="text-align:center;">Beitar</th><th style="text-align:center;">Beit Sh.</th><th style="text-align:center;">Jerusalem</th></tr></thead><tbody>${low.slice(0,12).map(p=>{const f=p.fields;const b=f[F.P.B]??0,bs=f[F.P.BS]??0,j=f[F.P.J]??0,mb=f[F.P.MB]??0,mbs=f[F.P.MBS]??0,mj=f[F.P.MJ]??0;const sc=(v,m)=>m>0&&v<m?'color:#ef4444;font-weight:700;':'';return`<tr><td style="padding:7px 12px;"><div style="font-weight:600;">${esc(f[F.P.NM]||'?')}</div><div style="color:#94a3b8;font-size:11px;">${esc(f[F.P.SKU]||'')}</div></td><td style="text-align:center;padding:7px;${sc(b,mb)}">${b}${mb?`<span style="font-size:10px;color:#94a3b8;">/min${mb}</span>`:''}</td><td style="text-align:center;padding:7px;${sc(bs,mbs)}">${bs}${mbs?`<span style="font-size:10px;color:#94a3b8;">/min${mbs}</span>`:''}</td><td style="text-align:center;padding:7px;${sc(j,mj)}">${j}${mj?`<span style="font-size:10px;color:#94a3b8;">/min${mj}</span>`:''}</td></tr>`;}).join('')}${low.length>12?`<tr><td colspan="4" style="text-align:center;padding:8px;font-size:12px;color:#64748b;">+${low.length-12} more...</td></tr>`:''}</tbody></table>`;}
+ const recent=allTX.slice(0,12);
+ document.getElementById('recent-tx').innerHTML=recent.length?recent.map(r=>txRow(r,true)).join(''):`<tr><td colspan="8"><div class="empty">No transactions yet</div></td></tr>`;
+}
+
+// ── RENDER PRODUCTS ────────────────────────────────────────────
+function popBrands(){const brands=[...new Set(allP.map(p=>p.fields[F.P.BR]).filter(Boolean))].sort();document.getElementById('p-br').innerHTML='<option value="">All Brands</option>'+brands.map(b=>`<option>${esc(b)}</option>`).join('');}
+function filterProds(){
+ const q=document.getElementById('p-q').value.toLowerCase(),br=document.getElementById('p-br').value,sf=document.getElementById('p-st').value;
+ filtP=allP.filter(p=>{const f=p.fields;if(q&&![f[F.P.SKU],f[F.P.NM],f[F.P.BR],f[F.P.SH]].some(v=>v&&String(v).toLowerCase().includes(q)))return false;if(br&&f[F.P.BR]!==br)return false;if(sf==='low'&&!isLow(f))return false;if(sf==='ok'&&isLow(f))return false;return true;});
+ renderProds();
+}
+function renderProds(){
+ document.getElementById('p-cnt').textContent=filtP.length;
+ const sc=(v,m)=>{const lo=m>0&&v<m;return`<td style="text-align:center;${lo?'color:#ef4444;font-weight:700;':''}">${v}${m?`<span style="font-size:10px;color:${lo?'#ef4444':'#94a3b8'};">/min${m}</span>`:''}</td>`;};
+ document.getElementById('prod-body').innerHTML=filtP.length?filtP.map(p=>{const f=p.fields,b=f[F.P.B]??0,bs=f[F.P.BS]??0,j=f[F.P.J]??0,mb=f[F.P.MB]??0,mbs=f[F.P.MBS]??0,mj=f[F.P.MJ]??0,lo=isLow(f);return`<tr${lo?' class="row-low"':''}><td class="mono" style="color:#4f46e5;">${esc(f[F.P.SKU]||'--')}</td><td style="font-size:13px;">${esc(f[F.P.BR]||'--')}</td><td style="font-weight:500;">${esc(f[F.P.NM]||'--')}</td><td style="font-size:13px;color:#64748b;">${esc(f[F.P.SH]||'--')}</td>${sc(b,mb)}${sc(bs,mbs)}${sc(j,mj)}<td style="text-align:center;font-weight:700;">${b+bs+j}</td><td style="text-align:right;">&#8362;${f[F.P.SP]??'--'}</td><td>${lo?'<span class="badge br">Low</span>':'<span class="badge bg">OK</span>'}</td></tr>`;}).join(''):`<tr><td colspan="10"><div class="empty"><div class="ei"></div>No products found</div></td></tr>`;
+}
+
+// ── RENDER TRANSACTIONS ────────────────────────────────────────
+function txRow(r,short=false){const f=r.fields,qty=f[F.TX.QTY],qs=qty!=null?(qty>0?`+${qty}`:String(qty)):'--',qc=qty<0?'color:#ef4444;font-weight:700;':(qty>0?'color:#10b981;font-weight:700;':'');if(short)return`<tr><td style="white-space:nowrap;font-size:12.5px;">${fmtDT(f[F.TX.DT])}</td><td style="font-size:13px;max-width:180px;">${esc(pNmTx(r))}</td><td>${brB(f[F.TX.BR])}</td><td>${tyB(f[F.TX.TY])}</td><td style="text-align:center;font-size:15px;${qc}">${qs}</td><td>${srcB(f[F.TX.SRC])}</td><td style="font-size:12.5px;color:#64748b;">${esc(f[F.TX.REF]||'--')}</td><td>${cuHtml(r)}</td></tr>`;return`<tr><td style="white-space:nowrap;font-size:12.5px;">${fmtDT(f[F.TX.DT])}</td><td style="font-size:13px;max-width:160px;">${esc(pNmTx(r))}</td><td>${brB(f[F.TX.BR])}</td><td>${tyB(f[F.TX.TY])}</td><td style="text-align:center;font-size:15px;${qc}">${qs}</td><td>${srcB(f[F.TX.SRC])}</td><td style="font-size:12.5px;color:#64748b;">${esc(f[F.TX.REF]||'--')}</td><td>${cuHtml(r)}</td><td style="font-size:12px;color:#94a3b8;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${esc(f[F.TX.NO]||'')}">${esc(f[F.TX.NO]||'--')}</td></tr>`;}
+function filterTx(){const br=document.getElementById('tx-br').value,ty=document.getElementById('tx-ty').value,src=document.getElementById('tx-src').value,fr=document.getElementById('tx-fr').value,to=document.getElementById('tx-to').value;filtTX=allTX.filter(r=>{const f=r.fields;if(br&&f[F.TX.BR]!==br)return false;if(ty&&f[F.TX.TY]!==ty)return false;if(src&&f[F.TX.SRC]!==src)return false;const dt=(f[F.TX.DT]||'').split('T')[0];if(fr&&dt&&dt<fr)return false;if(to&&dt&&dt>to)return false;return true;});txPage=1;renderTX();}
+function clrTxF(){['tx-br','tx-ty','tx-src','tx-fr','tx-to'].forEach(id=>document.getElementById(id).value='');filtTX=[...allTX];txPage=1;renderTX();}
+function chgPg(d){const tot=Math.ceil(filtTX.length/TX_PP)||1;txPage=Math.max(1,Math.min(tot,txPage+d));renderTX();}
+function renderTX(){
+ document.getElementById('tx-cnt').textContent=filtTX.length;
+ const tot=Math.max(1,Math.ceil(filtTX.length/TX_PP));
+ document.getElementById('tx-pgi').textContent=`Page ${txPage} of ${tot}`;
+ document.getElementById('tx-prev').disabled=txPage<=1;document.getElementById('tx-next').disabled=txPage>=tot;
+ const pg=filtTX.slice((txPage-1)*TX_PP,txPage*TX_PP);
+ document.getElementById('tx-body').innerHTML=pg.length?pg.map(r=>txRow(r)).join(''):`<tr><td colspan="9"><div class="empty">No transactions found</div></td></tr>`;
+}
+
+// ── RENDER PURCHASE ORDERS ─────────────────────────────────────
+function filPOs(st,btn){document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');filtPO=st==='all'?[...allPO]:allPO.filter(r=>r.fields[F.PO.STAT]===st);renderPOs();}
+function renderPOs(){
+ const tb=document.getElementById('po-body');
+ if(!filtPO.length){tb.innerHTML=`<tr><td colspan="9"><div class="empty"><div class="ei"></div>No purchase orders</div></td></tr>`;return;}
+ tb.innerHTML=filtPO.map(r=>{const f=r.fields,pId=(f[F.PO.PR]||[])[0]||'';return`<tr><td class="mono" style="font-weight:700;color:#4f46e5;">${esc(f[F.PO.NUM]||'--')}</td><td style="font-size:13px;">${esc(f[F.PO.SUP]||'--')}</td><td style="font-size:13px;">${esc(pNmPO(r))}</td><td style="font-size:13px;">${fmtD(f[F.PO.DT])}</td><td style="text-align:center;font-weight:600;">${f[F.PO.QTY]||0}</td><td style="text-align:right;">&#8362;${f[F.PO.COST]||0}</td><td>${brB(f[F.PO.DEST])}</td><td>${stB(f[F.PO.STAT])}</td><td>${f[F.PO.STAT]==='Ordered'?`<button class="btn btn-ok btn-xs" onclick="openRPO('${r.id}','${esc(pNmPO(r))}','${pId}','${esc(f[F.PO.NUM]||'')}',${f[F.PO.QTY]||1},'${esc(f[F.PO.DEST]||'')}')"> Receive</button>`:''}${f[F.PO.STAT]==='Draft'?`<button class="btn btn-s btn-xs" onclick="markOrd('${r.id}')">Mark Ordered</button>`:''}${f[F.PO.STAT]==='Received'?`<span style="font-size:12px;color:#94a3b8;">Received ${fmtD(f[F.PO.RDATE])}</span>`:''}</td></tr>`;}).join('');
+}
+async function markOrd(id){try{await atPatch(TBL.PO,id,{[F.PO.STAT]:'Ordered'});toast('PO marked Ordered');await ldPO();}catch(e){toast(e.message,'err');}}
+function openRPO(id,pn,pid,onum,qty,br){document.getElementById('rpo-id').value=id;document.getElementById('rpo-pid').value=pid;document.getElementById('rpo-br').value=br;document.getElementById('rpo-onum').value=onum;document.getElementById('rpo-info').innerHTML=`<strong>${esc(pn)}</strong><br><span style="font-size:12px;">Order: ${esc(onum)} · Qty: ${qty} · Branch: ${esc(br)}</span>`;document.getElementById('rpo-qty').value=qty;openModal('m-rpo');}
+
+// ── RENDER CUSTOMERS ───────────────────────────────────────────
+function filterCusts(){const q=document.getElementById('cu-q').value.toLowerCase();filtCU=q?allCU.filter(c=>{const f=c.fields;return[f[F.CU.NM],f[F.CU.PH],f[F.CU.EM]].some(v=>v&&String(v).toLowerCase().includes(q));}):([...allCU]);renderCusts();}
+function renderCusts(){
+ document.getElementById('cu-cnt').textContent=filtCU.length;
+ document.getElementById('cu-body').innerHTML=filtCU.length?filtCU.map(c=>{const f=c.fields;return`<tr><td style="font-weight:600;">${esc(f[F.CU.NM]||'--')}</td><td class="mono">${esc(f[F.CU.PH]||'--')}</td><td style="font-size:13px;color:#64748b;">${esc(f[F.CU.EM]||'--')}</td><td>${f[F.CU.TY]?`<span class="badge bi">${esc(f[F.CU.TY])}</span>`:'--'}</td><td style="font-weight:600;color:#4f46e5;">${f[F.CU.PT]??0}</td><td>${f[F.CU.SRC]?`<span class="badge bgr">${esc(f[F.CU.SRC])}</span>`:'--'}</td><td style="font-size:12px;color:#94a3b8;">${fmtDT(f[F.CU.CR])}</td></tr>`;}).join(''):`<tr><td colspan="7"><div class="empty"><div class="ei"></div>No customers found</div></td></tr>`;
+}
+
+// ── RENDER APPROVALS ───────────────────────────────────────────
+function updApprBadge(){const c=allAI.filter(r=>r.fields[F.AI.STAT]==='Needs Approval').length;const b=document.getElementById('appr-badge');b.textContent=c;b.style.display=c>0?'inline-block':'none';}
+function renderApprov(){
+ const appr=allAI.filter(r=>r.fields[F.AI.STAT]==='Needs Approval');
+ const errs=allAI.filter(r=>r.fields[F.AI.STAT]==='Error');
+ document.getElementById('appr-cnt').textContent=appr.length;
+ document.getElementById('errs-cnt').textContent=errs.length;
+ const card=r=>{const f=r.fields,skus=(f[F.AI.SKUL]||[]).join(', ');return`<div style="border:1px solid #e2e8f0;border-radius:10px;padding:12px;margin-bottom:10px;background:#fff;"><div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;gap:8px;"><div><div style="font-size:11.5px;color:#94a3b8;margin-bottom:3px;">${fmtDT(f[F.AI.DT])}</div>${brB(f[F.AI.BR])}</div>${stB(f[F.AI.STAT])}</div><div style="font-size:13px;background:#f8fafc;border-radius:7px;padding:9px;margin-bottom:8px;white-space:pre-wrap;color:#374151;">${esc(f[F.AI.MSG]||'')}</div>${f[F.AI.PARSED]?`<div style="font-size:12px;background:#f0fdf4;border-radius:6px;padding:8px;margin-bottom:8px;color:#166534;"><strong>AI Parsed:</strong> ${esc(f[F.AI.PARSED])}</div>`:''}${skus?`<div style="font-size:12px;color:#64748b;margin-bottom:8px;">Products: <strong>${esc(skus)}</strong></div>`:''}${f[F.AI.STAT]==='Needs Approval'?`<div style="display:flex;gap:8px;"><button class="btn btn-ok btn-sm" style="flex:1;" onclick="apprAI('${r.id}')"> Approve</button><button class="btn btn-d btn-sm" style="flex:1;" onclick="rejAI('${r.id}')"> Reject</button></div>`:''}${f[F.AI.NO]?`<div style="font-size:12px;color:#94a3b8;margin-top:6px;">${esc(f[F.AI.NO])}</div>`:''}</div>`;};
+ document.getElementById('appr-list').innerHTML=appr.length?appr.map(card).join(''):'<div class="empty"> No items pending approval</div>';
+ document.getElementById('errs-list').innerHTML=errs.length?errs.map(card).join(''):'<div class="empty"> No errors</div>';
+}
+async function apprAI(id){try{await atPatch(TBL.AI,id,{[F.AI.STAT]:'Processed'});toast('Approved ');await ldAI();renderOverview();}catch(e){toast(e.message,'err');}}
+async function rejAI(id){try{await atPatch(TBL.AI,id,{[F.AI.STAT]:'Error',[F.AI.NO]:'Rejected by manager'});toast('Rejected','info');await ldAI();renderOverview();}catch(e){toast(e.message,'err');}}
+
+// ══════════════════════════════════════════════════════════════
+// POS DUAL UPLOAD
+// File 1: דוח מכירות שורות לחנות — headers row 7
+// col: מספר חשבונית | קוד פריט | תיאור פריט | כמות | מחיר נטו ליחידה | תאריך
+// File 2: מכירות קופה לפי חתך — headers row 3
+// col: מספר פתקית | שם לקוח | טלפון לקוח
+// ══════════════════════════════════════════════════════════════
+function posSetStep(n){
+ posStep=n;
+ ['ps-1','ps-2','ps-3','ps-4'].forEach((id,i)=>{document.getElementById(id).style.display=i===(n-1)?'block':'none';});
+ [1,2,3,4].forEach(i=>{const dot=document.getElementById(`ps${i}-dot`);if(i<n)dot.className='step-dot s-done';else if(i===n)dot.className='step-dot s-act';else dot.className='step-dot s-pend';if(i<4){const ln=document.getElementById(`ps${i}-ln`);ln.className='step-line'+(i<n?' done':'');}});
+ document.getElementById('pos-back').style.display=n>1?'inline-flex':'none';
+ document.getElementById('pos-next').style.display=n<4?'inline-flex':'none';
+ document.getElementById('pos-imp').style.display=n===4?'inline-flex':'none';
+ document.getElementById('pos-skip').style.display=n===3?'inline-flex':'none';
+}
+function posNext(){
+ if(posStep===1){const br=document.getElementById('pos-br').value,dt=document.getElementById('pos-dt').value;if(!br){toast('Select a branch','err');return;}if(!dt){toast('Select a date','err');return;}posSetStep(2);}
+ else if(posStep===2){if(!posF1){toast('Upload File 1 first','err');return;}parseF1();}
+ else if(posStep===3){if(!posF2&&!posF2Skip){toast('Upload File 2 or click Skip','err');return;}buildPreview();}
+}
+function posBack(){if(posStep>1)posSetStep(posStep-1);}
+function posSkipF2(){posF2=null;posF2Skip=true;buildPreview();}
+function setF1(f){if(!f)return;posF1=f;document.getElementById('dz1-ico').textContent='';document.getElementById('dz1-ttl').textContent=f.name;}
+function drop1(e){e.preventDefault();document.getElementById('dz1').classList.remove('dg');if(e.dataTransfer.files[0])setF1(e.dataTransfer.files[0]);}
+function setF2(f){if(!f)return;posF2=f;posF2Skip=false;document.getElementById('dz2-ico').textContent='';document.getElementById('dz2-ttl').textContent=f.name;}
+function drop2(e){e.preventDefault();document.getElementById('dz2').classList.remove('dg');if(e.dataTransfer.files[0])setF2(e.dataTransfer.files[0]);}
+function readXlsx(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=ev=>{try{res(XLSX.read(ev.target.result,{type:'array',codepage:65001}));}catch(e){rej(e);}};r.onerror=rej;r.readAsArrayBuffer(file);});}
+
+async function parseF1(){
+ try{
+ const wb=await readXlsx(posF1);const ws=wb.Sheets[wb.SheetNames[0]];
+ const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+ let hdr=-1;for(let i=0;i<rows.length;i++){if(rows[i].some(c=>String(c).includes('מספר חשבונית'))){hdr=i;break;}}
+ if(hdr<0){toast('File 1: cannot find header row (מספר חשבונית)','err');return;}
+ const hs=rows[hdr].map(h=>String(h).trim());
+ const ci=names=>names.map(n=>hs.findIndex(h=>h===n||h.includes(n))).find(x=>x>=0)??-1;
+ const iInv=ci(['מספר חשבונית']),iSku=ci(['קוד פריט']),iDesc=ci(['תיאור פריט']),iQty=ci(['כמות']),iPrice=ci(['מחיר נטו ליחידה']),iDate=ci(['תאריך']);
+ if(iInv<0||iSku<0||iQty<0){toast('File 1: missing required columns','err');return;}
+ posRows=[];
+ for(let i=hdr+1;i<rows.length;i++){
+ const row=rows[i],inv=String(row[iInv]??'').trim(),sku=String(row[iSku]??'').trim(),qty=Math.abs(parseFloat(row[iQty])||0);
+ if(!inv||!sku||qty<=0)continue;
+ const desc=iDesc>=0?String(row[iDesc]||''):'';
+ const price=iPrice>=0?parseFloat(row[iPrice])||0:0;
+ const dateRaw=iDate>=0?String(row[iDate]||''):'';
+ const dateStr=parseHebDate(dateRaw.split(' ')[0])||document.getElementById('pos-dt').value;
+ const timeStr=dateRaw.includes(' ')?dateRaw.split(' ')[1].substring(0,5):'12:00';
+ const prod=allP.find(p=>String(p.fields[F.P.SKU]||'').toLowerCase()===sku.toLowerCase());
+ posRows.push({inv,sku,desc,qty,price,dateStr,timeStr,prod});
+ }
+ const st=document.getElementById('f1-st');st.style.display='block';st.textContent=` Parsed ${posRows.length} product lines from "${posF1.name}"`;
+ const un=posRows.filter(r=>!r.prod).length;if(un)st.textContent+=` · ${un} SKUs not in Products`;
+ posSetStep(3);
+ }catch(e){toast('File 1 parse error: '+e.message,'err');}
+}
+
+async function buildPreview(){
+ posInvMap={};
+ if(posF2){
+ try{
+ const wb=await readXlsx(posF2);const ws=wb.Sheets[wb.SheetNames[0]];
+ const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+ let hdr=-1;for(let i=0;i<rows.length;i++){if(rows[i].some(c=>String(c).includes('מספר פתקית')||String(c).includes('שם לקוח'))){hdr=i;break;}}
+ if(hdr>=0){
+ const hs=rows[hdr].map(h=>String(h).trim());
+ const ci=names=>names.map(n=>hs.findIndex(h=>h===n||h.includes(n))).find(x=>x>=0)??-1;
+ const iInv=ci(['מספר פתקית']),iNm=ci(['שם לקוח']),iPh=ci(['טלפון לקוח']);
+ for(let i=hdr+1;i<rows.length;i++){const row=rows[i],inv=String(row[iInv]??'').trim(),nm=iNm>=0?String(row[iNm]||'').trim():'',ph=iPh>=0?String(row[iPh]||'').trim():'';if(inv)posInvMap[inv]={nm,ph};}
+ }
+ }catch(e){toast('File 2 parse warning: '+e.message,'warn');}
+ }
+
+ // Match customers using new findCust (no auto-creation)
+ posPreview=[];let conflicts=[],custNotFound=[],prodNotFound=[];
+ for(const row of posRows){
+ const ci=posInvMap[row.inv]||{nm:'',ph:''};const cnm=ci.nm,cph=normPhone(ci.ph);
+ // Product lookup: SKU first, then name
+ const pRes=findProd(row.sku, row.desc);
+ const prod=pRes.prod;
+ if(!prod&&(row.sku||row.desc)){
+ const key=row.sku||row.desc;if(!prodNotFound.includes(key))prodNotFound.push(key);
+ }
+ // Customer lookup
+ let cId=null,cTag='',cSt='anon';
+ if(cnm||cph){
+ const cr=findCust(cnm,cph,'');
+ if(cr.id){cId=cr.id;cTag=cnm||cph;cSt='matched';}
+ else if(cr.how==='conflict'){cSt='conflict';conflicts.push(`Invoice ${row.inv}: "${cnm}" — ${cr.count} matches`);}
+ else if(cr.how==='not-found'){cSt='notfound';if(cnm&&!custNotFound.find(x=>x.nm===cnm))custNotFound.push({nm:cnm,ph:cph});}
+ }
+ posPreview.push({...row,prod,cnm,cph,cId,cTag,cSt});
+ }
+
+ const total=posPreview.length,matched=posPreview.filter(r=>r.cSt==='matched').length,anon=posPreview.filter(r=>r.cSt==='anon').length,conf=posPreview.filter(r=>r.cSt==='conflict').length,nfC=posPreview.filter(r=>r.cSt==='notfound').length,nfP=posPreview.filter(r=>!r.prod).length,willImp=posPreview.filter(r=>r.prod).length;
+ document.getElementById('pos-stats').innerHTML=`
+ <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px;text-align:center;"><div style="font-size:22px;font-weight:800;color:#15803d;">${willImp}</div><div style="font-size:11px;color:#15803d;font-weight:600;">Will Import</div></div>
+ <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px;text-align:center;"><div style="font-size:22px;font-weight:800;color:#1e40af;">${matched}</div><div style="font-size:11px;color:#1e40af;font-weight:600;">Customer Matched</div></div>
+ <div style="background:#${nfP?'fef2f2':'f1f5f9'};border:1px solid #${nfP?'fecaca':'e2e8f0'};border-radius:8px;padding:12px;text-align:center;"><div style="font-size:22px;font-weight:800;color:#${nfP?'991b1b':'475569'};">${nfP}</div><div style="font-size:11px;font-weight:600;color:#${nfP?'991b1b':'475569'};">Products Not Found</div></div>
+ <div style="background:#${nfC||conf?'fef3c7':'f1f5f9'};border:1px solid #${nfC||conf?'fcd34d':'e2e8f0'};border-radius:8px;padding:12px;text-align:center;"><div style="font-size:22px;font-weight:800;color:#${nfC||conf?'92400e':'475569'};">${nfC+conf}</div><div style="font-size:11px;font-weight:600;color:#${nfC||conf?'92400e':'475569'};">Customer Issues</div></div>`;
+ const confBox=document.getElementById('pos-conf');confBox.style.display='none';
+ let warnHtml='';
+ if(prodNotFound.length){warnHtml+=`<div style="margin-bottom:8px;"><strong> ${prodNotFound.length} product(s) not found in Airtable — rows skipped:</strong><br>${prodNotFound.map(s=>`· SKU/Name: <code>${esc(s)}</code>`).join('<br>')}<br><em>Go to Airtable → Products and add these SKUs, then re-import.</em></div>`;}
+ if(custNotFound.length){warnHtml+=`<div style="margin-bottom:8px;"><strong> ${custNotFound.length} customer(s) not found — transactions will import without customer link:</strong><br>${custNotFound.map(c=>`· "${esc(c.nm)}" (Phone: ${esc(c.ph||'N/A')})`).join('<br>')}<br><em>Go to Airtable → Customers to add them.</em></div>`;}
+ if(conflicts.length){warnHtml+=`<div><strong> ${conflicts.length} duplicate name conflict(s) — transactions import without customer link:</strong><br>${conflicts.slice(0,4).map(s=>`· ${esc(s)}`).join('<br>')}<br><em>Multiple customers with this name exist in Airtable. Please keep only one or use phone/email to differentiate.</em></div>`;}
+ if(warnHtml){confBox.style.display='block';confBox.innerHTML=warnHtml;}
+ const stBdg={matched:'<span class="cust-tag"> Matched</span>',notfound:'<span style="display:inline-flex;align-items:center;gap:4px;background:#fef2f2;color:#991b1b;border-radius:6px;padding:2px 8px;font-size:12px;font-weight:600;"> Not in Airtable</span>',conflict:'<span class="conf-tag"> Conflict</span>',anon:'<span class="anon-tag"> Anonymous</span>'};
+ document.getElementById('pos-prev').innerHTML=posPreview.map(r=>{const cl=!r.prod?'opacity:.55':'';return`<tr style="${cl}"><td class="mono" style="font-size:12px;">${esc(r.inv)}</td><td class="mono" style="color:#4f46e5;">${esc(r.sku)}</td><td style="font-size:12.5px;">${r.prod?esc(r.prod.fields[F.P.NM]||''):'<span style="color:#ef4444;"> Not found</span>'}</td><td style="text-align:center;font-weight:700;">${r.qty}</td><td style="text-align:right;font-size:12.5px;">₪${r.price||'--'}</td><td style="font-size:12px;white-space:nowrap;">${fmtDT(r.dateStr+'T'+r.timeStr)}</td><td>${stBdg[r.cSt]||''}${r.cTag?' '+esc(r.cTag):''}</td><td class="mono" style="font-size:12px;">${esc(r.cph||'--')}</td></tr>`;}).join('');
+ posSetStep(4);
+}
+
+
+async function posImport(){
+ const branch=document.getElementById('pos-br').value,noteBase=document.getElementById('pos-note').value.trim();
+ if(!posPreview.length){toast('No rows to import','err');return;}
+ const btn=document.getElementById('pos-imp');setLd(btn,true);
+ try{
+ // Build TX for ALL rows — rows without product match save without product link
+ const txFields=[];const stockOps=[];let seq=1;
+ for(const row of posPreview){
+ const dtStr=`${row.dateStr}T${row.timeStr||'12:00'}:00`;
+ const noteStr=[
+ `Inv: ${row.inv}`,
+ row.price?`Price: ₪${row.price}`:'',
+ !row.prod?` Product not matched: SKU "${row.sku}" — please identify and link in Airtable`:'',
+ noteBase
+ ].filter(Boolean).join(' | ');
+ const flds={[F.TX.NM]:`POS-${row.inv}-${String(seq++).padStart(3,'0')}`,[F.TX.DT]:new Date(dtStr).toISOString(),[F.TX.BR]:branch,[F.TX.QTY]:-row.qty,[F.TX.TY]:'Sale',[F.TX.SRC]:'POS',[F.TX.REF]:row.inv,[F.TX.NO]:noteStr};
+ if(row.prod){flds[F.TX.PR]=[row.prod.id];stockOps.push({productId:row.prod.id,branch,qtyChange:-row.qty});}
+ if(row.cId)flds[F.TX.CU]=[row.cId];
+ txFields.push(flds);
+ }
+ await atPostMany(TBL.TX,txFields);
+ if(stockOps.length)await updateStockMany(stockOps);
+ const custMatched=posPreview.filter(r=>r.cId).length;
+ const custNoLink=posPreview.filter(r=>!r.cId&&r.cnm).length;
+ const prodNoLink=posPreview.filter(r=>!r.prod).length;
+ let msg=` Imported ${txFields.length} transaction(s)`;
+ if(custMatched)msg+=` · ${custMatched} linked to customers`;
+ if(prodNoLink)msg+=` · ${prodNoLink} product(s) not matched — check Airtable → Inventory Transactions`;
+ if(custNoLink)msg+=` · ${custNoLink} customer(s) not matched — check Airtable → Customers`;
+ toast(msg,prodNoLink||custNoLink?'warn':'ok');
+ closeModal('m-pos');resetPOS();await loadAll();
+ }catch(e){toast('Import failed: '+e.message,'err');}
+ setLd(btn,false,' Import Transactions');
+}
+
+
+
+function resetPOS(){posStep=1;posF1=null;posF2=null;posF2Skip=false;posRows=[];posInvMap={};posPreview=[];['fi1','fi2'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});document.getElementById('dz1-ico').textContent='';document.getElementById('dz1-ttl').textContent='Drop File 1 here or click to browse';document.getElementById('dz2-ico').textContent='';document.getElementById('dz2-ttl').textContent='Drop File 2 here or click to browse';document.getElementById('f1-st').style.display='none';document.getElementById('pos-conf').style.display='none';posSetStep(1);}
+
+// ══════════════════════════════════════════════════════════════
+// INVOICE OCR — handles BOTH sale invoices and supplier invoices
+// ══════════════════════════════════════════════════════════════
+function setOcrType(t){
+ ocrType=t;
+ const sEl=document.getElementById('ocr-type-sale'),stEl=document.getElementById('ocr-type-stock');
+ if(t==='sale'){sEl.style.borderColor='#4f46e5';sEl.style.background='#eef2ff';stEl.style.borderColor='#e2e8f0';stEl.style.background='#f8fafc';}
+ else{stEl.style.borderColor='#4f46e5';stEl.style.background='#eef2ff';sEl.style.borderColor='#e2e8f0';sEl.style.background='#f8fafc';}
+ document.getElementById('ocr-cust-row').style.display=t==='sale'?'block':'none';
+}
+function setOcrFile(f){if(!f)return;ocrFile=f;document.getElementById('ocr-ico').textContent='';document.getElementById('ocr-ttl').textContent=f.name;const r=new FileReader();r.onload=ev=>{const img=document.getElementById('ocr-img');img.src=ev.target.result;img.style.display='block';};r.readAsDataURL(f);document.getElementById('ocr-analyze-btn').style.display='inline-flex';}
+function ocrDrop(e){e.preventDefault();document.getElementById('ocr-dz').classList.remove('dg');if(e.dataTransfer.files[0])setOcrFile(e.dataTransfer.files[0]);}
+
+async function runOCR(){
+ const branch=document.getElementById('ocr-br').value,dt=document.getElementById('ocr-dt').value;
+ if(!ocrFile){toast('Upload an invoice photo first','err');return;}
+ if(!branch){toast('Select a branch','err');return;}if(!dt){toast('Select a date','err');return;}
+ document.getElementById('ocr-s1').style.display='none';document.getElementById('ocr-s2').style.display='block';document.getElementById('ocr-analyze-btn').style.display='none';
+ const base64=await new Promise((res,rej)=>{const r=new FileReader();r.onload=e=>res(e.target.result.split(',')[1]);r.onerror=rej;r.readAsDataURL(ocrFile);});
+ const isSale=ocrType==='sale';
+ const prompt=`You are analyzing a ${isSale?'sales invoice/receipt':'supplier/purchase invoice'}, likely in Hebrew.
+Extract ALL line items from this document.
+Return ONLY a valid JSON array of objects with these fields:
+- "sku": product code or item number (string, may be on the receipt/invoice)
+- "description": product name/description in original language
+- "qty": quantity as integer
+- "unit_price": unit price as number (sale price for sales, cost price for supplier invoice, use 0 if not shown)
+- "supplier": supplier or store name from the document header (same for every item)
+${isSale?'- "customer_name": customer full name if shown (empty string if not shown)\n- "customer_phone": customer phone number if shown (empty string if not shown)\n- "customer_email": customer email address if shown (empty string if not shown)':''}
+
+Return ONLY the JSON array, no explanation. Example:
+[{"sku":"100241","description":"מייקאפ HD גוון 79","qty":1,"unit_price":159,"supplier":"INGLOT"${isSale?',"customer_name":"שרי דייטש","customer_phone":"0534198810","customer_email":""':''}}]`;
+ try{
+ const resp=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Authorization':`Bearer ${OPENAI_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({model:'gpt-4o',messages:[{role:'user',content:[{type:'text',text:prompt},{type:'image_url',image_url:{url:`data:${ocrFile.type};base64,${base64}`}}]}],max_tokens:2500})});
+ if(!resp.ok)throw new Error(`OpenAI ${resp.status}: ${await resp.text()}`);
+ const data=await resp.json();const content=data.choices[0].message.content;
+ document.getElementById('ocr-msg').textContent=' Analysis complete!';document.getElementById('ocr-raw').style.display='block';document.getElementById('ocr-raw').textContent=content;
+ const jm=content.match(/\[[\s\S]*\]/);if(!jm)throw new Error('No JSON array found in response');
+ // Sanitize GPT-4o JSON — fix common issues: literal newlines/tabs inside strings,
+ // bad backslash escapes, trailing commas
+ function sanitizeJson(raw){
+ // Remove literal CR/LF/TAB that appear INSIDE quoted strings (not between tokens)
+ let out='',inStr=false,escape=false;
+ for(let i=0;i<raw.length;i++){
+ const c=raw[i];
+ if(escape){out+=c;escape=false;continue;}
+ if(c==='\\'&&inStr){out+=c;escape=true;continue;}
+ if(c==='"'){inStr=!inStr;out+=c;continue;}
+ if(inStr&&(c==='\n'||c==='\r'||c==='\t')){out+=' ';continue;}// replace with space
+ out+=c;
+ }
+ // Remove trailing commas before ] or }
+ out=out.replace(/,(\s*[}\]])/g,'$1');
+ return out;
+ }
+ ocrItems=JSON.parse(sanitizeJson(jm[0]));
+
+ if(!ocrItems.length)throw new Error('No items found in invoice');
+ const sup=ocrItems[0].supplier||'';document.getElementById('ocr-sup').value=sup;
+ // Pre-fill customer fields for sale type
+ if(isSale){const nm=ocrItems[0].customer_name||'';const ph=ocrItems[0].customer_phone||'';const em=ocrItems[0].customer_email||'';document.getElementById('ocr-cust-name').value=nm;document.getElementById('ocr-cust-phone').value=ph;document.getElementById('ocr-cust-email').value=em;}
+ document.getElementById('ocr-s2').style.display='none';document.getElementById('ocr-s3').style.display='block';
+ document.getElementById('ocr-import-btn').style.display='inline-flex';
+ document.getElementById('ocr-imp-lbl').textContent=isSale?'Deduct from Stock & Save':'Create PO & Add to Stock';
+ document.getElementById('ocr-res-banner').textContent=` AI extracted ${ocrItems.length} item(s) from the ${isSale?'sale receipt':'supplier invoice'}. Review before importing.`;
+ renderOcrItems(isSale);
+ }catch(e){document.getElementById('ocr-msg').textContent=' Error: '+e.message;toast('OCR error: '+e.message,'err');}
+}
+
+function renderOcrItems(isSale){
+ document.getElementById('ocr-items').innerHTML=ocrItems.map((item,i)=>{
+ const prod=allP.find(p=>String(p.fields[F.P.SKU]||'').toLowerCase()===String(item.sku||'').toLowerCase());
+ const mH=prod?`<span class="badge bg"> ${esc(prod.fields[F.P.NM]||'')}</span>`:`<span class="badge by"> Not found</span>`;
+ return`<tr><td><input type="text" value="${esc(item.sku)}" style="width:90px;padding:4px 7px;border:1px solid #d1d5db;border-radius:6px;font-size:12px;" onchange="ocrItems[${i}].sku=this.value;renderOcrItems(${isSale})"/></td><td><input type="text" value="${esc(item.description)}" style="width:200px;padding:4px 7px;border:1px solid #d1d5db;border-radius:6px;font-size:12px;" onchange="ocrItems[${i}].description=this.value"/></td><td style="text-align:center;"><input type="number" value="${item.qty}" min="1" style="width:55px;padding:4px 7px;border:1px solid #d1d5db;border-radius:6px;font-size:12px;text-align:center;" onchange="ocrItems[${i}].qty=parseInt(this.value)||1"/></td><td style="text-align:right;"><input type="number" value="${item.unit_price}" step="0.01" style="width:80px;padding:4px 7px;border:1px solid #d1d5db;border-radius:6px;font-size:12px;text-align:right;" onchange="ocrItems[${i}].unit_price=parseFloat(this.value)||0"/></td><td>${mH}</td><td><button onclick="ocrItems.splice(${i},1);renderOcrItems(${isSale})" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:16px;"></button></td></tr>`;
+ }).join('');
+}
+function ocrAddRow(){const isSale=ocrType==='sale';ocrItems.push({sku:'',description:'',qty:1,unit_price:0,supplier:document.getElementById('ocr-sup').value});renderOcrItems(isSale);}
+
+async function ocrImport(){
+ const branch=document.getElementById('ocr-br').value,dt=document.getElementById('ocr-dt').value,sup=document.getElementById('ocr-sup').value.trim(),isSale=ocrType==='sale';
+ if(!branch||!dt){toast('Branch and date required','err');return;}if(!ocrItems.length){toast('No items to import','err');return;}
+ const btn=document.getElementById('ocr-import-btn');setLd(btn,true);
+ try{
+ if(isSale){
+ // Sale invoice: deduct stock, link customer if found (no auto-creation)
+ const cnm=document.getElementById('ocr-cust-name').value.trim();
+ const cph=document.getElementById('ocr-cust-phone').value.trim();
+ const cem=document.getElementById('ocr-cust-email').value.trim();
+ const cr=findCust(cnm,cph,cem);
+ const cId=cr.id||null;
+ let custMsg='';
+ if((cnm||cph||cem)&&!cId){
+ if(cr.how==='not-found')custMsg=`Customer "${cnm||cph}" not found in Airtable — transaction imported without customer link. Go to Airtable → Customers to add them.`;
+ else if(cr.how==='conflict')custMsg=`Customer "${cnm}" matched ${cr.count} records (ambiguous) — no customer link added. Please fix duplicates in Airtable.`;
+ }
+ const ref=`SALE-OCR-${dt}-${uid()}`;
+ const txFields=[];const stockOps=[];const prodMissing=[];
+ for(const item of ocrItems){
+ const pr=findProd(item.sku,item.description);
+ const qty=parseInt(item.qty)||1;
+ const noteParts=[`${sup||'Sale'}: ${item.description||item.sku} · OCR Invoice`];
+ if(!pr.prod){
+ prodMissing.push(item.sku||item.description);
+ noteParts.push(` Product not matched: "${item.sku||item.description}" — please identify and link in Airtable`);
+ }
+ const flds={[F.TX.NM]:`${ref}-${uid()}`,[F.TX.DT]:dtISO(dt),[F.TX.BR]:branch,[F.TX.QTY]:-qty,[F.TX.TY]:'Sale',[F.TX.SRC]:'Manual',[F.TX.REF]:ref,[F.TX.NO]:noteParts.join(' | ')};
+ if(pr.prod){flds[F.TX.PR]=[pr.prod.id];stockOps.push({productId:pr.prod.id,branch,qtyChange:-qty});}
+ if(cId)flds[F.TX.CU]=[cId];
+ txFields.push(flds);
+ }
+ if(txFields.length){
+ await atPostMany(TBL.TX,txFields);
+ if(stockOps.length)await updateStockMany(stockOps);
+ }
+ let msg=` Sale imported: ${txFields.length} item(s) deducted from ${branch}`;
+ if(prodMissing.length)msg+=` · ${prodMissing.length} product(s) not found in Airtable: ${prodMissing.join(', ')} — add them then re-import`;
+ if(custMsg)toast(custMsg,'warn');
+ toast(msg,prodMissing.length?'warn':'ok');
+ } else {
+ // Supplier invoice (New Inventory): add stock + create PO + auto-create missing products
+ const orderNum=`PO-${dt}-${uid()}`;
+ const txFields=[];const stockOps=[];let prodCreatedCnt=0;
+ for(const item of ocrItems){
+ const qty=parseInt(item.qty)||1,cost=parseFloat(item.unit_price)||0;
+ let pr=findProd(item.sku,item.description);
+ let prodRec=pr.prod;
+ if(!prodRec){
+ // Auto-create missing product in Airtable Products table
+ const newFlds={
+ [F.P.SKU]:(item.sku||'').trim(),
+ [F.P.NM]:(item.description||item.sku||'New Item').trim(),
+ [F.P.BR]:sup||'INGLOT',
+ [F.P.CP]:cost
+ };
+ prodRec=await atPost(TBL.P,newFlds);
+ allP.push(prodRec);
+ prodCreatedCnt++;
+ }
+ // Create PO
+ const poF={[F.PO.NUM]:orderNum,[F.PO.SUP]:sup||'Supplier',[F.PO.QTY]:qty,[F.PO.COST]:cost,[F.PO.DT]:dt,[F.PO.DEST]:branch,[F.PO.STAT]:'Received',[F.PO.QREC]:qty,[F.PO.RDATE]:dt,[F.PO.PR]:[prodRec.id]};
+ await atPost(TBL.PO,poF);
+ stockOps.push({productId:prodRec.id,branch,qtyChange:qty});
+
+ const txF={[F.TX.NM]:`RECV-${orderNum}-${uid()}`,[F.TX.DT]:dtISO(dt),[F.TX.PR]:[prodRec.id],[F.TX.BR]:branch,[F.TX.QTY]:qty,[F.TX.TY]:'Stock Received',[F.TX.SRC]:'Purchase Order',[F.TX.REF]:orderNum,[F.TX.NO]:`${sup||'Supplier'}: ${item.description||item.sku} · OCR Invoice`};
+ txFields.push(txF);
+ }
+ if(txFields.length){
+ await atPostMany(TBL.TX,txFields);
+ if(stockOps.length)await updateStockMany(stockOps);
+ }
+ let msg=` PO ${orderNum}: ${txFields.length} item(s) received at ${branch}`;
+ if(prodCreatedCnt)msg+=` · ${prodCreatedCnt} new product(s) created in Airtable Catalogue`;
+ toast(msg,'ok');
+ }
+ closeModal('m-ocr');ocrFile=null;ocrItems=[];
+ ['ocr-s1','ocr-s2','ocr-s3'].forEach((id,i)=>{document.getElementById(id).style.display=i===0?'block':'none';});
+ document.getElementById('ocr-import-btn').style.display='none';document.getElementById('ocr-analyze-btn').style.display='none';
+ document.getElementById('ocr-img').style.display='none';document.getElementById('ocr-ico').textContent='';document.getElementById('ocr-ttl').textContent='Drop invoice photo here or click to browse';
+ ['ocr-cust-name','ocr-cust-phone','ocr-cust-email','ocr-sup'].forEach(id=>document.getElementById(id).value='');
+ setOcrType('sale');
+ await loadAll();
+ }catch(e){toast('Import failed: '+e.message,'err');}
+ setLd(btn,false,' <span id="ocr-imp-lbl">Import</span>');
+}
+
+
+// ══════════════════════════════════════════════════════════════
+// MANUAL TRANSACTION
+// ══════════════════════════════════════════════════════════════
+function updateTxType(){const t=document.getElementById('tx-type').value;document.getElementById('tx-cust-row').style.display=t==='Sale'?'grid':'none';document.getElementById('tx-qty-lbl').textContent=t==='Sale'?'Quantity Sold *':t==='Stock Received'?'Quantity Received *':'Quantity *';}
+
+// ── CUSTOMER LOOKUP (no auto-creation) ────────────────────────
+// Priority: phone → email → exact name → partial name → not-found
+function findCust(nm, ph, email) {
+ if(!nm && !ph && !email) return {id:null, how:'anon'};
+ const nph = normPhone(ph||'');
+ // 1. Phone
+ if(nph){const m=allCU.find(c=>normPhone(c.fields[F.CU.PH]||c.fields[F.CU.PHE]||'')===nph);if(m)return{id:m.id,how:'phone'};}
+ // 2. Email
+ if(email){const em=email.toLowerCase().trim();const m=allCU.find(c=>(c.fields[F.CU.EM]||'').toLowerCase()===em);if(m)return{id:m.id,how:'email'};}
+ // 3. Exact name
+ if(nm){
+ const exact=allCU.filter(c=>(c.fields[F.CU.NM]||'').toLowerCase()===nm.toLowerCase());
+ if(exact.length===1)return{id:exact[0].id,how:'name'};
+ if(exact.length>1)return{id:null,how:'conflict',count:exact.length};
+ // 4. Partial name (one name contains the other)
+ const partial=allCU.filter(c=>{const cn=(c.fields[F.CU.NM]||'').toLowerCase(),qn=nm.toLowerCase();return cn.includes(qn)||qn.includes(cn);});
+ if(partial.length===1)return{id:partial[0].id,how:'partial-name'};
+ if(partial.length>1)return{id:null,how:'conflict',count:partial.length};
+ }
+ return{id:null,how:'not-found'};
+}
+
+// ── PRODUCT LOOKUP (no silent skip) ───────────────────────────
+// Priority: exact SKU → partial name → not-found
+function findProd(sku, description) {
+ const norm = s => String(s||'').toLowerCase().replace(/\s+/g,' ').trim();
+ // 1. Exact SKU only
+ if(sku && sku.trim()){
+ const s=norm(sku);
+ const m=allP.find(p=>norm(p.fields[F.P.SKU]||'')===s);
+ if(m)return{prod:m,how:'sku'};
+ }
+ // 2. Exact name match (spaces normalised — extra/fewer spaces are OK)
+ if(description && description.trim()){
+ const d=norm(description);
+ const hits=allP.filter(p=>norm(p.fields[F.P.NM]||'')===d);
+ if(hits.length===1)return{prod:hits[0],how:'name-exact'};
+ if(hits.length>1)return{prod:null,how:'ambiguous'};
+ }
+ return{prod:null,how:'not-found'};
+}
+
+
+
+
+async function submitTx(){
+ const type=document.getElementById('tx-type').value,pid=document.getElementById('tx-pid').value,branch=document.getElementById('tx-br2').value,qty=parseInt(document.getElementById('tx-qty').value),dt=document.getElementById('tx-dt2').value,ref=document.getElementById('tx-ref').value.trim(),notes=document.getElementById('tx-notes').value.trim(),cnm=document.getElementById('tx-cname').value.trim(),cph=document.getElementById('tx-cphone').value.trim(),cem=document.getElementById('tx-cemail').value.trim();
+ if(!type){toast('Select transaction type','err');return;}if(!pid){toast('Select a product','err');return;}if(!branch){toast('Select a branch','err');return;}if(!qty||qty<1){toast('Enter quantity','err');return;}if(!dt){toast('Enter date','err');return;}
+ const btn=document.getElementById('tx-sub');setLd(btn,true);
+ try{
+ const isSale=type==='Sale';const actualQty=isSale?-qty:qty;
+ const flds={[F.TX.NM]:`${type.replace(' ','-').toUpperCase()}-${dt}-${uid()}`,[F.TX.DT]:dtISO(dt),[F.TX.PR]:[pid],[F.TX.BR]:branch,[F.TX.QTY]:actualQty,[F.TX.TY]:type,[F.TX.SRC]:'Manual',[F.TX.REF]:ref||type,[F.TX.NO]:notes||''};
+ let custWarn='';
+ if(isSale&&(cnm||cph||cem)){
+ const cr=findCust(cnm,cph,cem);
+ if(cr.id){flds[F.TX.CU]=[cr.id];}
+ else if(cr.how==='not-found'){custWarn=`Customer "${cnm||cph||cem}" not found in Airtable. Transaction saved without customer link. Go to Airtable → Customers to add them.`;}
+ else if(cr.how==='conflict'){custWarn=`Customer "${cnm}" matched ${cr.count} records — ambiguous. Transaction saved without customer link. Please check Airtable.`;}
+ }
+ await atPost(TBL.TX,flds);
+ await updateStock(pid,branch,actualQty);
+ if(custWarn){toast(custWarn,'warn');}else{toast(`${type} recorded: ${qty} unit(s) at ${branch}`);}
+ closeModal('m-tx');clr(['tx-type','tx-pi','tx-pid','tx-br2','tx-qty','tx-dt2','tx-ref','tx-notes','tx-cname','tx-cphone','tx-cemail']);document.getElementById('tx-cust-row').style.display='none';await loadAll();
+ }catch(e){toast(e.message,'err');}
+ setLd(btn,false,'Save Transaction');
+}
+
+
+// ══════════════════════════════════════════════════════════════
+// TRANSFER
+// ══════════════════════════════════════════════════════════════
+async function submitTrf(){
+ const pid=document.getElementById('trf-pid').value,fr=document.getElementById('trf-fr').value,to=document.getElementById('trf-to').value,qty=parseInt(document.getElementById('trf-qty').value),dt=document.getElementById('trf-dt').value,notes=document.getElementById('trf-notes').value.trim();
+ if(!pid){toast('Select a product','err');return;}if(!fr){toast('Select source branch','err');return;}if(!to){toast('Select destination branch','err');return;}if(fr===to){toast('Source and destination must differ','err');return;}if(!qty||qty<1){toast('Enter quantity','err');return;}if(!dt){toast('Enter date','err');return;}
+ const btn=document.getElementById('trf-sub');setLd(btn,true);
+ try{const ref=`TRF-${dt}-${uid()}`;await atPostMany(TBL.TX,[{[F.TX.NM]:ref+'-OUT',[F.TX.DT]:dtISO(dt),[F.TX.PR]:[pid],[F.TX.BR]:fr,[F.TX.QTY]:-qty,[F.TX.TY]:'Transfer',[F.TX.SRC]:'Manual',[F.TX.REF]:ref,[F.TX.NO]:notes||`Transfer OUT to ${to}`},{[F.TX.NM]:ref+'-IN',[F.TX.DT]:dtISO(dt),[F.TX.PR]:[pid],[F.TX.BR]:to,[F.TX.QTY]:qty,[F.TX.TY]:'Transfer',[F.TX.SRC]:'Manual',[F.TX.REF]:ref,[F.TX.NO]:notes||`Transfer IN from ${fr}`}]);
+ // Update stock: deduct from source branch, add to destination branch
+ await updateStockMany([{productId:pid,branch:fr,qtyChange:-qty},{productId:pid,branch:to,qtyChange:qty}]);
+ toast(`Transferred ${qty} unit(s): ${fr} → ${to}`);closeModal('m-trf');clr(['trf-pi','trf-pid','trf-fr','trf-to','trf-qty','trf-dt','trf-notes']);document.getElementById('trf-stk').style.display='none';await loadAll();}catch(e){toast(e.message,'err');}
+ setLd(btn,false,'Transfer Stock');
+}
+
+// ══════════════════════════════════════════════════════════════
+// PURCHASE ORDER
+// ══════════════════════════════════════════════════════════════
+async function submitPO(){
+ const num=document.getElementById('po-num').value.trim(),sup=document.getElementById('po-sup').value.trim(),pid=document.getElementById('po-pid').value,qty=parseInt(document.getElementById('po-qty').value),cost=parseFloat(document.getElementById('po-cost').value)||0,dt=document.getElementById('po-dt').value,br=document.getElementById('po-br').value,st=document.getElementById('po-st').value;
+ if(!num){toast('Enter order number','err');return;}if(!sup){toast('Enter supplier','err');return;}if(!pid){toast('Select a product','err');return;}if(!qty||qty<1){toast('Enter quantity','err');return;}if(!dt){toast('Enter date','err');return;}if(!br){toast('Select branch','err');return;}
+ const btn=document.getElementById('po-sub');setLd(btn,true);
+ try{await atPost(TBL.PO,{[F.PO.NUM]:num,[F.PO.SUP]:sup,[F.PO.PR]:[pid],[F.PO.QTY]:qty,[F.PO.COST]:cost,[F.PO.DT]:dt,[F.PO.DEST]:br,[F.PO.STAT]:st});toast(`PO ${num} created`);closeModal('m-po');clr(['po-num','po-sup','po-pi','po-pid','po-qty','po-cost','po-br']);await loadAll();}catch(e){toast(e.message,'err');}
+ setLd(btn,false,'Create Order');
+}
+
+// ══════════════════════════════════════════════════════════════
+// RECEIVE PO
+// ══════════════════════════════════════════════════════════════
+async function submitRPO(){
+ const id=document.getElementById('rpo-id').value,pid=document.getElementById('rpo-pid').value,br=document.getElementById('rpo-br').value,onum=document.getElementById('rpo-onum').value,qty=parseInt(document.getElementById('rpo-qty').value),dt=document.getElementById('rpo-dt').value;
+ if(!qty||qty<1){toast('Enter quantity','err');return;}if(!dt){toast('Enter date','err');return;}
+ const btn=document.getElementById('rpo-sub');setLd(btn,true);
+ try{await atPatch(TBL.PO,id,{[F.PO.STAT]:'Received',[F.PO.QREC]:qty,[F.PO.RDATE]:dt});if(pid&&br){await atPost(TBL.TX,{[F.TX.NM]:`RECV-${onum}-${uid()}`,[F.TX.DT]:dtISO(dt),[F.TX.PR]:[pid],[F.TX.BR]:br,[F.TX.QTY]:qty,[F.TX.TY]:'Stock Received',[F.TX.SRC]:'Purchase Order',[F.TX.REF]:onum,[F.TX.NO]:`Received from PO ${onum}`});
+ // Update product stock
+ await updateStock(pid,br,qty);}
+ toast(`PO ${onum} received — ${qty} units added to ${br}`);closeModal('m-rpo');await loadAll();}catch(e){toast(e.message,'err');}
+ setLd(btn,false,'Confirm &amp; Add Stock');
+}
+
+// ── INIT ───────────────────────────────────────────────────────
+document.querySelectorAll('input[type=date]').forEach(e=>{e.value=today();});
+document.getElementById('po-num').value=`PO-${new Date().getFullYear()}-${uid()}`;
+setOcrType('sale');posSetStep(1);
+loadAll();
+</script>
+</body>
+</html>
