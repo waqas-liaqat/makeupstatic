@@ -1023,10 +1023,16 @@ Return ONLY a valid JSON array of objects with these fields:
 ${isSale?'- "customer_name": customer full name if shown (empty string if not shown)\n- "customer_phone": customer phone number if shown (empty string if not shown)\n- "customer_email": customer email address if shown (empty string if not shown)':''}
 
 Return ONLY the JSON array, no explanation. Example:
-[{"sku":"100241","description":"מייקאפ HD גוון 79","qty":1,"unit_price":159,"supplier":"INGLOT"${isSale?',"customer_name":"שרי דייטש","customer_phone":"0534198810","customer_email":""':''}}]`;
- const resp=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Authorization':`Bearer ${OPENAI_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({model:'gpt-4o',messages:[{role:'user',content:[{type:'text',text:prompt},{type:'image_url',image_url:{url:`data:${imgData.mime};base64,${imgData.base64}`}}]}],max_tokens:2500})});
+ let resp;
+ try{
+  resp=await fetch('/api/ocr',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,image_data_url:`data:${imgData.mime};base64,${imgData.base64}`})});
+  if(!resp.ok&&resp.status===404)throw new Error('API 404');
+ }catch(apiErr){
+  resp=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Authorization':`Bearer ${OPENAI_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({model:'gpt-4o',messages:[{role:'user',content:[{type:'text',text:prompt},{type:'image_url',image_url:{url:`data:${imgData.mime};base64,${imgData.base64}`}}]}],max_tokens:2500})});
+ }
  if(!resp.ok){const errTxt=await resp.text();throw new Error(`OpenAI ${resp.status}: ${errTxt}`);}
- const data=await resp.json();const content=data.choices[0].message.content;
+ const data=await resp.json();
+ const content=data.choices?data.choices[0].message.content:'';
  document.getElementById('ocr-msg').textContent=' Analysis complete!';document.getElementById('ocr-raw').style.display='block';document.getElementById('ocr-raw').textContent=content;
  const jm=content.match(/\[[\s\S]*\]/);if(!jm)throw new Error('No JSON array found in response');
  function sanitizeJson(raw){
