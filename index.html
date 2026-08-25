@@ -1048,11 +1048,34 @@ async function runOCR(){
  }catch(e){document.getElementById('ocr-msg').textContent=' Error: '+e.message;toast('OCR error: '+e.message,'err');}
 }
 
+function findOcrMatch(item){
+ const sku=String(item.sku||'').toLowerCase().trim();
+ const desc=String(item.description||'').toLowerCase().trim();
+ // 1. Exact SKU match
+ let p=allP.find(x=>String(x.fields[F.P.SKU]||'').toLowerCase()===sku);
+ if(p)return p;
+ // 2. Partial SKU match — invoice SKU contains or starts with product SKU
+ if(sku.length>=6){
+  p=allP.find(x=>{const s=String(x.fields[F.P.SKU]||'').toLowerCase();return s.length>=6&&(sku.includes(s)||s.includes(sku));});
+  if(p)return p;
+ }
+ // 3. Description keyword match — check if product name words appear in the invoice description
+ if(desc.length>=4){
+  p=allP.find(x=>{
+   const nm=String(x.fields[F.P.NM]||'').toLowerCase();
+   const sh=String(x.fields[F.P.SH]||'').toLowerCase();
+   const words=nm.split(/\s+/).filter(w=>w.length>3);
+   return words.length>0&&words.every(w=>desc.includes(w)||(sh&&desc.includes(sh)));
+  });
+  if(p)return p;
+ }
+ return null;
+}
 function renderOcrItems(isSale){
  document.getElementById('ocr-items').innerHTML=ocrItems.map((item,i)=>{
- const prod=allP.find(p=>String(p.fields[F.P.SKU]||'').toLowerCase()===String(item.sku||'').toLowerCase());
- const mH=prod?`<span class="badge bg"> ${esc(prod.fields[F.P.NM]||'')}</span>`:`<span class="badge by"> Not found</span>`;
- return`<tr><td><input type="text" value="${esc(item.sku)}" style="width:90px;padding:4px 7px;border:1px solid #d1d5db;border-radius:6px;font-size:12px;" onchange="ocrItems[${i}].sku=this.value;renderOcrItems(${isSale})"/></td><td><input type="text" value="${esc(item.description)}" style="width:200px;padding:4px 7px;border:1px solid #d1d5db;border-radius:6px;font-size:12px;" onchange="ocrItems[${i}].description=this.value"/></td><td style="text-align:center;"><input type="number" value="${item.qty}" min="1" style="width:55px;padding:4px 7px;border:1px solid #d1d5db;border-radius:6px;font-size:12px;text-align:center;" onchange="ocrItems[${i}].qty=parseInt(this.value)||1"/></td><td style="text-align:right;"><input type="number" value="${item.unit_price}" step="0.01" style="width:80px;padding:4px 7px;border:1px solid #d1d5db;border-radius:6px;font-size:12px;text-align:right;" onchange="ocrItems[${i}].unit_price=parseFloat(this.value)||0"/></td><td>${mH}</td><td><button onclick="ocrItems.splice(${i},1);renderOcrItems(${isSale})" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:16px;"></button></td></tr>`;
+  const prod=findOcrMatch(item);
+  const mH=prod?`<span class="badge bg"> ${esc(prod.fields[F.P.NM]||'')}</span>`:`<span class="badge by"> Not found</span>`;
+  return`<tr><td><input type="text" value="${esc(item.sku)}" style="width:90px;padding:4px 7px;border:1px solid #d1d5db;border-radius:6px;font-size:12px;" onchange="ocrItems[${i}].sku=this.value;renderOcrItems(${isSale})"/></td><td><input type="text" value="${esc(item.description)}" style="width:200px;padding:4px 7px;border:1px solid #d1d5db;border-radius:6px;font-size:12px;" onchange="ocrItems[${i}].description=this.value"/></td><td style="text-align:center;"><input type="number" value="${item.qty}" min="1" style="width:55px;padding:4px 7px;border:1px solid #d1d5db;border-radius:6px;font-size:12px;text-align:center;" onchange="ocrItems[${i}].qty=parseInt(this.value)||1"/></td><td style="text-align:right;"><input type="number" value="${item.unit_price}" step="0.01" style="width:80px;padding:4px 7px;border:1px solid #d1d5db;border-radius:6px;font-size:12px;text-align:right;" onchange="ocrItems[${i}].unit_price=parseFloat(this.value)||0"/></td><td>${mH}</td><td><button onclick="ocrItems.splice(${i},1);renderOcrItems(${isSale})" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:16px;"></button></td></tr>`;
  }).join('');
 }
 function ocrAddRow(){const isSale=ocrType==='sale';ocrItems.push({sku:'',description:'',qty:1,unit_price:0,supplier:document.getElementById('ocr-sup').value});renderOcrItems(isSale);}
