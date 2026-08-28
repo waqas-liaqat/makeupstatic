@@ -172,9 +172,12 @@
 
  <!-- ── OVERVIEW ─────────────────────────────────────── -->
  <div class="page active" id="page-overview">
- <div id="neg-banner" style="display:none;background:#fee2e2;border:1px solid #ef4444;border-radius:10px;padding:11px 16px;margin-bottom:10px;align-items:center;gap:10px;font-size:13.5px;color:#991b1b;">
-  &#9888; <strong><span id="neg-cnt">0</span> products</strong> have <strong>negative stock</strong> &mdash; inventory gap detected! <span class="cl" onclick="showPage('products')" style="color:#991b1b;text-decoration:underline;">View Products &rarr;</span>
- </div>
+ <div id="neg-banner" style="display:none;background:#fee2e2;border:1px solid #ef4444;border-radius:10px;padding:11px 16px;margin-bottom:10px;align-items:center;gap:10px;font-size:13.5px;color:#991b1b;">
+
+  &#9888; <strong><span id="neg-cnt">0</span> products</strong> have <strong>negative stock</strong> &mdash; inventory gap detected! <span class="cl" onclick="showPage('products')" style="color:#991b1b;text-decoration:underline;">View Products &rarr;</span>
+
+ </div>
+
  <div id="low-banner" style="display:none;background:#fef3c7;border:1px solid #f59e0b;border-radius:10px;padding:11px 16px;margin-bottom:16px;display:none;align-items:center;gap:10px;font-size:13.5px;color:#92400e;">
  <strong><span id="low-cnt">0</span> products</strong> below minimum stock. <span class="cl" onclick="showPage('products')">View Products &rarr;</span>
  </div>
@@ -737,7 +740,8 @@ function renderOverview(){
  const poN=allPO.filter(r=>['Draft','Ordered'].includes(r.fields[F.PO.STAT])).length;
  ['k-appr','k-err','k-po','k-low'].forEach((id,i)=>document.getElementById(id).textContent=[apN,erN,poN,low.length][i]);
  const banner=document.getElementById('low-banner');
- if(low.length){banner.style.display='flex';document.getElementById('low-cnt').textContent=low.length;}else{banner.style.display='none';}
+ if(low.length){banner.style.display='flex';document.getElementById('low-cnt').textContent=low.length;}else{banner.style.display='none';}
+
  const negBanner=document.getElementById('neg-banner');if(neg.length){negBanner.style.display='flex';document.getElementById('neg-cnt').textContent=neg.length;}else{negBanner.style.display='none';}
  const ll=document.getElementById('low-list');
  if(!low.length){ll.innerHTML='<div class="empty" style="color:#10b981;padding:20px;"> All products above minimum</div>';}
@@ -1009,10 +1013,7 @@ async function runOCR(){
   const imgData=await compressOcrImage(ocrFile);
   document.getElementById('ocr-msg').textContent=' AI is analyzing document...';
   const isSale=ocrType==='sale';
-  const prompt=`You are analyzing a ${isSale?'sales invoice/receipt':'supplier/purchase invoice'}, likely in Hebrew.\nExtract ALL line items from this document.\nReturn ONLY a valid JSON array of objects with these fields:\n- "sku": product code or item number (string)\n- "description": product name/description in original language\n- "qty": quantity as integer\n- "unit_price": unit price as number (use 0 if not shown)\n- "supplier": supplier or store name from document header (same for every item)\n${isSale?'- "customer_name": customer full name if shown (empty string if not shown)\n- "customer_phone": customer phone number if shown (empty string if not shown)\n- "customer_email": customer email if shown (empty string if not shown)':''}\nReturn ONLY the JSON array, no explanation. Each object must also include:
-- "is_product": true for product items, false for VAT, tax, discounts, totals, shipping, subtotals, header lines
-
-Example of non-product lines to EXCLUDE: "מע\"מ", "הנחה", "סה\"כ", "Total", "Discount", "VAT", "Shipping"`;
+  const prompt=`You are analyzing a ${isSale?'sales invoice/receipt':'supplier/purchase invoice'}, likely in Hebrew.\nExtract ALL product line items from this document.\nReturn ONLY a valid JSON array of objects with these fields:\n- \"sku\": product catalog/item code (e.g. \"100059\"). On Israeli cash register receipts (qupa/qupah), the SKU catalog number appears as a standalone number on its own line directly below the product name — extract it into \"sku\", do NOT include it in \"description\".\n- \"description\": product name in original language (no SKU numbers here)\n- \"qty\": quantity as integer\n- \"unit_price\": unit price as number (0 if not shown)\n- \"supplier\": store or supplier name from header (same for all items)\n${isSale?'- \\"customer_name\\": customer name if shown (empty string otherwise)\\n- \\"customer_phone\\": customer phone if shown (empty string otherwise)\\n- \\"customer_email\\": customer email if shown (empty string otherwise)':''}\nIMPORTANT RECEIPT FORMAT: On Hebrew makeup store cash receipts each product row is:\n  [total price] [qty] [unit price] [Hebrew product name on this line]\n                                   [catalog number e.g. 100059 on NEXT line alone]\nAlways extract that standalone catalog number as \"sku\". If no SKU is visible, use empty string.\nEach object must include:\n- \"is_product\": true for product lines, false for VAT, tax, discounts, totals, subtotals, shipping\nReturn ONLY valid JSON array, no extra text.`;
   let resp;
   try{
    resp=await fetch('/api/ocr',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,image_data_url:`data:${imgData.mime};base64,${imgData.base64}`})});
