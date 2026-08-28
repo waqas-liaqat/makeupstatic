@@ -172,6 +172,9 @@
 
  <!-- ── OVERVIEW ─────────────────────────────────────── -->
  <div class="page active" id="page-overview">
+ <div id="neg-banner" style="display:none;background:#fee2e2;border:1px solid #ef4444;border-radius:10px;padding:11px 16px;margin-bottom:10px;align-items:center;gap:10px;font-size:13.5px;color:#991b1b;">
+  &#9888; <strong><span id="neg-cnt">0</span> products</strong> have <strong>negative stock</strong> &mdash; inventory gap detected! <span class="cl" onclick="showPage('products')" style="color:#991b1b;text-decoration:underline;">View Products &rarr;</span>
+ </div>
  <div id="low-banner" style="display:none;background:#fef3c7;border:1px solid #f59e0b;border-radius:10px;padding:11px 16px;margin-bottom:16px;display:none;align-items:center;gap:10px;font-size:13.5px;color:#92400e;">
  <strong><span id="low-cnt">0</span> products</strong> below minimum stock. <span class="cl" onclick="showPage('products')">View Products &rarr;</span>
  </div>
@@ -441,40 +444,36 @@
 
 <!-- ── 3. MANUAL TRANSACTION ──────────────────────────────── -->
 <div class="modal-ov" id="m-tx">
- <div class="modal m-md">
+ <div class="modal m-lg">
  <div class="m-hdr">
- <div><h2> Manual Transaction</h2><p>Record a single inventory movement: sale, receive, or manual correction.</p></div>
+ <div><h2> Manual Transaction</h2><p>Add multiple products in a single transaction &mdash; same branch, date &amp; customer.</p></div>
  <button class="m-x" onclick="closeModal('m-tx')">&times;</button>
  </div>
  <div class="m-body">
+ <div class="g3">
  <div class="fld"><label>Transaction Type *</label>
  <select id="tx-type" onchange="updateTxType()">
  <option value="">Select type...</option>
  <option value="Sale">Sale (reduces stock)</option>
  <option value="Stock Received">Receive Stock (increases stock)</option>
  <option value="Manual Correction">Manual Correction</option>
- </select>
- </div>
- <div class="fld"><label>Product *</label>
- <div class="ac-wrap"><input type="text" id="tx-pi" placeholder="Type SKU or product name..." autocomplete="off" oninput="acSrch(this,'tx-dd','tx-pid')"/><input type="hidden" id="tx-pid"/><div class="ac-dd" id="tx-dd"></div></div>
- </div>
- <div class="g2">
+ </select></div>
  <div class="fld"><label>Branch *</label><select id="tx-br2"><option value="">Select...</option><option>Beitar</option><option>Beit Shemesh</option><option>Jerusalem</option></select></div>
- <div class="fld"><label id="tx-qty-lbl">Quantity *</label><input type="number" id="tx-qty" min="1" placeholder="1"/></div>
- </div>
- <div class="g2">
  <div class="fld"><label>Date *</label><input type="date" id="tx-dt2"/></div>
- <div class="fld"><label>Reference / Invoice #</label><input type="text" id="tx-ref" placeholder="e.g. INV-001"/></div>
  </div>
- <!-- Customer (shown only for Sale) -->
+ <div class="fld"><label>Reference / Invoice #</label><input type="text" id="tx-ref" placeholder="e.g. INV-001"/></div>
  <div id="tx-cust-row" style="display:none;">
  <div class="g3">
  <div class="fld"><label>Customer Name <span style="font-weight:400;color:#94a3b8;">optional</span></label><input type="text" id="tx-cname" placeholder="Customer name"/></div>
  <div class="fld"><label>Customer Phone <span style="font-weight:400;color:#94a3b8;">optional</span></label><input type="text" id="tx-cphone" placeholder="Phone"/></div>
  <div class="fld"><label>Customer Email <span style="font-weight:400;color:#94a3b8;">optional</span></label><input type="text" id="tx-cemail" placeholder="email@example.com"/></div>
  </div>
- <div class="a-i" style="font-size:12px;padding:8px 12px;margin-bottom:0;">Customer is looked up by phone → email → name. If not found, transaction is saved without customer link.</div>
  </div>
+ <div style="margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;">
+ <label style="font-size:12.5px;font-weight:600;color:#374151;">Products *</label>
+ <button type="button" class="btn btn-s btn-sm" onclick="txAddRow()">+ Add Product</button>
+ </div>
+ <div id="tx-rows" style="margin-bottom:10px;"></div>
  <div class="fld"><label>Notes</label><textarea id="tx-notes" placeholder="Any notes..."></textarea></div>
  </div>
  <div class="m-foot">
@@ -516,25 +515,23 @@
 
 <!-- ── 5. NEW PO ───────────────────────────────────────────── -->
 <div class="modal-ov" id="m-po">
- <div class="modal m-md">
- <div class="m-hdr"><div><h2> New Purchase Order</h2></div><button class="m-x" onclick="closeModal('m-po')">&times;</button></div>
+ <div class="modal m-lg">
+ <div class="m-hdr"><div><h2> New Purchase Order</h2><p>Add multiple products from the same supplier in one order.</p></div><button class="m-x" onclick="closeModal('m-po')">&times;</button></div>
  <div class="m-body">
  <div class="g2">
  <div class="fld"><label>Order Number *</label><input type="text" id="po-num" placeholder="e.g. PO-2026-001"/></div>
  <div class="fld"><label>Supplier *</label><input type="text" id="po-sup" placeholder="Supplier name"/></div>
  </div>
- <div class="fld"><label>Product *</label>
- <div class="ac-wrap"><input type="text" id="po-pi" placeholder="Type SKU or product name..." autocomplete="off" oninput="acSrch(this,'po-dd','po-pid')"/><input type="hidden" id="po-pid"/><div class="ac-dd" id="po-dd"></div></div>
- </div>
  <div class="g3">
- <div class="fld"><label>Qty *</label><input type="number" id="po-qty" min="1" placeholder="1"/></div>
- <div class="fld"><label>Cost &#8362;</label><input type="number" id="po-cost" step="0.01" placeholder="0.00"/></div>
- <div class="fld"><label>Order Date *</label><input type="date" id="po-dt"/></div>
- </div>
- <div class="g2">
  <div class="fld"><label>Destination Branch *</label><select id="po-br"><option value="">Select...</option><option>Beitar</option><option>Beit Shemesh</option><option>Jerusalem</option></select></div>
+ <div class="fld"><label>Order Date *</label><input type="date" id="po-dt"/></div>
  <div class="fld"><label>Status</label><select id="po-st"><option value="Draft">Draft</option><option value="Ordered">Ordered</option></select></div>
  </div>
+ <div style="margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;">
+ <label style="font-size:12.5px;font-weight:600;color:#374151;">Products *</label>
+ <button type="button" class="btn btn-s btn-sm" onclick="poAddRow()">+ Add Product</button>
+ </div>
+ <div id="po-rows" style="margin-bottom:4px;"></div>
  </div>
  <div class="m-foot">
  <button class="btn btn-s" onclick="closeModal('m-po')">Cancel</button>
@@ -636,7 +633,7 @@ async function updateStock(productId, branch, qtyChange) {
  // Get current stock value
  const prod=allP.find(p=>p.id===productId);
  const cur=(prod?.fields[fld])??0;
- const newVal=Math.max(0,cur+qtyChange);// never go below 0
+ const newVal=cur+qtyChange;// allow negative stock to flag gaps
  await atPatch(TBL.P,productId,{[fld]:newVal});
  // Update local cache so UI reflects change immediately
  if(prod)prod.fields[fld]=newVal;
@@ -656,7 +653,7 @@ async function updateStockMany(ops) {
  const prod=allP.find(p=>p.id===pid);if(!prod)continue;
  const patch={};
  for(const[fld,delta]of Object.entries(changes)){
- const cur=(prod.fields[fld])??0;patch[fld]=Math.max(0,cur+delta);prod.fields[fld]=patch[fld];
+ const cur=(prod.fields[fld])??0;patch[fld]=cur+delta;prod.fields[fld]=patch[fld];
  }
  await atPatch(TBL.P,pid,patch);
  }
@@ -667,7 +664,7 @@ const PT={'overview':'Overview','products':'Products','transactions':'Inventory 
 function showPage(n){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));document.getElementById(`page-${n}`).classList.add('active');document.getElementById(`nav-${n}`).classList.add('active');document.getElementById('page-title').textContent=PT[n]||n;}
 
 // ── MODALS ─────────────────────────────────────────────────────
-function openModal(id){document.getElementById(id).classList.add('open');document.getElementById(id).querySelectorAll('input[type=date]').forEach(e=>{if(!e.value)e.value=today();});}
+function openModal(id){document.getElementById(id).classList.add('open');document.getElementById(id).querySelectorAll('input[type=date]').forEach(e=>{if(!e.value)e.value=today();});if(id==='m-tx'){txRows=[];txAddRow();}if(id==='m-po'){poRows=[];poAddRow();}}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 document.querySelectorAll('.modal-ov').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open');}));
 
@@ -729,8 +726,8 @@ async function refreshAll(){const b=document.getElementById('refresh-btn');b.dis
 
 // ── RENDER OVERVIEW ────────────────────────────────────────────
 function renderOverview(){
- let bT=0,bsT=0,jT=0;const low=[];
- allP.forEach(p=>{const f=p.fields;bT+=(f[F.P.B]??0);bsT+=(f[F.P.BS]??0);jT+=(f[F.P.J]??0);if(isLow(f))low.push(p);});
+ let bT=0,bsT=0,jT=0;const low=[],neg=[];
+ allP.forEach(p=>{const f=p.fields;bT+=(f[F.P.B]??0);bsT+=(f[F.P.BS]??0);jT+=(f[F.P.J]??0);if(isLow(f))low.push(p);if((f[F.P.B]??0)<0||(f[F.P.BS]??0)<0||(f[F.P.J]??0)<0)neg.push(p);});
  document.getElementById('k-b').textContent=bT.toLocaleString();
  document.getElementById('k-bs').textContent=bsT.toLocaleString();
  document.getElementById('k-j').textContent=jT.toLocaleString();
@@ -740,7 +737,8 @@ function renderOverview(){
  const poN=allPO.filter(r=>['Draft','Ordered'].includes(r.fields[F.PO.STAT])).length;
  ['k-appr','k-err','k-po','k-low'].forEach((id,i)=>document.getElementById(id).textContent=[apN,erN,poN,low.length][i]);
  const banner=document.getElementById('low-banner');
- if(low.length){banner.style.display='flex';document.getElementById('low-cnt').textContent=low.length;}else{banner.style.display='none';}
+ if(low.length){banner.style.display='flex';document.getElementById('low-cnt').textContent=low.length;}else{banner.style.display='none';}
+ const negBanner=document.getElementById('neg-banner');if(neg.length){negBanner.style.display='flex';document.getElementById('neg-cnt').textContent=neg.length;}else{negBanner.style.display='none';}
  const ll=document.getElementById('low-list');
  if(!low.length){ll.innerHTML='<div class="empty" style="color:#10b981;padding:20px;"> All products above minimum</div>';}
  else{ll.innerHTML=`<table style="font-size:12.5px;"><thead><tr><th>Product</th><th style="text-align:center;">Beitar</th><th style="text-align:center;">Beit Sh.</th><th style="text-align:center;">Jerusalem</th></tr></thead><tbody>${low.slice(0,12).map(p=>{const f=p.fields;const b=f[F.P.B]??0,bs=f[F.P.BS]??0,j=f[F.P.J]??0,mb=f[F.P.MB]??0,mbs=f[F.P.MBS]??0,mj=f[F.P.MJ]??0;const sc=(v,m)=>m>0&&v<m?'color:#ef4444;font-weight:700;':'';return`<tr><td style="padding:7px 12px;"><div style="font-weight:600;">${esc(f[F.P.NM]||'?')}</div><div style="color:#94a3b8;font-size:11px;">${esc(f[F.P.SKU]||'')}</div></td><td style="text-align:center;padding:7px;${sc(b,mb)}">${b}${mb?`<span style="font-size:10px;color:#94a3b8;">/min${mb}</span>`:''}</td><td style="text-align:center;padding:7px;${sc(bs,mbs)}">${bs}${mbs?`<span style="font-size:10px;color:#94a3b8;">/min${mbs}</span>`:''}</td><td style="text-align:center;padding:7px;${sc(j,mj)}">${j}${mj?`<span style="font-size:10px;color:#94a3b8;">/min${mj}</span>`:''}</td></tr>`;}).join('')}${low.length>12?`<tr><td colspan="4" style="text-align:center;padding:8px;font-size:12px;color:#64748b;">+${low.length-12} more...</td></tr>`:''}</tbody></table>`;}
@@ -757,7 +755,7 @@ function filterProds(){
 }
 function renderProds(){
  document.getElementById('p-cnt').textContent=filtP.length;
- const sc=(v,m)=>{const lo=m>0&&v<m;return`<td style="text-align:center;${lo?'color:#ef4444;font-weight:700;':''}">${v}${m?`<span style="font-size:10px;color:${lo?'#ef4444':'#94a3b8'};">/min${m}</span>`:''}</td>`;};
+ const sc=(v,m)=>{const isNeg=v<0;const lo=!isNeg&&m>0&&v<m;return`<td style="text-align:center;${isNeg?'color:#dc2626;font-weight:800;background:#fef2f2;':lo?'color:#ef4444;font-weight:700;':''}">${v}${m?`<span style="font-size:10px;color:${lo?'#ef4444':'#94a3b8'};">/min${m}</span>`:''}</td>`;};
  document.getElementById('prod-body').innerHTML=filtP.length?filtP.map(p=>{const f=p.fields,b=f[F.P.B]??0,bs=f[F.P.BS]??0,j=f[F.P.J]??0,mb=f[F.P.MB]??0,mbs=f[F.P.MBS]??0,mj=f[F.P.MJ]??0,lo=isLow(f);return`<tr${lo?' class="row-low"':''}><td class="mono" style="color:#4f46e5;">${esc(f[F.P.SKU]||'--')}</td><td style="font-size:13px;">${esc(f[F.P.BR]||'--')}</td><td style="font-weight:500;">${esc(f[F.P.NM]||'--')}</td><td style="font-size:13px;color:#64748b;">${esc(f[F.P.SH]||'--')}</td>${sc(b,mb)}${sc(bs,mbs)}${sc(j,mj)}<td style="text-align:center;font-weight:700;">${b+bs+j}</td><td style="text-align:right;">&#8362;${f[F.P.SP]??'--'}</td><td>${lo?'<span class="badge br">Low</span>':'<span class="badge bg">OK</span>'}</td></tr>`;}).join(''):`<tr><td colspan="10"><div class="empty"><div class="ei"></div>No products found</div></td></tr>`;
 }
 
@@ -1011,7 +1009,10 @@ async function runOCR(){
   const imgData=await compressOcrImage(ocrFile);
   document.getElementById('ocr-msg').textContent=' AI is analyzing document...';
   const isSale=ocrType==='sale';
-  const prompt=`You are analyzing a ${isSale?'sales invoice/receipt':'supplier/purchase invoice'}, likely in Hebrew.\nExtract ALL line items from this document.\nReturn ONLY a valid JSON array of objects with these fields:\n- "sku": product code or item number (string)\n- "description": product name/description in original language\n- "qty": quantity as integer\n- "unit_price": unit price as number (use 0 if not shown)\n- "supplier": supplier or store name from document header (same for every item)\n${isSale?'- "customer_name": customer full name if shown (empty string if not shown)\n- "customer_phone": customer phone number if shown (empty string if not shown)\n- "customer_email": customer email if shown (empty string if not shown)':''}\nReturn ONLY the JSON array, no explanation.`;
+  const prompt=`You are analyzing a ${isSale?'sales invoice/receipt':'supplier/purchase invoice'}, likely in Hebrew.\nExtract ALL line items from this document.\nReturn ONLY a valid JSON array of objects with these fields:\n- "sku": product code or item number (string)\n- "description": product name/description in original language\n- "qty": quantity as integer\n- "unit_price": unit price as number (use 0 if not shown)\n- "supplier": supplier or store name from document header (same for every item)\n${isSale?'- "customer_name": customer full name if shown (empty string if not shown)\n- "customer_phone": customer phone number if shown (empty string if not shown)\n- "customer_email": customer email if shown (empty string if not shown)':''}\nReturn ONLY the JSON array, no explanation. Each object must also include:
+- "is_product": true for product items, false for VAT, tax, discounts, totals, shipping, subtotals, header lines
+
+Example of non-product lines to EXCLUDE: "מע\"מ", "הנחה", "סה\"כ", "Total", "Discount", "VAT", "Shipping"`;
   let resp;
   try{
    resp=await fetch('/api/ocr',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,image_data_url:`data:${imgData.mime};base64,${imgData.base64}`})});
@@ -1037,6 +1038,9 @@ async function runOCR(){
    return out.replace(/,(\s*[}\]])/g,'$1');
   }
   ocrItems=JSON.parse(sanitizeJson(jm[0]));
+  const skippedLines=ocrItems.filter(x=>x.is_product===false);
+  ocrItems=ocrItems.filter(x=>x.is_product!==false);
+  if(skippedLines.length){const sm=document.getElementById('ocr-skip-msg');if(sm){sm.style.display='block';sm.textContent=` ${skippedLines.length} non-product line(s) excluded (VAT, discounts, totals).`;}}
   if(!ocrItems.length)throw new Error('No items found in invoice');
   const sup=ocrItems[0].supplier||'';document.getElementById('ocr-sup').value=sup;
   if(isSale){const nm=ocrItems[0].customer_name||'';const ph=ocrItems[0].customer_phone||'';const em=ocrItems[0].customer_email||'';document.getElementById('ocr-cust-name').value=nm;document.getElementById('ocr-cust-phone').value=ph;document.getElementById('ocr-cust-email').value=em;}
@@ -1049,6 +1053,12 @@ async function runOCR(){
 }
 
 function findOcrMatch(item){
+ // 0. Session-linked (user just linked this session)
+ if(item._linkedProd)return item._linkedProd;
+ // 0b. Persistent alias (user confirmed in a previous session)
+ const aliasMap=loadAliasMap();
+ const aliasKey=String(item.description||'').toLowerCase().trim();
+ if(aliasKey&&aliasMap[aliasKey]){const ap=allP.find(x=>x.id===aliasMap[aliasKey]);if(ap)return Object.assign({},ap,{_fromAlias:true});}
  const sku=String(item.sku||'').toLowerCase().trim();
  const desc=String(item.description||'').toLowerCase().trim();
  // 1. Exact SKU match
@@ -1078,6 +1088,36 @@ function renderOcrItems(isSale){
   return`<tr><td><input type="text" value="${esc(item.sku)}" style="width:90px;padding:4px 7px;border:1px solid #d1d5db;border-radius:6px;font-size:12px;" onchange="ocrItems[${i}].sku=this.value;renderOcrItems(${isSale})"/></td><td><input type="text" value="${esc(item.description)}" style="width:200px;padding:4px 7px;border:1px solid #d1d5db;border-radius:6px;font-size:12px;" onchange="ocrItems[${i}].description=this.value"/></td><td style="text-align:center;"><input type="number" value="${item.qty}" min="1" style="width:55px;padding:4px 7px;border:1px solid #d1d5db;border-radius:6px;font-size:12px;text-align:center;" onchange="ocrItems[${i}].qty=parseInt(this.value)||1"/></td><td style="text-align:right;"><input type="number" value="${item.unit_price}" step="0.01" style="width:80px;padding:4px 7px;border:1px solid #d1d5db;border-radius:6px;font-size:12px;text-align:right;" onchange="ocrItems[${i}].unit_price=parseFloat(this.value)||0"/></td><td>${mH}</td><td><button onclick="ocrItems.splice(${i},1);renderOcrItems(${isSale})" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:16px;"></button></td></tr>`;
  }).join('');
 }
+
+function linkOcrItem(i){
+ const item=ocrItems[i];
+ const existing=document.getElementById('ocr-link-modal');if(existing)existing.remove();
+ const modal=document.createElement('div');
+ modal.id='ocr-link-modal';
+ modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;';
+ const descKey=String(item.description||item.sku||'');
+ modal.innerHTML=`<div style="background:#fff;border-radius:14px;padding:22px;max-width:480px;width:100%;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3);"><h3 style="margin:0 0 6px;font-size:15px;">&#128279; Link Product to Invoice Description</h3><p style="margin:0 0 14px;font-size:12.5px;color:#64748b;">Invoice says: <strong>${esc(descKey)}</strong><br><span style="font-size:11px;color:#94a3b8;">Once linked, this match will be remembered for future invoices automatically.</span></p><input id="link-search" type="text" placeholder="Type product name or SKU..." style="width:100%;padding:8px 11px;border:1px solid #d1d5db;border-radius:8px;font-size:13.5px;outline:none;box-sizing:border-box;margin-bottom:10px;"><div id="link-results" style="max-height:240px;overflow-y:auto;border:1px solid #e2e8f0;border-radius:8px;"></div><div style="display:flex;justify-content:flex-end;margin-top:14px;"><button onclick="document.getElementById('ocr-link-modal').remove()" style="padding:8px 18px;border:1px solid #d1d5db;border-radius:8px;font-size:13px;cursor:pointer;background:#fff;">Cancel</button></div></div>`;
+ document.body.appendChild(modal);
+ const srch=document.getElementById('link-search');
+ const res=document.getElementById('link-results');
+ function renderLink(q){
+  const hits=allP.filter(p=>[p.fields[F.P.SKU],p.fields[F.P.NM],p.fields[F.P.SH]].some(v=>v&&String(v).toLowerCase().includes(q.toLowerCase()))).slice(0,20);
+  res.innerHTML=hits.length?hits.map(p=>`<div onclick="confirmOcrLink(${i},'${p.id}','${esc(descKey).replace(/'/g,String.fromCharCode(39))}')" style="padding:10px 12px;cursor:pointer;border-bottom:1px solid #f1f5f9;" onmouseover="this.style.background='#f0f9ff'" onmouseout="this.style.background=''"><div style="font-weight:600;font-size:13px;">${esc(p.fields[F.P.NM]||'')}</div><div style="font-size:11.5px;color:#4f46e5;">${esc(p.fields[F.P.SKU]||'')}</div></div>`).join(''):"<div style='padding:12px;color:#94a3b8;font-size:13px;'>No products found — type to search</div>";
+ }
+ renderLink('');
+ srch.oninput=()=>renderLink(srch.value);
+ modal.addEventListener('click',e=>{if(e.target===modal)modal.remove();});
+ setTimeout(()=>srch.focus(),50);
+}
+function confirmOcrLink(i,productId,descKey){
+ saveAlias(descKey,productId);
+ const p=allP.find(x=>x.id===productId);
+ if(p)ocrItems[i]._linkedProd=p;
+ document.getElementById('ocr-link-modal')?.remove();
+ renderOcrItems(ocrType==='sale');
+ toast(`&#10003; Linked & remembered: "${descKey}" → ${p?.fields[F.P.NM]||''}`);
+}
+
 function ocrAddRow(){const isSale=ocrType==='sale';ocrItems.push({sku:'',description:'',qty:1,unit_price:0,supplier:document.getElementById('ocr-sup').value});renderOcrItems(isSale);}
 
 async function ocrImport(){
@@ -1216,26 +1256,51 @@ function findProd(sku, description) {
 }
 
 
-
+// ── MULTI-PRODUCT ROW HELPERS ──────────────────────────────────
+let txRows=[];
+function txAddRow(){txRows.push({});renderTxRows();}
+function txRemoveRow(i){if(txRows.length<=1){toast('Keep at least one product row','warn');return;}txRows.splice(i,1);renderTxRows();}
+function renderTxRows(){
+ document.getElementById('tx-rows').innerHTML=txRows.map((_,i)=>`<div style="display:grid;grid-template-columns:1fr 90px 32px;gap:8px;align-items:flex-end;margin-bottom:8px;"><div class="ac-wrap"><input type="text" id="tx-pi-${i}" placeholder="Type SKU or product name..." autocomplete="off" oninput="acSrch(this,'tx-dd-${i}','tx-pid-${i}')"/><input type="hidden" id="tx-pid-${i}"/><div class="ac-dd" id="tx-dd-${i}"></div></div><input type="number" id="tx-qty-${i}" value="1" min="1" placeholder="Qty" style="padding:8px 11px;border:1px solid #d1d5db;border-radius:8px;font-size:13.5px;"><button onclick="txRemoveRow(${i})" style="background:#fee2e2;border:none;border-radius:8px;padding:0 10px;color:#dc2626;cursor:pointer;font-size:18px;height:38px;">&times;</button></div>`).join('');
+}
+let poRows=[];
+function poAddRow(){poRows.push({});renderPoRows();}
+function poRemoveRow(i){if(poRows.length<=1){toast('Keep at least one product row','warn');return;}poRows.splice(i,1);renderPoRows();}
+function renderPoRows(){
+ document.getElementById('po-rows').innerHTML=poRows.map((_,i)=>`<div style="display:grid;grid-template-columns:1fr 80px 100px 32px;gap:8px;align-items:flex-end;margin-bottom:8px;"><div class="ac-wrap"><input type="text" id="po-pi-${i}" placeholder="Type SKU or product name..." autocomplete="off" oninput="acSrch(this,'po-dd-${i}','po-pid-${i}')"/><input type="hidden" id="po-pid-${i}"/><div class="ac-dd" id="po-dd-${i}"></div></div><input type="number" id="po-qty-${i}" value="1" min="1" placeholder="Qty" style="padding:8px 11px;border:1px solid #d1d5db;border-radius:8px;font-size:13.5px;"><input type="number" id="po-cost-${i}" step="0.01" placeholder="Cost &#8362;" style="padding:8px 11px;border:1px solid #d1d5db;border-radius:8px;font-size:13.5px;"><button onclick="poRemoveRow(${i})" style="background:#fee2e2;border:none;border-radius:8px;padding:0 10px;color:#dc2626;cursor:pointer;font-size:18px;height:38px;">&times;</button></div>`).join('');
+}
 
 async function submitTx(){
- const type=document.getElementById('tx-type').value,pid=document.getElementById('tx-pid').value,branch=document.getElementById('tx-br2').value,qty=parseInt(document.getElementById('tx-qty').value),dt=document.getElementById('tx-dt2').value,ref=document.getElementById('tx-ref').value.trim(),notes=document.getElementById('tx-notes').value.trim(),cnm=document.getElementById('tx-cname').value.trim(),cph=document.getElementById('tx-cphone').value.trim(),cem=document.getElementById('tx-cemail').value.trim();
- if(!type){toast('Select transaction type','err');return;}if(!pid){toast('Select a product','err');return;}if(!branch){toast('Select a branch','err');return;}if(!qty||qty<1){toast('Enter quantity','err');return;}if(!dt){toast('Enter date','err');return;}
+
+ const type=document.getElementById('tx-type').value,branch=document.getElementById('tx-br2').value,dt=document.getElementById('tx-dt2').value,ref=document.getElementById('tx-ref').value.trim(),notes=document.getElementById('tx-notes').value.trim(),cnm=document.getElementById('tx-cname').value.trim(),cph=document.getElementById('tx-cphone').value.trim(),cem=document.getElementById('tx-cemail').value.trim();
+ if(!type){toast('Select transaction type','err');return;}
+ if(!branch){toast('Select a branch','err');return;}
+ if(!dt){toast('Enter date','err');return;}
+ const rows=[];
+ for(let i=0;i<txRows.length;i++){
+  const pid=document.getElementById(`tx-pid-${i}`)?.value||'';
+  const qty=parseInt(document.getElementById(`tx-qty-${i}`)?.value)||0;
+  if(!pid){toast(`Row ${i+1}: select a product`,'err');return;}
+  if(!qty||qty<1){toast(`Row ${i+1}: enter quantity`,'err');return;}
+  rows.push({pid,qty});
+ }
+ if(!rows.length){toast('Add at least one product','err');return;}
  const btn=document.getElementById('tx-sub');setLd(btn,true);
  try{
- const isSale=type==='Sale';const actualQty=isSale?-qty:qty;
- const flds={[F.TX.NM]:`${type.replace(' ','-').toUpperCase()}-${dt}-${uid()}`,[F.TX.DT]:dtISO(dt),[F.TX.PR]:[pid],[F.TX.BR]:branch,[F.TX.QTY]:actualQty,[F.TX.TY]:type,[F.TX.SRC]:'Manual',[F.TX.REF]:ref||type,[F.TX.NO]:notes||''};
- let custWarn='';
- if(isSale&&(cnm||cph||cem)){
- const cr=findCust(cnm,cph,cem);
- if(cr.id){flds[F.TX.CU]=[cr.id];}
- else if(cr.how==='not-found'){custWarn=`Customer "${cnm||cph||cem}" not found in Airtable. Transaction saved without customer link. Go to Airtable → Customers to add them.`;}
- else if(cr.how==='conflict'){custWarn=`Customer "${cnm}" matched ${cr.count} records — ambiguous. Transaction saved without customer link. Please check Airtable.`;}
- }
- await atPost(TBL.TX,flds);
- await updateStock(pid,branch,actualQty);
- if(custWarn){toast(custWarn,'warn');}else{toast(`${type} recorded: ${qty} unit(s) at ${branch}`);}
- closeModal('m-tx');clr(['tx-type','tx-pi','tx-pid','tx-br2','tx-qty','tx-dt2','tx-ref','tx-notes','tx-cname','tx-cphone','tx-cemail']);document.getElementById('tx-cust-row').style.display='none';await loadAll();
+  const isSale=type==='Sale';
+  let custId=null,custWarn='';
+  if(isSale&&(cnm||cph||cem)){const cr=findCust(cnm,cph,cem);if(cr.id)custId=cr.id;else if(cr.how==='not-found')custWarn=`Customer "${cnm||cph||cem}" not found — saved without link.`;else if(cr.how==='conflict')custWarn=`Customer "${cnm}" matches multiple records — saved without link.`;}
+  const refStr=ref||`${type.substring(0,4).toUpperCase()}-${dt}-${uid()}`;
+  const txFields=rows.map(({pid,qty})=>{const actualQty=isSale?-qty:qty;const flds={[F.TX.NM]:`${refStr}-${uid()}`,[F.TX.DT]:dtISO(dt),[F.TX.PR]:[pid],[F.TX.BR]:branch,[F.TX.QTY]:actualQty,[F.TX.TY]:type,[F.TX.SRC]:'Manual',[F.TX.REF]:refStr,[F.TX.NO]:notes};if(custId)flds[F.TX.CU]=[custId];return flds;});
+  const stockOps=rows.map(({pid,qty})=>({productId:pid,branch,qtyChange:isSale?-qty:qty}));
+  await atPostMany(TBL.TX,txFields);
+  await updateStockMany(stockOps);
+  if(custWarn)toast(custWarn,'warn');
+  toast(`${type}: ${rows.length} product(s) at ${branch}`);
+  closeModal('m-tx');txRows=[];txAddRow();
+  clr(['tx-type','tx-br2','tx-dt2','tx-ref','tx-notes','tx-cname','tx-cphone','tx-cemail']);
+  document.getElementById('tx-cust-row').style.display='none';
+  await loadAll();
  }catch(e){toast(e.message,'err');}
  setLd(btn,false,'Save Transaction');
 }
@@ -1259,10 +1324,30 @@ async function submitTrf(){
 // PURCHASE ORDER
 // ══════════════════════════════════════════════════════════════
 async function submitPO(){
- const num=document.getElementById('po-num').value.trim(),sup=document.getElementById('po-sup').value.trim(),pid=document.getElementById('po-pid').value,qty=parseInt(document.getElementById('po-qty').value),cost=parseFloat(document.getElementById('po-cost').value)||0,dt=document.getElementById('po-dt').value,br=document.getElementById('po-br').value,st=document.getElementById('po-st').value;
- if(!num){toast('Enter order number','err');return;}if(!sup){toast('Enter supplier','err');return;}if(!pid){toast('Select a product','err');return;}if(!qty||qty<1){toast('Enter quantity','err');return;}if(!dt){toast('Enter date','err');return;}if(!br){toast('Select branch','err');return;}
+
+ const num=document.getElementById('po-num').value.trim(),sup=document.getElementById('po-sup').value.trim(),dt=document.getElementById('po-dt').value,br=document.getElementById('po-br').value,st=document.getElementById('po-st').value;
+ if(!num){toast('Enter order number','err');return;}
+ if(!sup){toast('Enter supplier','err');return;}
+ if(!dt){toast('Enter date','err');return;}
+ if(!br){toast('Select branch','err');return;}
+ const rows=[];
+ for(let i=0;i<poRows.length;i++){
+  const pid=document.getElementById(`po-pid-${i}`)?.value||'';
+  const qty=parseInt(document.getElementById(`po-qty-${i}`)?.value)||0;
+  const cost=parseFloat(document.getElementById(`po-cost-${i}`)?.value)||0;
+  if(!pid){toast(`Row ${i+1}: select a product`,'err');return;}
+  if(!qty||qty<1){toast(`Row ${i+1}: enter quantity`,'err');return;}
+  rows.push({pid,qty,cost});
+ }
+ if(!rows.length){toast('Add at least one product','err');return;}
  const btn=document.getElementById('po-sub');setLd(btn,true);
- try{await atPost(TBL.PO,{[F.PO.NUM]:num,[F.PO.SUP]:sup,[F.PO.PR]:[pid],[F.PO.QTY]:qty,[F.PO.COST]:cost,[F.PO.DT]:dt,[F.PO.DEST]:br,[F.PO.STAT]:st});toast(`PO ${num} created`);closeModal('m-po');clr(['po-num','po-sup','po-pi','po-pid','po-qty','po-cost','po-br']);await loadAll();}catch(e){toast(e.message,'err');}
+ try{
+  const poFields=rows.map(({pid,qty,cost})=>({[F.PO.NUM]:num,[F.PO.SUP]:sup,[F.PO.PR]:[pid],[F.PO.QTY]:qty,[F.PO.COST]:cost,[F.PO.DT]:dt,[F.PO.DEST]:br,[F.PO.STAT]:st}));
+  await atPostMany(TBL.PO,poFields);
+  toast(`PO ${num} created — ${rows.length} product(s)`);
+  closeModal('m-po');poRows=[];clr(['po-num','po-sup','po-br']);
+  await loadAll();
+ }catch(e){toast(e.message,'err');}
  setLd(btn,false,'Create Order');
 }
 
