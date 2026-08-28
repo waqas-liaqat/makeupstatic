@@ -1,207 +1,288 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>makeupstatic — Inventory Dashboard User Guide</title>
+  <title>makeupstatic &mdash; Inventory Dashboard User Guide</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     body { font-family: 'Inter', sans-serif; color: #1e293b; background: #f8fafc; }
     .card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
     code { background:#f1f5f9; color:#4f46e5; padding:1px 6px; border-radius:4px; font-size:12px; font-family:monospace; }
-    .badge-green { background:#dcfce7; color:#166534; border-radius:6px; padding:2px 10px; font-size:12px; font-weight:600; display:inline-block; }
+    .badge-green  { background:#dcfce7; color:#166534; border-radius:6px; padding:2px 10px; font-size:12px; font-weight:600; display:inline-block; }
     .badge-yellow { background:#fef9c3; color:#854d0e; border-radius:6px; padding:2px 10px; font-size:12px; font-weight:600; display:inline-block; }
-    .badge-blue { background:#dbeafe; color:#1e40af; border-radius:6px; padding:2px 10px; font-size:12px; font-weight:600; display:inline-block; }
+    .badge-blue   { background:#dbeafe; color:#1e40af; border-radius:6px; padding:2px 10px; font-size:12px; font-weight:600; display:inline-block; }
+    .badge-red    { background:#fee2e2; color:#991b1b; border-radius:6px; padding:2px 10px; font-size:12px; font-weight:600; display:inline-block; }
+    .badge-purple { background:#ede9fe; color:#5b21b6; border-radius:6px; padding:2px 10px; font-size:12px; font-weight:600; display:inline-block; }
     .step { display:flex; gap:12px; align-items:flex-start; margin-bottom:12px; }
     .step-num { min-width:28px; height:28px; border-radius:50%; background:#4f46e5; color:white; font-weight:700; font-size:13px; display:flex; align-items:center; justify-content:center; margin-top:2px; flex-shrink:0; }
+    .new-badge { background:#f0fdf4; border:1px solid #86efac; color:#166534; border-radius:999px; padding:1px 8px; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; display:inline-block; margin-left:6px; vertical-align:middle; }
     @media print { body { background:#fff; } .no-print { display:none; } .card { border:1px solid #ddd; box-shadow:none; page-break-inside:avoid; } }
   </style>
 </head>
 <body class="p-4 md:p-10 max-w-5xl mx-auto">
 
+  <!-- Header -->
   <div class="card p-6 md:p-8 mb-8 bg-gradient-to-r from-slate-900 to-indigo-950 text-white flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
     <div>
-      <div class="flex items-center gap-3 mb-2"><span class="text-3xl">💄</span><h1 class="text-3xl font-extrabold tracking-tight">makeupstatic</h1></div>
+      <div class="flex items-center gap-3 mb-2"><span class="text-3xl">&#128132;</span><h1 class="text-3xl font-extrabold tracking-tight">makeupstatic</h1></div>
       <p class="text-indigo-200 font-medium text-lg">Inventory Management Dashboard &mdash; User Guide &amp; Operating Manual</p>
-      <p class="text-xs text-slate-400 mt-2">Official Documentation for Store Managers &amp; Admin Staff &bull; Version 4.0 &bull; August 2026</p>
+      <p class="text-xs text-slate-400 mt-2">Official Documentation &bull; Version 5.0 &bull; August 2026</p>
     </div>
-    <button onclick="window.print()" class="no-print bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold px-5 py-2.5 rounded-lg shadow transition">🖨️ Print / Save as PDF</button>
+    <button onclick="window.print()" class="no-print bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold px-5 py-2.5 rounded-lg shadow transition">&#128424; Print / Save as PDF</button>
   </div>
 
+  <!-- What's New -->
+  <div class="card p-5 mb-8 border-l-4 border-green-500 bg-green-50">
+    <h2 class="text-base font-bold text-green-900 mb-3">&#x1F195; What's New in Version 5.0</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-green-800">
+      <div>&#10003; Invoice match memory &mdash; confirm once, remembered forever</div>
+      <div>&#10003; Non-product lines (VAT, discounts, totals) auto-excluded</div>
+      <div>&#10003; Multiple products in one Manual Transaction</div>
+      <div>&#10003; Multiple products in one Purchase Order</div>
+      <div>&#10003; Negative inventory tracking (no more silent zeroes)</div>
+      <div>&#10003; Cash register receipts with SKU codes fully supported</div>
+    </div>
+  </div>
+
+  <!-- TOC -->
   <div class="card p-6 mb-8">
-    <h2 class="text-lg font-bold text-slate-900 mb-4">📌 Table of Contents</h2>
+    <h2 class="text-lg font-bold text-slate-900 mb-4">&#128204; Table of Contents</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm font-medium text-indigo-600">
-      <a href="#s1" class="hover:underline">1. Dashboard Overview &amp; Interface Layout</a>
-      <a href="#s2" class="hover:underline">2. Core Operational Workflows</a>
-      <a href="#s21" class="hover:underline pl-4">2.1 Dual POS Report Upload</a>
-      <a href="#s22" class="hover:underline pl-4">2.2 Invoice OCR (AI Scanner)</a>
+      <a href="#s1" class="hover:underline">1. Dashboard Overview &amp; Interface</a>
+      <a href="#s2" class="hover:underline">2. Core Workflows</a>
+      <a href="#s21" class="hover:underline pl-4">2.1 Daily POS Report Upload</a>
+      <a href="#s22" class="hover:underline pl-4">2.2 Invoice Scanner</a>
       <a href="#s23" class="hover:underline pl-4">2.3 Branch Stock Transfer</a>
       <a href="#s24" class="hover:underline pl-4">2.4 Manual Transactions</a>
       <a href="#s25" class="hover:underline pl-4">2.5 Purchase Orders</a>
-      <a href="#s3" class="hover:underline">3. OCR Smart Matching Explained</a>
-      <a href="#s4" class="hover:underline">4. Data Integrity &amp; Rules</a>
-      <a href="#s5" class="hover:underline">5. Troubleshooting &amp; FAQs</a>
+      <a href="#s3" class="hover:underline">3. Invoice Match Memory</a>
+      <a href="#s4" class="hover:underline">4. Negative Inventory Alerts</a>
+      <a href="#s5" class="hover:underline">5. Data Rules &amp; Notes</a>
+      <a href="#s6" class="hover:underline">6. Troubleshooting &amp; FAQs</a>
     </div>
   </div>
 
+  <!-- Section 1 -->
   <div id="s1" class="card p-6 md:p-8 mb-8">
-    <h2 class="text-2xl font-bold text-slate-900 mb-4 pb-2 border-b border-slate-200">1. Dashboard Overview &amp; Interface Layout</h2>
-    <p class="text-slate-600 mb-6 leading-relaxed">The <strong>makeupstatic Inventory Dashboard</strong> provides real-time stock control across all 3 retail branches (<strong>Beitar</strong>, <strong>Beit Shemesh</strong>, and <strong>Jerusalem</strong>), connected directly to your Airtable database. Hosted live at <code>makeupstatic.vercel.app</code> — works on any device or browser.</p>
+    <h2 class="text-2xl font-bold text-slate-900 mb-4 pb-2 border-b border-slate-200">1. Dashboard Overview &amp; Interface</h2>
+    <p class="text-slate-600 mb-6 leading-relaxed">The <strong>makeupstatic Inventory Dashboard</strong> manages real-time stock across all 3 branches (<strong>Beitar</strong>, <strong>Beit Shemesh</strong>, <strong>Jerusalem</strong>), connected live to your Airtable database. Open at <code>makeupstatic.vercel.app</code> from any phone, tablet or computer.</p>
     <h3 class="text-lg font-bold text-slate-800 mb-3">Navigation Views</h3>
     <div class="overflow-x-auto mb-6">
       <table class="w-full text-sm text-left border border-slate-200 rounded-lg overflow-hidden">
         <thead class="bg-slate-100 text-slate-700 font-semibold uppercase text-xs"><tr><th class="p-3 border-b">View</th><th class="p-3 border-b">What It Shows</th></tr></thead>
         <tbody class="divide-y divide-slate-200 text-slate-600">
-          <tr><td class="p-3 font-semibold text-slate-900">Overview</td><td class="p-3">Live stock totals per branch, low-stock alerts, pending approvals, recent transactions.</td></tr>
-          <tr><td class="p-3 font-semibold text-slate-900">Products</td><td class="p-3">Full catalogue with SKUs, names, prices, minimum stock levels, and current branch counts.</td></tr>
-          <tr><td class="p-3 font-semibold text-slate-900">Transactions</td><td class="p-3">Audit log of all stock movements: Sales, Stock Received, Transfers, Manual Adjustments.</td></tr>
-          <tr><td class="p-3 font-semibold text-slate-900">Purchase Orders</td><td class="p-3">Supplier order tracking (Draft &rarr; Ordered &rarr; Received). Mark as received to add stock automatically.</td></tr>
-          <tr><td class="p-3 font-semibold text-slate-900">Customers</td><td class="p-3">Customer database with phone, email, loyalty points, and purchase history.</td></tr>
-          <tr><td class="p-3 font-semibold text-slate-900">Approvals</td><td class="p-3">Inbox for AI-parsed messages and transactions needing manager review.</td></tr>
+          <tr><td class="p-3 font-semibold text-slate-900">Overview</td><td class="p-3">Live totals, low-stock alerts, negative-stock alerts, recent transactions.</td></tr>
+          <tr><td class="p-3 font-semibold text-slate-900">Products</td><td class="p-3">Full catalogue: SKU, name, prices, minimum levels, branch quantities.</td></tr>
+          <tr><td class="p-3 font-semibold text-slate-900">Transactions</td><td class="p-3">Full audit log: Sales, Stock Received, Transfers, Adjustments.</td></tr>
+          <tr><td class="p-3 font-semibold text-slate-900">Purchase Orders</td><td class="p-3">Supplier orders. Mark Received to add stock automatically.</td></tr>
+          <tr><td class="p-3 font-semibold text-slate-900">Customers</td><td class="p-3">Customer records with phone, email, and purchase history.</td></tr>
+          <tr><td class="p-3 font-semibold text-slate-900">Approvals</td><td class="p-3">Messages and actions needing manager review.</td></tr>
         </tbody>
       </table>
     </div>
-    <h3 class="text-lg font-bold text-slate-800 mb-3">Top Toolbar Buttons</h3>
+    <h3 class="text-lg font-bold text-slate-800 mb-3">Toolbar Buttons</h3>
     <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-      <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-3"><div class="font-bold text-indigo-800 mb-1 text-sm">📊 Upload POS Files</div><div class="text-xs text-slate-600">Import daily Excel sales reports from registers.</div></div>
-      <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-3"><div class="font-bold text-indigo-800 mb-1 text-sm">🖼️ Invoice OCR</div><div class="text-xs text-slate-600">AI reads a photo of any invoice and extracts all items.</div></div>
-      <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-3"><div class="font-bold text-indigo-800 mb-1 text-sm">✏️ Manual Transaction</div><div class="text-xs text-slate-600">Log a single sale, return, or adjustment manually.</div></div>
-      <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-3"><div class="font-bold text-indigo-800 mb-1 text-sm">🔄 Transfer</div><div class="text-xs text-slate-600">Move stock between branches.</div></div>
-      <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-3"><div class="font-bold text-indigo-800 mb-1 text-sm">📦 New PO</div><div class="text-xs text-slate-600">Create a new purchase order for a supplier.</div></div>
-      <div class="bg-slate-50 border border-slate-200 rounded-lg p-3"><div class="font-bold text-slate-700 mb-1 text-sm">🔁 Refresh Data</div><div class="text-xs text-slate-600">Reload all Airtable data from cloud (bottom-left sidebar).</div></div>
+      <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-3"><div class="font-bold text-indigo-800 mb-1 text-sm">&#128202; Upload POS Files</div><div class="text-xs text-slate-600">Import daily Excel sales from registers.</div></div>
+      <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-3"><div class="font-bold text-indigo-800 mb-1 text-sm">&#128247; Invoice Scanner</div><div class="text-xs text-slate-600">Photograph any invoice &mdash; AI reads all items.</div></div>
+      <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-3"><div class="font-bold text-indigo-800 mb-1 text-sm">&#9999;&#65039; Manual Transaction</div><div class="text-xs text-slate-600">Log one or more products manually.</div></div>
+      <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-3"><div class="font-bold text-indigo-800 mb-1 text-sm">&#128260; Transfer</div><div class="text-xs text-slate-600">Move stock between branches.</div></div>
+      <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-3"><div class="font-bold text-indigo-800 mb-1 text-sm">&#128230; New PO</div><div class="text-xs text-slate-600">Create a supplier purchase order.</div></div>
+      <div class="bg-slate-50 border border-slate-200 rounded-lg p-3"><div class="font-bold text-slate-700 mb-1 text-sm">&#128260; Refresh</div><div class="text-xs text-slate-600">Reload latest data from Airtable.</div></div>
     </div>
   </div>
 
+  <!-- Section 2 -->
   <div id="s2" class="card p-6 md:p-8 mb-8">
-    <h2 class="text-2xl font-bold text-slate-900 mb-6 pb-2 border-b border-slate-200">2. Core Operational Workflows</h2>
+    <h2 class="text-2xl font-bold text-slate-900 mb-6 pb-2 border-b border-slate-200">2. Core Workflows</h2>
 
+    <!-- 2.1 POS -->
     <div id="s21" class="mb-10">
-      <h3 class="text-xl font-bold text-indigo-700 mb-3">📊 2.1 Dual POS Report Upload (Daily Register Sales)</h3>
-      <p class="text-slate-600 text-sm mb-4">Import daily sales reports exported from your store registers. Primary method for batch-processing end-of-day sales.</p>
-      <div class="step"><div class="step-num">1</div><div class="text-sm text-slate-700">Click <strong>Upload POS Files</strong>. Select <strong>Branch</strong> and <strong>Transaction Date</strong>.</div></div>
-      <div class="step"><div class="step-num">2</div><div class="text-sm text-slate-700"><strong>File 1:</strong> Upload <code>sales_item_lines_report_6004.xlsx</code>. SKUs, quantities, and prices are extracted automatically.</div></div>
-      <div class="step"><div class="step-num">3</div><div class="text-sm text-slate-700"><strong>File 2:</strong> Upload <code>sales_report_3250_6004.xlsx</code> to match customers. Click <em>Skip File 2</em> for anonymous sales.</div></div>
-      <div class="step"><div class="step-num">4</div><div class="text-sm text-slate-700">Review the preview. Matched customers show green tags. Unmatched products show yellow warnings.</div></div>
-      <div class="step"><div class="step-num">5</div><div class="text-sm text-slate-700">Click <strong>Import Transactions</strong> — stock is deducted and all records are written to Airtable immediately.</div></div>
-      <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4 text-xs text-blue-800"><strong>💡 Tip:</strong> Run this every day after closing. Handles multiple items at once — much faster than manual entry.</div>
+      <h3 class="text-xl font-bold text-indigo-700 mb-3">&#128202; 2.1 Daily POS Report Upload</h3>
+      <p class="text-slate-600 text-sm mb-4">Import end-of-day sales from registers. Fastest way to record daily sales in bulk.</p>
+      <div class="step"><div class="step-num">1</div><div class="text-sm text-slate-700">Click <strong>Upload POS Files</strong>. Select Branch and Date.</div></div>
+      <div class="step"><div class="step-num">2</div><div class="text-sm text-slate-700"><strong>File 1:</strong> Upload <code>sales_item_lines_report_6004.xlsx</code>. SKUs and quantities are read automatically.</div></div>
+      <div class="step"><div class="step-num">3</div><div class="text-sm text-slate-700"><strong>File 2:</strong> Upload <code>sales_report_3250_6004.xlsx</code> to link customers, or click <em>Skip File 2</em>.</div></div>
+      <div class="step"><div class="step-num">4</div><div class="text-sm text-slate-700">Review the preview. Green = matched, red = product not found in catalogue.</div></div>
+      <div class="step"><div class="step-num">5</div><div class="text-sm text-slate-700">Click <strong>Import Transactions</strong> &mdash; stock deducted instantly.</div></div>
+      <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-3 text-xs text-blue-800"><strong>Tip:</strong> Run daily after closing to keep all 3 branches accurate.</div>
     </div>
 
+    <!-- 2.2 OCR -->
     <div id="s22" class="mb-10 border-t border-slate-200 pt-8">
-      <h3 class="text-xl font-bold text-indigo-700 mb-3">🖼️ 2.2 Invoice OCR (AI Receipt &amp; Invoice Scanner)</h3>
-      <p class="text-slate-600 text-sm mb-4">Take a photo of any paper receipt or invoice. GPT-4o Vision extracts all line items automatically. Works for both <strong>customer sale receipts</strong> and <strong>supplier delivery invoices</strong>.</p>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        <div class="bg-green-50 border border-green-200 rounded-xl p-4">
-          <div class="font-bold text-green-900 mb-2">🛒 Mode A: Customer Sale Receipt</div>
+      <h3 class="text-xl font-bold text-indigo-700 mb-1">&#128247; 2.2 Invoice Scanner <span class="new-badge">Updated v5.0</span></h3>
+      <p class="text-slate-600 text-sm mt-2 mb-4">Photograph any invoice or receipt. The system reads it and extracts all product lines automatically. Works for sale receipts and supplier invoices.</p>
+
+      <div class="bg-green-50 border border-green-200 rounded-xl p-4 mb-4 text-sm">
+        <div class="font-bold text-green-900 mb-1">&#128248; Cash Register Receipts &mdash; Beitar &amp; Beit Shemesh <span class="new-badge">New</span></div>
+        <p class="text-xs text-slate-700 mt-1">Since the register now prints the catalog number (e.g. <code>100059</code>) below each product name, the system reads that number directly to identify the product. No guessing from name needed &mdash; matching is now fully automatic and much more accurate.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-5">
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+          <div class="font-bold text-slate-900 mb-2">&#128722; Mode A: Customer Sale Receipt</div>
           <ul class="text-xs text-slate-700 space-y-1 list-disc list-inside">
-            <li>Select <strong>Sale</strong> invoice type</li>
-            <li>Upload photo of the receipt</li>
-            <li>AI extracts items, customer name, phone, and email</li>
-            <li>Review and click <strong>Deduct from Stock &amp; Save</strong></li>
-            <li>Stock is reduced from the selected branch</li>
+            <li>Select <strong>Sale</strong> type</li>
+            <li>Upload receipt photo</li>
+            <li>System extracts products, customer name &amp; phone</li>
+            <li>Click <strong>Deduct from Stock &amp; Save</strong></li>
           </ul>
         </div>
-        <div class="bg-purple-50 border border-purple-200 rounded-xl p-4">
-          <div class="font-bold text-purple-900 mb-2">📦 Mode B: Supplier Invoice (New Stock)</div>
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+          <div class="font-bold text-slate-900 mb-2">&#128230; Mode B: Supplier Invoice</div>
           <ul class="text-xs text-slate-700 space-y-1 list-disc list-inside">
             <li>Select <strong>New Stock / Supplier</strong> type</li>
-            <li>Upload photo of delivery invoice (e.g. INGLOT)</li>
-            <li>AI extracts all SKUs, quantities, and cost prices</li>
-            <li>Review and click <strong>Create PO &amp; Add to Stock</strong></li>
-            <li>A Purchase Order is created and stock is added</li>
+            <li>Upload supplier invoice photo</li>
+            <li>System extracts SKUs, quantities &amp; prices</li>
+            <li>Click <strong>Create PO &amp; Add to Stock</strong></li>
           </ul>
         </div>
       </div>
-      <h4 class="font-bold text-slate-800 mb-3 text-sm">Step-by-Step:</h4>
-      <div class="step"><div class="step-num">1</div><div class="text-sm text-slate-700">Click <strong>Invoice OCR</strong>. Select invoice type, branch, and date.</div></div>
-      <div class="step"><div class="step-num">2</div><div class="text-sm text-slate-700">Drag &amp; drop the invoice photo, or click to browse. Supported: JPG, PNG, HEIC.</div></div>
-      <div class="step"><div class="step-num">3</div><div class="text-sm text-slate-700">Click <strong>Analyze with AI</strong>. The system compresses the image and sends it to GPT-4o Vision. Takes 5&ndash;15 seconds.</div></div>
-      <div class="step"><div class="step-num">4</div><div class="text-sm text-slate-700">Review the extracted table. Each row shows SKU, Description, Qty, Price, and a <span class="badge-green">Matched</span> or <span class="badge-yellow">Not found</span> badge.</div></div>
-      <div class="step"><div class="step-num">5</div><div class="text-sm text-slate-700">Edit any incorrect values in the table. Delete unwanted rows with the ✕ button.</div></div>
-      <div class="step"><div class="step-num">6</div><div class="text-sm text-slate-700">Click the import button to commit to Airtable. All stock changes are applied immediately.</div></div>
-      <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-4 text-xs text-amber-800"><strong>⚠️ "Not found":</strong> The product does not exist in your Airtable catalogue yet. For sales, the transaction saves with a note. For supplier invoices, add the product to Airtable or correct the SKU before importing.</div>
+
+      <div class="step"><div class="step-num">1</div><div class="text-sm text-slate-700">Click <strong>Invoice Scanner</strong>. Choose type, branch and date.</div></div>
+      <div class="step"><div class="step-num">2</div><div class="text-sm text-slate-700">Upload the photo (JPG, PNG, HEIC). Make sure the image is clear and well-lit.</div></div>
+      <div class="step"><div class="step-num">3</div><div class="text-sm text-slate-700">Click <strong>Analyze</strong>. Wait 5&ndash;15 seconds for the AI to read the image.</div></div>
+      <div class="step"><div class="step-num">4</div><div class="text-sm text-slate-700">Review the table: catalog number, product name, quantity, price, and match badge per row.</div></div>
+      <div class="step"><div class="step-num">5</div><div class="text-sm text-slate-700">Fix any wrong values. Use &#10005; to remove a row. Use <strong>&#128279; Link</strong> on "Not found" rows.</div></div>
+      <div class="step"><div class="step-num">6</div><div class="text-sm text-slate-700">Click the import button &mdash; all changes go to Airtable immediately.</div></div>
+      <div class="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg text-xs text-blue-800">
+        <strong>VAT, discounts &amp; totals are skipped automatically <span class="new-badge">New</span></strong><br/>
+        Lines for VAT (&#1502;&#1506;"&#1502;), discounts (&#1492;&#1504;&#1495;&#1492;), totals (&#1505;&#1492;"&#1499; / &#1500;&#1514;&#1513;&#1500;&#1493;&#1501;) and shipping are detected and excluded &mdash; they do not affect inventory.
+      </div>
     </div>
 
+    <!-- 2.3 Transfer -->
     <div id="s23" class="mb-10 border-t border-slate-200 pt-8">
-      <h3 class="text-xl font-bold text-indigo-700 mb-3">🔄 2.3 Branch Stock Transfer</h3>
-      <p class="text-slate-600 text-sm mb-3">Move physical stock between store locations.</p>
-      <div class="step"><div class="step-num">1</div><div class="text-sm text-slate-700">Click <strong>Transfer</strong> on the top toolbar.</div></div>
-      <div class="step"><div class="step-num">2</div><div class="text-sm text-slate-700">Select <strong>Source Branch</strong> (From) and <strong>Destination Branch</strong> (To). They must be different.</div></div>
-      <div class="step"><div class="step-num">3</div><div class="text-sm text-slate-700">Search and select the <strong>Product</strong>. Current stock levels per branch are shown.</div></div>
-      <div class="step"><div class="step-num">4</div><div class="text-sm text-slate-700">Enter <strong>Quantity</strong> and <strong>Date</strong>, then click <strong>Execute Transfer</strong>.</div></div>
-      <div class="step"><div class="step-num">5</div><div class="text-sm text-slate-700">Stock deducted from Source and added to Destination simultaneously. Transaction record saved in Airtable.</div></div>
+      <h3 class="text-xl font-bold text-indigo-700 mb-3">&#128260; 2.3 Branch Stock Transfer</h3>
+      <p class="text-slate-600 text-sm mb-3">Move physical stock from one branch to another.</p>
+      <div class="step"><div class="step-num">1</div><div class="text-sm text-slate-700">Click <strong>Transfer</strong>. Select <strong>From</strong> and <strong>To</strong> branch.</div></div>
+      <div class="step"><div class="step-num">2</div><div class="text-sm text-slate-700">Search and select the product. Current stock shown.</div></div>
+      <div class="step"><div class="step-num">3</div><div class="text-sm text-slate-700">Enter quantity and date. Click <strong>Transfer Stock</strong>.</div></div>
+      <div class="step"><div class="step-num">4</div><div class="text-sm text-slate-700">Stock deducted from source, added to destination. Record saved to Airtable.</div></div>
     </div>
 
+    <!-- 2.4 and 2.5 -->
     <div class="border-t border-slate-200 pt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
       <div id="s24">
-        <h3 class="text-lg font-bold text-indigo-700 mb-3">✏️ 2.4 Manual Transactions</h3>
-        <p class="text-xs text-slate-600 mb-3">For one-off entries: single sales, damaged goods write-offs, manual corrections.</p>
-        <div class="step"><div class="step-num">1</div><div class="text-sm text-slate-700">Click <strong>Manual Transaction</strong>.</div></div>
-        <div class="step"><div class="step-num">2</div><div class="text-sm text-slate-700">Select <strong>Type</strong>: Sale / Stock Received / Transfer / Manual Correction.</div></div>
-        <div class="step"><div class="step-num">3</div><div class="text-sm text-slate-700">Search product, select branch, set quantity and date.</div></div>
-        <div class="step"><div class="step-num">4</div><div class="text-sm text-slate-700">Optionally fill in customer info and a reference note.</div></div>
-        <div class="step"><div class="step-num">5</div><div class="text-sm text-slate-700">Click <strong>Save Transaction</strong>.</div></div>
+        <h3 class="text-lg font-bold text-indigo-700 mb-1">&#9999;&#65039; 2.4 Manual Transaction <span class="new-badge">Updated</span></h3>
+        <p class="text-xs text-slate-600 mb-3 mt-1">Record sales, returns, or corrections. Now supports <strong>multiple products</strong> in one transaction.</p>
+        <div class="step"><div class="step-num">1</div><div class="text-sm text-slate-700">Click <strong>Manual Transaction</strong>. Select type, branch and date.</div></div>
+        <div class="step"><div class="step-num">2</div><div class="text-sm text-slate-700">Search and select the first product. Enter quantity.</div></div>
+        <div class="step"><div class="step-num">3</div><div class="text-sm text-slate-700">Click <strong>+ Add Product</strong> to add more products to the same transaction.</div></div>
+        <div class="step"><div class="step-num">4</div><div class="text-sm text-slate-700">For Sales: optionally fill customer name and phone.</div></div>
+        <div class="step"><div class="step-num">5</div><div class="text-sm text-slate-700">Click <strong>Save Transaction</strong> &mdash; all products saved together.</div></div>
+        <div class="bg-green-50 border border-green-200 rounded-lg p-3 mt-2 text-xs text-green-800">One transaction, multiple products &mdash; no need to repeat for each item.</div>
       </div>
       <div id="s25">
-        <h3 class="text-lg font-bold text-indigo-700 mb-3">📦 2.5 Purchase Orders (POs)</h3>
-        <p class="text-xs text-slate-600 mb-3">Track supplier shipments from order through to receiving into stock.</p>
-        <div class="step"><div class="step-num">1</div><div class="text-sm text-slate-700">Click <strong>New PO</strong>. Fill in Supplier, Product, Qty, Cost, and Destination Branch.</div></div>
-        <div class="step"><div class="step-num">2</div><div class="text-sm text-slate-700">Status moves: <span class="badge-blue">Draft</span> &rarr; <span class="badge-yellow">Ordered</span>.</div></div>
-        <div class="step"><div class="step-num">3</div><div class="text-sm text-slate-700">When shipment arrives, open the <strong>Purchase Orders</strong> view.</div></div>
-        <div class="step"><div class="step-num">4</div><div class="text-sm text-slate-700">Click <strong>Mark as Received</strong>. Enter qty and date. Stock is added automatically. Status becomes <span class="badge-green">Received</span>.</div></div>
+        <h3 class="text-lg font-bold text-indigo-700 mb-1">&#128230; 2.5 Purchase Orders <span class="new-badge">Updated</span></h3>
+        <p class="text-xs text-slate-600 mb-3 mt-1">Track supplier orders. Now supports <strong>multiple products</strong> per PO.</p>
+        <div class="step"><div class="step-num">1</div><div class="text-sm text-slate-700">Click <strong>New PO</strong>. Fill PO Number, Supplier, Branch, Date.</div></div>
+        <div class="step"><div class="step-num">2</div><div class="text-sm text-slate-700">Select first product, enter quantity and cost price.</div></div>
+        <div class="step"><div class="step-num">3</div><div class="text-sm text-slate-700">Click <strong>+ Add Product</strong> for more items in the same order.</div></div>
+        <div class="step"><div class="step-num">4</div><div class="text-sm text-slate-700">Click <strong>Create Order</strong>. Status: Draft &rarr; Ordered.</div></div>
+        <div class="step"><div class="step-num">5</div><div class="text-sm text-slate-700">When goods arrive, click <strong>Mark as Received</strong> &mdash; stock added automatically.</div></div>
       </div>
     </div>
   </div>
 
+  <!-- Section 3: Match Memory -->
   <div id="s3" class="card p-6 md:p-8 mb-8">
-    <h2 class="text-2xl font-bold text-slate-900 mb-4 pb-2 border-b border-slate-200">3. OCR Smart Product Matching — How It Works</h2>
-    <p class="text-slate-600 text-sm mb-6">When the AI extracts a product from an invoice, it tries to find a match in your Airtable Products catalogue using 3 levels — from most precise to most flexible.</p>
-    <div class="space-y-4">
-      <div class="flex gap-4 items-start bg-green-50 border border-green-200 rounded-xl p-4">
-        <div class="text-2xl font-black text-green-700 min-w-8">1</div>
-        <div><div class="font-bold text-green-900 mb-1">Exact SKU Match</div><div class="text-xs text-slate-700">Invoice SKU exactly matches a product SKU in Airtable (case-insensitive). Fastest and most accurate.</div><div class="text-xs text-slate-500 mt-1">Example: Invoice SKU <code>5901905033</code> &rarr; Product SKU <code>5901905033</code> ✅</div></div>
+    <h2 class="text-2xl font-bold text-slate-900 mb-2 pb-2 border-b border-slate-200">3. Invoice Match Memory <span class="new-badge">New in v5.0</span></h2>
+    <p class="text-slate-600 text-sm mb-6 mt-2">When the system reads an invoice and cannot identify a product automatically, you can link it manually once. The system remembers it forever &mdash; no AI needed next time.</p>
+    <div class="space-y-4 mb-6">
+      <div class="flex gap-4 items-start bg-amber-50 border border-amber-200 rounded-xl p-4">
+        <div class="text-2xl font-black text-amber-700 min-w-8">1</div>
+        <div>
+          <div class="font-bold text-amber-900 mb-1">Product shows "Not found"</div>
+          <div class="text-xs text-slate-700">Invoice description does not match any product automatically.</div>
+          <div class="mt-2"><span class="badge-yellow"> Not found</span> <span style="margin-left:6px;background:#4f46e5;color:#fff;border-radius:5px;padding:2px 10px;font-size:11px;font-weight:600;display:inline-block;">&#128279; Link</span></div>
+        </div>
       </div>
       <div class="flex gap-4 items-start bg-blue-50 border border-blue-200 rounded-xl p-4">
         <div class="text-2xl font-black text-blue-700 min-w-8">2</div>
-        <div><div class="font-bold text-blue-900 mb-1">Partial SKU Match</div><div class="text-xs text-slate-700">If OCR reads a truncated barcode, the system checks if the invoice SKU <em>contains</em> or <em>starts with</em> a known product SKU (min. 6 digits). Handles photos that cut off part of a barcode.</div><div class="text-xs text-slate-500 mt-1">Example: Invoice SKU <code>59019050334</code> &rarr; matches Product SKU <code>5901905033</code> ✅</div></div>
+        <div>
+          <div class="font-bold text-blue-900 mb-1">Click "&#128279; Link" and select the correct product</div>
+          <div class="text-xs text-slate-700">A search opens. Type name or catalog number and pick the right product.</div>
+        </div>
       </div>
-      <div class="flex gap-4 items-start bg-purple-50 border border-purple-200 rounded-xl p-4">
-        <div class="text-2xl font-black text-purple-700 min-w-8">3</div>
-        <div><div class="font-bold text-purple-900 mb-1">Description Keyword Match</div><div class="text-xs text-slate-700">Last resort — significant words from the product name in your catalogue must all appear in the invoice description text.</div><div class="text-xs text-slate-500 mt-1">Example: <code>INGLOT ALL COVERED UNDER EYE</code> &rarr; matches product <code>All Covered Under Eye</code> ✅</div></div>
+      <div class="flex gap-4 items-start bg-green-50 border border-green-200 rounded-xl p-4">
+        <div class="text-2xl font-black text-green-700 min-w-8">3</div>
+        <div>
+          <div class="font-bold text-green-900 mb-1">Remembered forever &mdash; zero effort next time</div>
+          <div class="text-xs text-slate-700">Next time the same wording appears on any invoice it matches automatically, with no confirmation needed.</div>
+          <div class="mt-2"><span class="badge-green">&#10003; Premakeup Moisturizer <span style="font-size:10px;opacity:.7;">(remembered)</span></span></div>
+        </div>
       </div>
-      <div class="flex gap-4 items-start bg-amber-50 border border-amber-200 rounded-xl p-4">
-        <div class="text-2xl font-black text-amber-700 min-w-8">✕</div>
-        <div><div class="font-bold text-amber-900 mb-1">Not Found</div><div class="text-xs text-slate-700">None of the 3 levels matched. The product does not exist in your Airtable Products catalogue. Add it manually in Airtable, or correct the SKU in the OCR row before importing.</div></div>
-      </div>
+    </div>
+    <h3 class="font-bold text-slate-800 mb-3 text-sm">Automatic matching levels (tried in order):</h3>
+    <div class="space-y-3">
+      <div class="flex gap-3 items-center bg-purple-50 border border-purple-200 rounded-lg p-3"><span class="badge-purple">Level 0</span><div class="text-xs text-slate-700"><strong>Saved memory</strong> &mdash; you confirmed this match before &rarr; instant match, no AI</div></div>
+      <div class="flex gap-3 items-center bg-green-50 border border-green-200 rounded-lg p-3"><span class="badge-green">Level 1</span><div class="text-xs text-slate-700"><strong>Exact catalog number</strong> &mdash; SKU on invoice matches Airtable SKU exactly (e.g. 100059)</div></div>
+      <div class="flex gap-3 items-center bg-blue-50 border border-blue-200 rounded-lg p-3"><span class="badge-blue">Level 2</span><div class="text-xs text-slate-700"><strong>Partial SKU</strong> &mdash; barcode on invoice partially matches a known SKU</div></div>
+      <div class="flex gap-3 items-center bg-slate-50 border border-slate-200 rounded-lg p-3"><span class="badge-yellow">Level 3</span><div class="text-xs text-slate-700"><strong>Description keywords</strong> &mdash; key words from product name found in invoice line</div></div>
+      <div class="flex gap-3 items-center bg-red-50 border border-red-200 rounded-lg p-3"><span class="badge-red">Not found</span><div class="text-xs text-slate-700">No match &rarr; click <strong>&#128279; Link</strong> to confirm and teach the system</div></div>
     </div>
   </div>
 
-  <div id="s4" class="card p-6 md:p-8 mb-8 bg-amber-50/50 border border-amber-200">
-    <h2 class="text-xl font-bold text-amber-900 mb-4">🛡️ 4. Data Integrity &amp; Business Rules</h2>
-    <div class="space-y-4 text-sm">
-      <div class="bg-white p-4 rounded-lg border border-amber-200"><strong class="text-amber-900">Customer Identification:</strong><p class="text-xs text-slate-700 mt-1">Matched via <code>Phone &rarr; Email &rarr; Exact Name &rarr; Partial Name</code>. If no match is found, the sale saves without a customer link. The system <strong>never auto-creates fake customer records</strong>.</p></div>
-      <div class="bg-white p-4 rounded-lg border border-amber-200"><strong class="text-amber-900">Stock Minimum Floor:</strong><p class="text-xs text-slate-700 mt-1">Branch stock is never allowed to go below zero. If a sale deducts more than available, the stock floors at 0.</p></div>
-      <div class="bg-white p-4 rounded-lg border border-amber-200"><strong class="text-amber-900">Supplier vs Sales Invoices:</strong><ul class="list-disc list-inside text-xs text-slate-700 mt-1 space-y-1"><li><strong>Supplier Invoices:</strong> Add stock to destination branch and create a PO record.</li><li><strong>Sales Invoices &amp; POS Uploads:</strong> Deduct stock from selected branch. Missing products save with a note — no auto-creation to prevent corrupted entries.</li></ul></div>
-      <div class="bg-white p-4 rounded-lg border border-amber-200"><strong class="text-amber-900">Real-Time Airtable Sync:</strong><p class="text-xs text-slate-700 mt-1">Every action writes directly to Airtable in real-time. No batch sync required. The "Updated" timestamp (bottom-left) shows the last successful sync.</p></div>
-      <div class="bg-white p-4 rounded-lg border border-amber-200"><strong class="text-amber-900">Minimum Stock Alerts:</strong><p class="text-xs text-slate-700 mt-1">If a branch's stock for a product falls below its minimum threshold (set per-product in Airtable), the product appears in the <strong>Low Stock</strong> banner on the Overview page.</p></div>
+  <!-- Section 4: Negative Inventory -->
+  <div id="s4" class="card p-6 md:p-8 mb-8 border-l-4 border-red-400">
+    <h2 class="text-xl font-bold text-red-900 mb-2">&#9888;&#65039; 4. Negative Inventory Alerts <span class="new-badge">New in v5.0</span></h2>
+    <p class="text-slate-600 text-sm mt-2 mb-4">Previously the system stopped at 0 even if more units were sold than available. Now it shows the real number &mdash; including negatives &mdash; so gaps are visible.</p>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+      <div class="bg-white border border-red-200 rounded-xl p-4">
+        <div class="font-bold text-red-900 mb-2 text-sm">What you'll see</div>
+        <ul class="text-xs text-slate-700 space-y-2 list-disc list-inside">
+          <li>A red <strong>&#9888;&#65039; Negative Stock</strong> banner on the Overview page</li>
+          <li>Stock values in <strong style="color:#dc2626;">red</strong> in the Products table for affected items</li>
+          <li>The exact deficit shown (e.g. <strong style="color:#dc2626;">&#9888; -3</strong>)</li>
+        </ul>
+      </div>
+      <div class="bg-white border border-red-200 rounded-xl p-4">
+        <div class="font-bold text-red-900 mb-2 text-sm">Why it matters</div>
+        <ul class="text-xs text-slate-700 space-y-2 list-disc list-inside">
+          <li>Flags a gap that needs investigation</li>
+          <li>Could be: missing delivery, unrecorded transfer, counting error</li>
+          <li>Previously gaps disappeared to 0 silently &mdash; now they're visible</li>
+        </ul>
+      </div>
+    </div>
+    <div class="bg-red-50 border border-red-200 rounded-lg p-3 text-xs text-red-800">
+      <strong>Example:</strong> 2 units in stock, 5 sold &rarr; shows <strong>-3</strong> instead of 0. Investigate: was there a missing delivery or an extra entry?
     </div>
   </div>
 
-  <div id="s5" class="card p-6 md:p-8 mb-8">
-    <h2 class="text-2xl font-bold text-slate-900 mb-4 pb-2 border-b border-slate-200">5. Troubleshooting &amp; FAQs</h2>
-    <div class="space-y-4">
-      <div class="border border-slate-200 rounded-xl overflow-hidden"><div class="bg-red-50 px-4 py-3 font-semibold text-red-800 text-sm">❌ Error loading: AT 401</div><div class="px-4 py-3 text-xs text-slate-700">The Airtable API token is missing or expired. Contact your admin to update the token in the app configuration.</div></div>
-      <div class="border border-slate-200 rounded-xl overflow-hidden"><div class="bg-red-50 px-4 py-3 font-semibold text-red-800 text-sm">❌ OCR error: Failed to fetch</div><div class="px-4 py-3 text-xs text-slate-700">Try: (1) Use a clearer photo. (2) Check your internet connection. (3) Hard-refresh the page (Ctrl+Shift+R) and try again.</div></div>
-      <div class="border border-slate-200 rounded-xl overflow-hidden"><div class="bg-red-50 px-4 py-3 font-semibold text-red-800 text-sm">❌ OCR error: OpenAI 401 — Incorrect API key</div><div class="px-4 py-3 text-xs text-slate-700">The OpenAI key has been revoked. A new key must be generated at <code>platform.openai.com/api-keys</code> and updated by your admin.</div></div>
-      <div class="border border-slate-200 rounded-xl overflow-hidden"><div class="bg-amber-50 px-4 py-3 font-semibold text-amber-800 text-sm">⚠️ Products showing "Not found" after OCR</div><div class="px-4 py-3 text-xs text-slate-700">The product does not exist in Airtable yet. Either: (a) add it to the Products table in Airtable and retry, or (b) manually correct the SKU in the OCR row to match an existing product before importing.</div></div>
-      <div class="border border-slate-200 rounded-xl overflow-hidden"><div class="bg-amber-50 px-4 py-3 font-semibold text-amber-800 text-sm">⚠️ Dashboard shows dashes (--) for all stock values</div><div class="px-4 py-3 text-xs text-slate-700">Data is still loading from Airtable. Wait 5–10 seconds. If dashes persist, click <strong>Refresh Data</strong> in the bottom-left sidebar. If the issue continues, check your internet connection.</div></div>
-      <div class="border border-slate-200 rounded-xl overflow-hidden"><div class="bg-slate-50 px-4 py-3 font-semibold text-slate-800 text-sm">❓ How do I add a new product to the catalogue?</div><div class="px-4 py-3 text-xs text-slate-700">Go to your <strong>Airtable base</strong> &rarr; Products table &rarr; add a new row with SKU, Name, Brand, Cost Price, Sale Price, and minimum stock thresholds. The dashboard picks it up automatically on next refresh.</div></div>
-      <div class="border border-slate-200 rounded-xl overflow-hidden"><div class="bg-slate-50 px-4 py-3 font-semibold text-slate-800 text-sm">❓ Can I use Invoice OCR on a PDF?</div><div class="px-4 py-3 text-xs text-slate-700">Yes. Take a screenshot of the PDF as a JPG or PNG and upload that image. The AI reads both printed and handwritten text in Hebrew and English.</div></div>
-      <div class="border border-slate-200 rounded-xl overflow-hidden"><div class="bg-slate-50 px-4 py-3 font-semibold text-slate-800 text-sm">❓ What if I import a POS file twice by mistake?</div><div class="px-4 py-3 text-xs text-slate-700">Each import creates new transaction records and deducts stock again. To fix a duplicate, use <strong>Manual Transaction</strong> (type: Manual Correction, positive quantity) to add back the excess deducted stock for the affected branch and product.</div></div>
+  <!-- Section 5: Data Rules -->
+  <div id="s5" class="card p-6 md:p-8 mb-8 bg-amber-50/50 border border-amber-200">
+    <h2 class="text-xl font-bold text-amber-900 mb-4">&#128737;&#65039; 5. Data Rules &amp; Notes</h2>
+    <div class="space-y-3 text-sm">
+      <div class="bg-white p-4 rounded-lg border border-amber-200"><strong class="text-amber-900">Customer matching:</strong><p class="text-xs text-slate-700 mt-1">Matched by Phone &rarr; Email &rarr; Name. If not found the transaction saves without a customer link. No fake records are created.</p></div>
+      <div class="bg-white p-4 rounded-lg border border-amber-200"><strong class="text-amber-900">Sale vs Supplier invoices:</strong><p class="text-xs text-slate-700 mt-1">Sale invoices deduct stock. Supplier invoices add stock and create a Purchase Order record.</p></div>
+      <div class="bg-white p-4 rounded-lg border border-amber-200"><strong class="text-amber-900">Real-time sync:</strong><p class="text-xs text-slate-700 mt-1">Every action saves directly to Airtable. No batch processing. The refresh button (bottom-left) reloads latest data.</p></div>
+      <div class="bg-white p-4 rounded-lg border border-amber-200"><strong class="text-amber-900">Adding a new product:</strong><p class="text-xs text-slate-700 mt-1">Go to your <strong>Airtable base &rarr; Products table</strong>, add a new row with SKU, name, prices and minimum stock. Dashboard picks it up on next refresh.</p></div>
+      <div class="bg-white p-4 rounded-lg border border-amber-200"><strong class="text-amber-900">Duplicate POS import:</strong><p class="text-xs text-slate-700 mt-1">If you import a file twice, use <strong>Manual Transaction &rarr; Manual Correction</strong> (positive quantity) to restore the extra-deducted stock.</p></div>
     </div>
   </div>
 
-  <div class="text-center text-xs text-slate-400 py-6">makeupstatic Inventory Management Dashboard &bull; Version 4.0 &bull; August 2026<br/>Live at: <strong class="text-slate-500">makeupstatic.vercel.app</strong></div>
+  <!-- Section 6: FAQ -->
+  <div id="s6" class="card p-6 md:p-8 mb-8">
+    <h2 class="text-2xl font-bold text-slate-900 mb-4 pb-2 border-b border-slate-200">6. Troubleshooting &amp; FAQs</h2>
+    <div class="space-y-3">
+      <div class="border border-slate-200 rounded-xl overflow-hidden"><div class="bg-red-50 px-4 py-3 font-semibold text-red-800 text-sm">&#10060; Dashboard not loading / showing dashes</div><div class="px-4 py-3 text-xs text-slate-700">Wait 5&ndash;10 seconds. Click <strong>Refresh Data</strong> (bottom-left). Check internet connection.</div></div>
+      <div class="border border-slate-200 rounded-xl overflow-hidden"><div class="bg-red-50 px-4 py-3 font-semibold text-red-800 text-sm">&#10060; Invoice scan error or nothing extracted</div><div class="px-4 py-3 text-xs text-slate-700">Use a clearer, well-lit photo with the full invoice visible. Hard-refresh (Ctrl+Shift+R on desktop) and try again.</div></div>
+      <div class="border border-slate-200 rounded-xl overflow-hidden"><div class="bg-amber-50 px-4 py-3 font-semibold text-amber-800 text-sm">&#9888;&#65039; Products showing "Not found" after scanning</div><div class="px-4 py-3 text-xs text-slate-700">Click <strong>&#128279; Link</strong> next to the row, select the correct product &mdash; it will be remembered for all future invoices automatically.</div></div>
+      <div class="border border-slate-200 rounded-xl overflow-hidden"><div class="bg-amber-50 px-4 py-3 font-semibold text-amber-800 text-sm">&#9888;&#65039; Red "Negative Stock" banner on Overview</div><div class="px-4 py-3 text-xs text-slate-700">One or more products have more units sold than in stock. Go to Products, find the red values, and investigate &mdash; check for a missed delivery or duplicate sale entry.</div></div>
+      <div class="border border-slate-200 rounded-xl overflow-hidden"><div class="bg-slate-50 px-4 py-3 font-semibold text-slate-800 text-sm">&#10067; Can I scan a PDF invoice?</div><div class="px-4 py-3 text-xs text-slate-700">Yes &mdash; take a screenshot of the PDF and upload the image. Reads Hebrew and English text, printed and handwritten.</div></div>
+      <div class="border border-slate-200 rounded-xl overflow-hidden"><div class="bg-slate-50 px-4 py-3 font-semibold text-slate-800 text-sm">&#10067; Jerusalem branch receipts don't have catalog numbers yet</div><div class="px-4 py-3 text-xs text-slate-700">The system still tries to match by product name automatically. Once Jerusalem registers are updated to print catalog numbers, matching will become fully automatic there too.</div></div>
+      <div class="border border-slate-200 rounded-xl overflow-hidden"><div class="bg-slate-50 px-4 py-3 font-semibold text-slate-800 text-sm">&#10067; How do I fix a wrong transaction?</div><div class="px-4 py-3 text-xs text-slate-700">Use <strong>Manual Transaction &rarr; Manual Correction</strong> to add or remove the difference. For example if you accidentally deducted 5 instead of 3, add a correction of +2.</div></div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="text-center text-xs text-slate-400 py-6">
+    makeupstatic Inventory Management Dashboard &bull; Version 5.0 &bull; August 2026<br/>
+    Live at: <strong class="text-slate-500">makeupstatic.vercel.app</strong>
+  </div>
 
 </body>
 </html>
