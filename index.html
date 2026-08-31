@@ -234,8 +234,8 @@
  <!-- ── TRANSACTIONS ──────────────────────────────────── -->
  <div class="page" id="page-transactions">
  <div class="fbar">
- <select id="tx-br" onchange="filterTx()" style="min-width:140px;"><option value="">All Branches</option><option>Beitar</option><option>Beit Shemesh</option><option>Jerusalem</option></select>
- <select id="tx-ty" onchange="filterTx()" style="min-width:155px;"><option value="">All Types</option><option>Sale</option><option>Stock Received</option><option>Transfer</option><option>Manual Correction</option></select>
+ <select id="tx-br" translate="no" onchange="filterTx()" style="min-width:140px;"><option value="">All Branches</option><option value="Beitar">Beitar</option><option value="Beit Shemesh">Beit Shemesh</option><option value="Jerusalem">Jerusalem</option></select>
+ <select id="tx-ty" onchange="filterTx()" style="min-width:155px;"><option value="">All Types</option><option value="Sale">Sale</option><option value="Stock Received">Stock Received</option><option value="Transfer">Transfer</option><option value="Manual Correction">Manual Correction</option></select>
  <select id="tx-src" onchange="filterTx()" style="min-width:145px;"><option value="">All Sources</option><option>POS</option><option>AI Message</option><option>Purchase Order</option><option>Manual</option></select>
  <input type="date" id="tx-fr" onchange="filterTx()" style="min-width:130px;"/>
  <input type="date" id="tx-to" onchange="filterTx()" style="min-width:130px;"/>
@@ -326,7 +326,7 @@
  <div id="ps-1">
  <div class="a-i" style="margin-bottom:14px;"> Upload <strong>both</strong> POS Excel files together. They are linked by Invoice Number to match each product line to the correct customer.</div>
  <div class="g2">
- <div class="fld"><label>Branch *</label><select id="pos-br"><option value="">Select branch...</option><option>Beitar</option><option>Beit Shemesh</option><option>Jerusalem</option></select></div>
+ <div class="fld"><label>Branch *</label><select id="pos-br" translate="no"><option value="">Select branch...</option><option value="Beitar">Beitar</option><option value="Beit Shemesh">Beit Shemesh</option><option value="Jerusalem">Jerusalem</option></select></div>
  <div class="fld"><label>Sale Date *</label><input type="date" id="pos-dt"/></div>
  </div>
  <div class="fld"><label>Notes (optional)</label><input type="text" id="pos-note" placeholder="e.g. Daily sales 19 Aug"/></div>
@@ -409,7 +409,7 @@
  </div>
  <img id="ocr-img" class="img-prev" style="display:none;margin-top:12px;"/>
  <div style="margin-top:14px;" class="g2">
- <div class="fld"><label>Branch *</label><select id="ocr-br"><option value="">Select branch...</option><option>Beitar</option><option>Beit Shemesh</option><option>Jerusalem</option></select></div>
+ <div class="fld"><label>Branch *</label><select id="ocr-br" translate="no"><option value="">Select branch...</option><option value="Beitar">Beitar</option><option value="Beit Shemesh">Beit Shemesh</option><option value="Jerusalem">Jerusalem</option></select></div>
  <div class="fld"><label>Date *</label><input type="date" id="ocr-dt"/></div>
  </div>
  <!-- Customer field (shown for Sale type only) -->
@@ -455,13 +455,13 @@
  <div class="m-body">
  <div class="g3">
  <div class="fld"><label>Transaction Type *</label>
- <select id="tx-type" onchange="updateTxType()">
+ <select id="tx-type" translate="no" onchange="updateTxType()">
  <option value="">Select type...</option>
  <option value="Sale">Sale (reduces stock)</option>
  <option value="Stock Received">Receive Stock (increases stock)</option>
  <option value="Manual Correction">Manual Correction</option>
  </select></div>
- <div class="fld"><label>Branch *</label><select id="tx-br2"><option value="">Select...</option><option>Beitar</option><option>Beit Shemesh</option><option>Jerusalem</option></select></div>
+ <div class="fld"><label>Branch *</label><select id="tx-br2" translate="no"><option value="">Select...</option><option value="Beitar">Beitar</option><option value="Beit Shemesh">Beit Shemesh</option><option value="Jerusalem">Jerusalem</option></select></div>
  <div class="fld"><label>Date *</label><input type="date" id="tx-dt2"/></div>
  </div>
  <div class="fld"><label>Reference / Invoice #</label><input type="text" id="tx-ref" placeholder="e.g. INV-001"/></div>
@@ -499,9 +499,9 @@
  <div style="display:flex;gap:16px;font-size:13px;"><span> Beitar: <strong id="ts-b">--</strong></span><span> Beit Sh: <strong id="ts-bs">--</strong></span><span> Jerusalem: <strong id="ts-j">--</strong></span></div>
  </div>
  <div style="display:grid;grid-template-columns:1fr 28px 1fr;gap:6px;align-items:flex-end;margin-bottom:12px;">
- <div class="fld" style="margin:0;"><label>From *</label><select id="trf-fr"><option value="">Select...</option><option>Beitar</option><option>Beit Shemesh</option><option>Jerusalem</option></select></div>
+ <div class="fld" style="margin:0;"><label>From *</label><select id="trf-fr" translate="no"><option value="">Select...</option><option value="Beitar">Beitar</option><option value="Beit Shemesh">Beit Shemesh</option><option value="Jerusalem">Jerusalem</option></select></div>
  <div style="text-align:center;font-size:20px;padding-bottom:8px;">&rarr;</div>
- <div class="fld" style="margin:0;"><label>To *</label><select id="trf-to"><option value="">Select...</option><option>Beitar</option><option>Beit Shemesh</option><option>Jerusalem</option></select></div>
+ <div class="fld" style="margin:0;"><label>To *</label><select id="trf-to" translate="no"><option value="">Select...</option><option value="Beitar">Beitar</option><option value="Beit Shemesh">Beit Shemesh</option><option value="Jerusalem">Jerusalem</option></select></div>
  </div>
  <div class="g2">
  <div class="fld"><label>Quantity *</label><input type="number" id="trf-qty" min="1" placeholder="1"/></div>
@@ -526,9 +526,9 @@
  <div class="fld"><label>Supplier *</label><input type="text" id="po-sup" placeholder="Supplier name"/></div>
  </div>
  <div class="g3">
- <div class="fld"><label>Destination Branch *</label><select id="po-br"><option value="">Select...</option><option>Beitar</option><option>Beit Shemesh</option><option>Jerusalem</option></select></div>
+ <div class="fld"><label>Destination Branch *</label><select id="po-br" translate="no"><option value="">Select...</option><option value="Beitar">Beitar</option><option value="Beit Shemesh">Beit Shemesh</option><option value="Jerusalem">Jerusalem</option></select></div>
  <div class="fld"><label>Order Date *</label><input type="date" id="po-dt"/></div>
- <div class="fld"><label>Status</label><select id="po-st"><option value="Draft">Draft</option><option value="Ordered">Ordered</option></select></div>
+ <div class="fld"><label>Status</label><select id="po-st" translate="no"><option value="Draft">Draft</option><option value="Ordered">Ordered</option></select></div>
  </div>
  <div style="margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;">
  <label style="font-size:12.5px;font-weight:600;color:#374151;">Products *</label>
