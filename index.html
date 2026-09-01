@@ -1027,16 +1027,23 @@ async function runOCR(){
   document.getElementById('ocr-msg').textContent=' Analysis complete!';document.getElementById('ocr-raw').style.display='block';document.getElementById('ocr-raw').textContent=content;
   const jm=content.match(/\[[\s\S]*\]/);if(!jm)throw new Error('No JSON array found in response');
   function sanitizeJson(raw){
-   let out='',inStr=false,escape=false;
-   for(let i=0;i<raw.length;i++){
-    const c=raw[i];
-    if(escape){out+=c;escape=false;continue;}
-    if(c==='\\'&&inStr){out+=c;escape=true;continue;}
-    if(c==='"'){inStr=!inStr;out+=c;continue;}
-    if(inStr&&(c==='\n'||c==='\r'||c==='\t')){out+=' ';continue;}
-    out+=c;
+   // Step 1: strip markdown code fences
+   let s=raw.replace(/^```[\w]*\n?/,'').replace(/\n?```$/,'').trim();
+   // Step 2: fix bad escape sequences — remove invalid backslash escapes
+   // Valid JSON escapes: \" \\ \/ \b \f \n \r \t \uXXXX
+   s=s.replace(/\\([^"\\\/bfnrtu])/g,'$1');
+   // Step 3: remove literal control chars inside strings (newlines, tabs)
+   let out='',inStr=false,esc=false;
+   for(let i=0;i<s.length;i++){
+    const ch=s[i];
+    if(esc){out+=ch;esc=false;continue;}
+    if(ch==='\\'&&inStr){out+=ch;esc=true;continue;}
+     if(ch=='"'){inStr=!inStr;out+=ch;continue;}
+    if(inStr&&(ch==='\n'||ch==='\r'||ch==='\t')){out+=' ';continue;}
+    out+=ch;
    }
-   return out.replace(/,(\s*[}\]])/g,'$1');
+   // Step 4: strip trailing commas
+   return out.replace(/,([\s\r\n]*[}\]])/g,'$1');
   }
   ocrItems=JSON.parse(sanitizeJson(jm[0]));
   const skippedLines=ocrItems.filter(x=>x.is_product===false);
@@ -1052,6 +1059,11 @@ async function runOCR(){
   renderOcrItems(isSale);
  }catch(e){document.getElementById('ocr-msg').textContent=' Error: '+e.message;toast('OCR error: '+e.message,'err');}
 }
+
+// ── OCR ALIAS MEMORY ───────────────────────────────────────────
+function loadAliasMap(){try{return JSON.parse(localStorage.getItem('ocrAliasMap')||'{}');}catch(e){return{};}}
+function saveAlias(descKey,productId){var m=loadAliasMap();m[String(descKey).toLowerCase().trim()]=productId;localStorage.setItem('ocrAliasMap',JSON.stringify(m));}
+function removeAlias(descKey){var m=loadAliasMap();delete m[String(descKey).toLowerCase().trim()];localStorage.setItem('ocrAliasMap',JSON.stringify(m));}
 
 function findOcrMatch(item){
  // 0. Session-linked (user just linked this session)
