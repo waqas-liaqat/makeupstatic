@@ -172,7 +172,8 @@
 
  <!-- ── OVERVIEW ─────────────────────────────────────── -->
  <div class="page active" id="page-overview">
- <div id="neg-banner" style="display:none;background:#fee2e2;border:1px solid #ef4444;border-radius:10px;padding:11px 16px;margin-bottom:10px;align-items:center;gap:10px;font-size:13.5px;color:#991b1b;">
+ <div id="pend-banner" style="display:none;background:#fefce8;border:1px solid #fbbf24;border-radius:10px;padding:11px 16px;margin-bottom:10px;align-items:center;gap:10px;font-size:13.5px;color:#92400e;"> ⏳ <strong><span id="pend-cnt">0</span> sale records waiting</strong> — products not yet in catalogue. <span id="pend-skus" style="font-family:monospace;font-size:12px;"></span> Add these products to Airtable and they'll import automatically on next refresh.</div>
+<div id="neg-banner" style="display:none;background:#fee2e2;border:1px solid #ef4444;border-radius:10px;padding:11px 16px;margin-bottom:10px;align-items:center;gap:10px;font-size:13.5px;color:#991b1b;">
 
   &#9888; <strong><span id="neg-cnt">0</span> products</strong> have <strong>negative stock</strong> &mdash; inventory gap detected! <span class="cl" onclick="showPage('products')" style="color:#991b1b;text-decoration:underline;">View Products &rarr;</span>
 
@@ -466,6 +467,13 @@
  <div class="fld"><label>Date *</label><input type="date" id="tx-dt2"/></div>
  </div>
  <div class="fld"><label>Reference / Invoice #</label><input type="text" id="tx-ref" placeholder="e.g. INV-001"/></div>
+ <div id="tx-disc-row" style="display:none;">
+ <div class="fld"><label>Discount % <span style="font-weight:400;color:#94a3b8;">for this sale</span></label>
+ <div style="display:flex;align-items:center;gap:8px;">
+ <input type="number" id="tx-disc" value="10" min="0" max="100" step="1" style="width:80px;padding:8px 11px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;" onchange="updateTxDisc()"/>
+ <span style="font-size:13px;color:#64748b;">% discount (default 10%)</span>
+ <span id="tx-disc-preview" style="font-size:12.5px;color:#4f46e5;font-weight:600;"></span>
+ </div></div></div>
  <div id="tx-cust-row" style="display:none;">
  <div class="g3">
  <div class="fld"><label>Customer Name <span style="font-weight:400;color:#94a3b8;">optional</span></label><input type="text" id="tx-cname" placeholder="Customer name"/></div>
@@ -484,6 +492,25 @@
  <button class="btn btn-s" onclick="closeModal('m-tx')">Cancel</button>
  <button class="btn btn-p" id="tx-sub" onclick="submitTx()">Save Transaction</button>
  </div>
+ </div>
+</div>
+
+<!-- ── PRODUCT HISTORY MODAL ─────────────────────────────── -->
+<div class="modal-ov" id="m-hist">
+ <div class="modal m-lg">
+ <div class="m-hdr">
+ <div><h2>📋 Product History</h2><p id="hist-title" style="color:#64748b;font-size:13px;margin:0;"></p></div>
+ <button class="m-x" onclick="closeModal('m-hist')">×</button>
+ </div>
+ <div class="m-body" style="padding:0;">
+ <div style="overflow-x:auto;">
+ <table>
+ <thead><tr><th>Date</th><th>Type</th><th>Branch</th><th style="text-align:center;">Qty</th><th>Source</th><th>Reference</th><th>Notes</th></tr></thead>
+ <tbody id="hist-body"></tbody>
+ </table>
+ </div>
+ </div>
+ <div class="m-foot"><button class="btn btn-s" onclick="closeModal('m-hist')">Close</button></div>
  </div>
 </div>
 
@@ -584,7 +611,8 @@ const F = {
  TX:{ NM:'fldTrE9Kiajfe4rJa', DT:'fldfj9G2GgZS5Y3Z3', PR:'fldStPdh8o2q8j6Zm',
  SKUL:'fldw11ubYvklx7R7y', BR:'fldm9vu1AG4tSW3S3', QTY:'fldNefmLEUUcVkqnG',
  TY:'fldG1JylhezoDAOMS', SRC:'fldGG9lkSAEcivu7w', REF:'fldJE0y4EGZh3Rrrh',
- NO:'flduYxBCHqj8Dc3ZZ', CU:'fldMrGJKZGRrHo9xn' },
+ NO:'flduYxBCHqj8Dc3ZZ', CU:'fldMrGJKZGRrHo9xn',
+  ASP:'' },  // Fill in Airtable field ID for 'Actual Selling Price'
  PO:{ NUM:'fldWlUsOswthVR6xs', SUP:'fldFu1bj5QbQDxJda', DT:'fldSgj01Zf6wIxhHi',
  PR:'fldzQFcjQphapvfm1', SKUL:'fldNGbCLPUhyKtsS9', QTY:'fldKKVhaxyzE2bwxb',
  COST:'fldMjaMDspM0rBzsA', DEST:'fldqTydOJAvIMY0Lx', STAT:'fldND3CHtp4EqLjF7',
@@ -716,7 +744,7 @@ function pNmPO(po){const f=po.fields,skus=f[F.PO.SKUL];if(skus&&skus.length)retu
 async function loadAll(){
  document.getElementById('last-upd').textContent='Loading...';
  try{
- await Promise.all([ldP(),ldTX(),ldPO(),ldAI(),ldCU()]);
+ await Promise.all([ldP(),ldTX(),ldPO(),ldAI(),ldCU()]);renderPendingBanner();setTimeout(retryPending,500);
  document.getElementById('last-upd').textContent=new Date().toLocaleTimeString('en-GB');
  renderOverview();
  }catch(e){toast('Error loading: '+e.message,'err');document.getElementById('last-upd').textContent='Error';}
@@ -761,11 +789,31 @@ function filterProds(){
 function renderProds(){
  document.getElementById('p-cnt').textContent=filtP.length;
  const sc=(v,m)=>{const isNeg=v<0;const lo=!isNeg&&m>0&&v<m;return`<td style="text-align:center;${isNeg?'color:#dc2626;font-weight:800;background:#fef2f2;':lo?'color:#ef4444;font-weight:700;':''}">${v}${m?`<span style="font-size:10px;color:${lo?'#ef4444':'#94a3b8'};">/min${m}</span>`:''}</td>`;};
- document.getElementById('prod-body').innerHTML=filtP.length?filtP.map(p=>{const f=p.fields,b=f[F.P.B]??0,bs=f[F.P.BS]??0,j=f[F.P.J]??0,mb=f[F.P.MB]??0,mbs=f[F.P.MBS]??0,mj=f[F.P.MJ]??0,lo=isLow(f);return`<tr${lo?' class="row-low"':''}><td class="mono" style="color:#4f46e5;">${esc(f[F.P.SKU]||'--')}</td><td style="font-size:13px;">${esc(f[F.P.BR]||'--')}</td><td style="font-weight:500;">${esc(f[F.P.NM]||'--')}</td><td style="font-size:13px;color:#64748b;">${esc(f[F.P.SH]||'--')}</td>${sc(b,mb)}${sc(bs,mbs)}${sc(j,mj)}<td style="text-align:center;font-weight:700;">${b+bs+j}</td><td style="text-align:right;">&#8362;${f[F.P.SP]??'--'}</td><td>${lo?'<span class="badge br">Low</span>':'<span class="badge bg">OK</span>'}</td></tr>`;}).join(''):`<tr><td colspan="10"><div class="empty"><div class="ei"></div>No products found</div></td></tr>`;
+ document.getElementById('prod-body').innerHTML=filtP.length?filtP.map(p=>{const f=p.fields,b=f[F.P.B]??0,bs=f[F.P.BS]??0,j=f[F.P.J]??0,mb=f[F.P.MB]??0,mbs=f[F.P.MBS]??0,mj=f[F.P.MJ]??0,lo=isLow(f);return`<tr${lo?' class="row-low"':''}><td class="mono" style="color:#4f46e5;">${esc(f[F.P.SKU]||'--')}</td><td style="font-size:13px;">${esc(f[F.P.BR]||'--')}</td><td style="font-weight:500;">${esc(f[F.P.NM]||'--')}</td><td style="font-size:13px;color:#64748b;">${esc(f[F.P.SH]||'--')}</td>${sc(b,mb)}${sc(bs,mbs)}${sc(j,mj)}<td style="text-align:center;font-weight:700;">${b+bs+j}</td><td style="text-align:right;">&#8362;${f[F.P.SP]??'--'}</td><td>${lo?'<span class="badge br">Low</span>':'<span class="badge bg">OK</span>'}</td><td><button class="btn btn-s btn-xs" onclick="openHistory('${p.id}','${esc(f[F.P.NM]||'')}')">📋 History</button></td></tr>`;}).join(''):`<tr><td colspan="10"><div class="empty"><div class="ei"></div>No products found</div></td></tr>`;
 }
 
 // ── RENDER TRANSACTIONS ────────────────────────────────────────
 function txRow(r,short=false){const f=r.fields,qty=f[F.TX.QTY],qs=qty!=null?(qty>0?`+${qty}`:String(qty)):'--',qc=qty<0?'color:#ef4444;font-weight:700;':(qty>0?'color:#10b981;font-weight:700;':'');if(short)return`<tr><td style="white-space:nowrap;font-size:12.5px;">${fmtDT(f[F.TX.DT])}</td><td style="font-size:13px;max-width:180px;">${esc(pNmTx(r))}</td><td>${brB(f[F.TX.BR])}</td><td>${tyB(f[F.TX.TY])}</td><td style="text-align:center;font-size:15px;${qc}">${qs}</td><td>${srcB(f[F.TX.SRC])}</td><td style="font-size:12.5px;color:#64748b;">${esc(f[F.TX.REF]||'--')}</td><td>${cuHtml(r)}</td></tr>`;return`<tr><td style="white-space:nowrap;font-size:12.5px;">${fmtDT(f[F.TX.DT])}</td><td style="font-size:13px;max-width:160px;">${esc(pNmTx(r))}</td><td>${brB(f[F.TX.BR])}</td><td>${tyB(f[F.TX.TY])}</td><td style="text-align:center;font-size:15px;${qc}">${qs}</td><td>${srcB(f[F.TX.SRC])}</td><td style="font-size:12.5px;color:#64748b;">${esc(f[F.TX.REF]||'--')}</td><td>${cuHtml(r)}</td><td style="font-size:12px;color:#94a3b8;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${esc(f[F.TX.NO]||'')}">${esc(f[F.TX.NO]||'--')}</td></tr>`;}
+function openHistory(productId, productName){
+ const txForProd = allTX.filter(r => {
+  const pr = r.fields[F.TX.PR] || [];
+  return Array.isArray(pr) ? pr.includes(productId) : pr === productId;
+ });
+ document.getElementById('hist-title').textContent = productName + ' — ' + txForProd.length + ' transaction(s)';
+ const qty_col = (qty) => {
+  if(qty == null) return '<td style="text-align:center;">--</td>';
+  const qc = qty<0 ? 'color:#ef4444;font-weight:700;' : 'color:#10b981;font-weight:700;';
+  return '<td style="text-align:center;font-size:14px;'+qc+'">'+(qty>0?'+':'')+qty+'</td>';
+ };
+ document.getElementById('hist-body').innerHTML = txForProd.length
+  ? txForProd.map(r => {
+   const f = r.fields;
+   return '<tr><td style="white-space:nowrap;font-size:12.5px;">'+fmtDT(f[F.TX.DT])+'</td><td>'+tyB(f[F.TX.TY])+'</td><td>'+brB(f[F.TX.BR])+'</td>'+qty_col(f[F.TX.QTY])+'<td>'+srcB(f[F.TX.SRC])+'</td><td style="font-size:12px;color:#64748b;">'+esc(f[F.TX.REF]||'--')+'</td><td style="font-size:12px;color:#94a3b8;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+esc(f[F.TX.NO]||'--')+'</td></tr>';
+  }).join('')
+  : '<tr><td colspan="7"><div class="empty">No transactions found for this product</div></td></tr>';
+ openModal('m-hist');
+}
+
 function filterTx(){const br=document.getElementById('tx-br').value,ty=document.getElementById('tx-ty').value,src=document.getElementById('tx-src').value,fr=document.getElementById('tx-fr').value,to=document.getElementById('tx-to').value;filtTX=allTX.filter(r=>{const f=r.fields;if(br&&f[F.TX.BR]!==br)return false;if(ty&&f[F.TX.TY]!==ty)return false;if(src&&f[F.TX.SRC]!==src)return false;const dt=(f[F.TX.DT]||'').split('T')[0];if(fr&&dt&&dt<fr)return false;if(to&&dt&&dt>to)return false;return true;});txPage=1;renderTX();}
 function clrTxF(){['tx-br','tx-ty','tx-src','tx-fr','tx-to'].forEach(id=>document.getElementById(id).value='');filtTX=[...allTX];txPage=1;renderTX();}
 function chgPg(d){const tot=Math.ceil(filtTX.length/TX_PP)||1;txPage=Math.max(1,Math.min(tot,txPage+d));renderTX();}
@@ -846,7 +894,7 @@ async function parseF1(){
  if(hdr<0){toast('File 1: cannot find header row (מספר חשבונית)','err');return;}
  const hs=rows[hdr].map(h=>String(h).trim());
  const ci=names=>names.map(n=>hs.findIndex(h=>h===n||h.includes(n))).find(x=>x>=0)??-1;
- const iInv=ci(['מספר חשבונית']),iSku=ci(['קוד פריט']),iDesc=ci(['תיאור פריט']),iQty=ci(['כמות']),iPrice=ci(['מחיר נטו ליחידה']),iDate=ci(['תאריך']);
+ const iInv=ci(['מספר חשבונית']),iSku=ci(['קוד פריט']),iDesc=ci(['תיאור פריט']),iQty=ci(['כמות']),iPrice=ci(['מחיר נטו ליחידה']),iDate=ci(['תאריך']),iNetPrice=ci(['מחיר נטו','נטו','Net Price','מחיר נטו ליחידה']);
  if(iInv<0||iSku<0||iQty<0){toast('File 1: missing required columns','err');return;}
  posRows=[];
  for(let i=hdr+1;i<rows.length;i++){
@@ -858,7 +906,8 @@ async function parseF1(){
  const dateStr=parseHebDate(dateRaw.split(' ')[0])||document.getElementById('pos-dt').value;
  const timeStr=dateRaw.includes(' ')?dateRaw.split(' ')[1].substring(0,5):'12:00';
  const prod=allP.find(p=>String(p.fields[F.P.SKU]||'').toLowerCase()===sku.toLowerCase());
- posRows.push({inv,sku,desc,qty,price,dateStr,timeStr,prod});
+ const netPrice=iNetPrice>=0?parseFloat(row[iNetPrice])||0:price;
+  posRows.push({inv,sku,desc,qty,price,netPrice,dateStr,timeStr,prod});
  }
  const st=document.getElementById('f1-st');st.style.display='block';st.textContent=` Parsed ${posRows.length} product lines from "${posF1.name}"`;
  const un=posRows.filter(r=>!r.prod).length;if(un)st.textContent+=` · ${un} SKUs not in Products`;
@@ -936,7 +985,7 @@ async function posImport(){
  !row.prod?` Product not matched: SKU "${row.sku}" — please identify and link in Airtable`:'',
  noteBase
  ].filter(Boolean).join(' | ');
- const flds={[F.TX.NM]:`POS-${row.inv}-${String(seq++).padStart(3,'0')}`,[F.TX.DT]:new Date(dtStr).toISOString(),[F.TX.BR]:branch,[F.TX.QTY]:-row.qty,[F.TX.TY]:'Sale',[F.TX.SRC]:'POS',[F.TX.REF]:row.inv,[F.TX.NO]:noteStr};
+ const flds={[F.TX.NM]:`POS-${row.inv}-${String(seq++).padStart(3,'0')}`,[F.TX.DT]:new Date(dtStr).toISOString(),[F.TX.BR]:branch,[F.TX.QTY]:-row.qty,[F.TX.TY]:'Sale',[F.TX.SRC]:'POS',[F.TX.REF]:row.inv,[F.TX.NO]:noteStr};if(row.netPrice>0&&F.TX.ASP)flds[F.TX.ASP]=row.netPrice;
  if(row.prod){flds[F.TX.PR]=[row.prod.id];stockOps.push({productId:row.prod.id,branch,qtyChange:-row.qty});}
  if(row.cId)flds[F.TX.CU]=[row.cId];
  txFields.push(flds);
@@ -951,6 +1000,11 @@ async function posImport(){
  if(prodNoLink)msg+=` · ${prodNoLink} product(s) not matched — check Airtable → Inventory Transactions`;
  if(custNoLink)msg+=` · ${custNoLink} customer(s) not matched — check Airtable → Customers`;
  toast(msg,prodNoLink||custNoLink?'warn':'ok');
+ if(prodNoLink){
+  const unmatched=posPreview.filter(r=>!r.prod).map(r=>({inv:r.inv,sku:r.sku,desc:r.desc||'',qty:r.qty,price:r.price,netPrice:r.netPrice||r.price||0,dateStr:r.dateStr,branch}));
+  addPending(unmatched);
+  renderPendingBanner();
+ }
  closeModal('m-pos');resetPOS();await loadAll();
  }catch(e){toast('Import failed: '+e.message,'err');}
  setLd(btn,false,' Import Transactions');
@@ -1004,6 +1058,17 @@ async function compressOcrImage(file, maxDim=1600, quality=0.85){
 }
 
 async function runOCR(){
+ if(!ocrFile){toast('No file selected','err');return;}
+ const mime=ocrFile.type||'';
+ if(mime==='application/pdf'||ocrFile.name.toLowerCase().endsWith('.pdf')){
+  toast('PDFs are not supported. Please take a screenshot of the PDF and upload that image instead (JPG or PNG).','err');
+  return;
+ }
+ if(mime&&!mime.startsWith('image/')){
+  toast('Please upload an image file (JPG, PNG, WEBP). For PDFs, take a screenshot first.','err');
+  return;
+ }
+
  const branch=document.getElementById('ocr-br').value,dt=document.getElementById('ocr-dt').value;
  if(!ocrFile){toast('Upload an invoice photo first','err');return;}
  if(!branch){toast('Select a branch','err');return;}
@@ -1039,7 +1104,8 @@ async function runOCR(){
     const ch=s[i];
     if(esc){out+=ch;esc=false;continue;}
     if(ch==='\\'&&inStr){out+=ch;esc=true;continue;}
-     if(ch=='"'){inStr=!inStr;out+=ch;continue;}
+     if(ch=='"'){inStr=!inStr;out+=ch;continue;}
+
     if(inStr&&(ch==='\n'||ch==='\r'||ch==='\t')){out+=' ';continue;}
     out+=ch;
    }
@@ -1065,6 +1131,38 @@ async function runOCR(){
 function loadAliasMap(){try{return JSON.parse(localStorage.getItem('ocrAliasMap')||'{}');}catch(e){return{};}}
 function saveAlias(descKey,productId){var m=loadAliasMap();m[String(descKey).toLowerCase().trim()]=productId;localStorage.setItem('ocrAliasMap',JSON.stringify(m));}
 function removeAlias(descKey){var m=loadAliasMap();delete m[String(descKey).toLowerCase().trim()];localStorage.setItem('ocrAliasMap',JSON.stringify(m));}
+
+// ── PENDING POS QUEUE ──────────────────────────────────────────
+function loadPending(){try{return JSON.parse(localStorage.getItem('pendingPOS')||'[]');}catch(e){return[];}}
+function savePending(q){localStorage.setItem('pendingPOS',JSON.stringify(q));}
+function addPending(rows){const q=loadPending();rows.forEach(r=>{if(!q.find(x=>x.inv===r.inv&&x.sku===r.sku))q.push(r);});savePending(q);}
+function clearPendingBySku(sku){const q=loadPending().filter(r=>r.sku!==sku);savePending(q);}
+function renderPendingBanner(){
+ const q=loadPending();
+ const banner=document.getElementById('pend-banner');
+ if(!banner)return;
+ if(!q.length){banner.style.display='none';return;}
+ banner.style.display='flex';
+ document.getElementById('pend-cnt').textContent=q.length;
+ const skus=[...new Set(q.map(r=>r.sku))];
+ document.getElementById('pend-skus').textContent='SKUs: '+skus.join(', ');
+}
+async function retryPending(){
+ const q=loadPending();if(!q.length)return;
+ const branch=q[0].branch||'';
+ const matched=[];const stillPending=[];
+ q.forEach(r=>{const prod=allP.find(p=>String(p.fields[F.P.SKU]||'').toLowerCase()===r.sku.toLowerCase());if(prod){matched.push({...r,prod});}else{stillPending.push(r);}});
+ if(!matched.length){renderPendingBanner();return;}
+ try{
+  const txFields=matched.map((r,i)=>{const flds={[F.TX.NM]:`POS-${r.inv}-RETRY-${i}`,[F.TX.DT]:new Date(r.dateStr+'T12:00:00').toISOString(),[F.TX.BR]:r.branch,[F.TX.QTY]:-r.qty,[F.TX.TY]:'Sale',[F.TX.SRC]:'POS',[F.TX.REF]:r.inv,[F.TX.NO]:`Auto-matched after product was added (SKU: ${r.sku})`};flds[F.TX.PR]=[r.prod.id];if(F.TX.ASP&&r.netPrice>0)flds[F.TX.ASP]=r.netPrice;return flds;});
+  const stockOps=matched.map(r=>({productId:r.prod.id,branch:r.branch,qtyChange:-r.qty}));
+  await atPostMany(TBL.TX,txFields);
+  await updateStockMany(stockOps);
+  savePending(stillPending);
+  renderPendingBanner();
+  toast(matched.length+' pending sale(s) auto-imported!','ok');
+ }catch(e){console.error('Pending retry failed:',e);}
+}
 
 function findOcrMatch(item){
  // 0. Session-linked (user just linked this session)
@@ -1225,7 +1323,11 @@ async function ocrImport(){
 // ══════════════════════════════════════════════════════════════
 // MANUAL TRANSACTION
 // ══════════════════════════════════════════════════════════════
-function updateTxType(){const t=document.getElementById('tx-type').value;document.getElementById('tx-cust-row').style.display=t==='Sale'?'grid':'none';document.getElementById('tx-qty-lbl').textContent=t==='Sale'?'Quantity Sold *':t==='Stock Received'?'Quantity Received *':'Quantity *';}
+function updateTxDisc(){
+ const disc=parseFloat(document.getElementById('tx-disc').value)||0;
+ document.getElementById('tx-disc-preview').textContent=disc>0?'Actual price = List Price × '+(1-disc/100).toFixed(2):'';
+}
+function updateTxType(){const t=document.getElementById('tx-type').value;const isSale=t==='Sale';document.getElementById('tx-cust-row').style.display=isSale?'grid':'none';document.getElementById('tx-disc-row').style.display=isSale?'block':'none';if(isSale)updateTxDisc();document.getElementById('tx-qty-lbl').textContent=isSale?'Quantity Sold *':t==='Stock Received'?'Quantity Received *':'Quantity *';}
 
 // ── CUSTOMER LOOKUP (no auto-creation) ────────────────────────
 // Priority: phone → email → exact name → partial name → not-found
@@ -1286,7 +1388,7 @@ function renderPoRows(){
 
 async function submitTx(){
 
- const type=document.getElementById('tx-type').value,branch=document.getElementById('tx-br2').value,dt=document.getElementById('tx-dt2').value,ref=document.getElementById('tx-ref').value.trim(),notes=document.getElementById('tx-notes').value.trim(),cnm=document.getElementById('tx-cname').value.trim(),cph=document.getElementById('tx-cphone').value.trim(),cem=document.getElementById('tx-cemail').value.trim();
+ const type=document.getElementById('tx-type').value,branch=document.getElementById('tx-br2').value,dt=document.getElementById('tx-dt2').value,ref=document.getElementById('tx-ref').value.trim(),notes=document.getElementById('tx-notes').value.trim(),cnm=document.getElementById('tx-cname').value.trim(),cph=document.getElementById('tx-cphone').value.trim(),cem=document.getElementById('tx-cemail').value.trim(),discPct=type==='Sale'?parseFloat(document.getElementById('tx-disc').value)||0:0;
  if(!type){toast('Select transaction type','err');return;}
  if(!branch){toast('Select a branch','err');return;}
  if(!dt){toast('Enter date','err');return;}
@@ -1305,13 +1407,13 @@ async function submitTx(){
   let custId=null,custWarn='';
   if(isSale&&(cnm||cph||cem)){const cr=findCust(cnm,cph,cem);if(cr.id)custId=cr.id;else if(cr.how==='not-found')custWarn=`Customer "${cnm||cph||cem}" not found — saved without link.`;else if(cr.how==='conflict')custWarn=`Customer "${cnm}" matches multiple records — saved without link.`;}
   const refStr=ref||`${type.substring(0,4).toUpperCase()}-${dt}-${uid()}`;
-  const txFields=rows.map(({pid,qty})=>{const actualQty=isSale?-qty:qty;const flds={[F.TX.NM]:`${refStr}-${uid()}`,[F.TX.DT]:dtISO(dt),[F.TX.PR]:[pid],[F.TX.BR]:branch,[F.TX.QTY]:actualQty,[F.TX.TY]:type,[F.TX.SRC]:'Manual',[F.TX.REF]:refStr,[F.TX.NO]:notes};if(custId)flds[F.TX.CU]=[custId];return flds;});
+  const txFields=rows.map(({pid,qty})=>{const actualQty=isSale?-qty:qty;const prod=allP.find(p=>p.id===pid);const listPrice=prod?parseFloat(prod.fields[F.P.SP]||0):0;const asp=isSale&&discPct>0&&listPrice>0?parseFloat((listPrice*(1-discPct/100)).toFixed(2)):undefined;const flds={[F.TX.NM]:`${refStr}-${uid()}`,[F.TX.DT]:dtISO(dt),[F.TX.PR]:[pid],[F.TX.BR]:branch,[F.TX.QTY]:actualQty,[F.TX.TY]:type,[F.TX.SRC]:'Manual',[F.TX.REF]:refStr,[F.TX.NO]:notes};if(custId)flds[F.TX.CU]=[custId];if(asp!==undefined&&F.TX.ASP)flds[F.TX.ASP]=asp;return flds;});
   const stockOps=rows.map(({pid,qty})=>({productId:pid,branch,qtyChange:isSale?-qty:qty}));
   await atPostMany(TBL.TX,txFields);
   await updateStockMany(stockOps);
   if(custWarn)toast(custWarn,'warn');
   toast(`${type}: ${rows.length} product(s) at ${branch}`);
-  closeModal('m-tx');txRows=[];txAddRow();
+  closeModal('m-tx');txRows=[];txAddRow();showPage('transactions');
   clr(['tx-type','tx-br2','tx-dt2','tx-ref','tx-notes','tx-cname','tx-cphone','tx-cemail']);
   document.getElementById('tx-cust-row').style.display='none';
   await loadAll();
@@ -1330,7 +1432,7 @@ async function submitTrf(){
  try{const ref=`TRF-${dt}-${uid()}`;await atPostMany(TBL.TX,[{[F.TX.NM]:ref+'-OUT',[F.TX.DT]:dtISO(dt),[F.TX.PR]:[pid],[F.TX.BR]:fr,[F.TX.QTY]:-qty,[F.TX.TY]:'Transfer',[F.TX.SRC]:'Manual',[F.TX.REF]:ref,[F.TX.NO]:notes||`Transfer OUT to ${to}`},{[F.TX.NM]:ref+'-IN',[F.TX.DT]:dtISO(dt),[F.TX.PR]:[pid],[F.TX.BR]:to,[F.TX.QTY]:qty,[F.TX.TY]:'Transfer',[F.TX.SRC]:'Manual',[F.TX.REF]:ref,[F.TX.NO]:notes||`Transfer IN from ${fr}`}]);
  // Update stock: deduct from source branch, add to destination branch
  await updateStockMany([{productId:pid,branch:fr,qtyChange:-qty},{productId:pid,branch:to,qtyChange:qty}]);
- toast(`Transferred ${qty} unit(s): ${fr} → ${to}`);closeModal('m-trf');clr(['trf-pi','trf-pid','trf-fr','trf-to','trf-qty','trf-dt','trf-notes']);document.getElementById('trf-stk').style.display='none';await loadAll();}catch(e){toast(e.message,'err');}
+ toast(`Transferred ${qty} unit(s): ${fr} → ${to}`);closeModal('m-trf');showPage('transactions');clr(['trf-pi','trf-pid','trf-fr','trf-to','trf-qty','trf-dt','trf-notes']);document.getElementById('trf-stk').style.display='none';await loadAll();}catch(e){toast(e.message,'err');}
  setLd(btn,false,'Transfer Stock');
 }
 
