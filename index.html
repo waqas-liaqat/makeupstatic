@@ -1196,10 +1196,39 @@ function findOcrMatch(item){
 function renderOcrItems(isSale){
  document.getElementById('ocr-items').innerHTML=ocrItems.map((item,i)=>{
   const prod=findOcrMatch(item);
-  const mH=prod?`<span class="badge bg"> ${esc(prod.fields[F.P.NM]||'')}</span>`:`<span class="badge by"> Not found</span>`;
-  return`<tr><td><input type="text" value="${esc(item.sku)}" style="width:90px;padding:4px 7px;border:1px solid #d1d5db;border-radius:6px;font-size:12px;" onchange="ocrItems[${i}].sku=this.value;renderOcrItems(${isSale})"/></td><td><input type="text" value="${esc(item.description)}" style="width:200px;padding:4px 7px;border:1px solid #d1d5db;border-radius:6px;font-size:12px;" onchange="ocrItems[${i}].description=this.value"/></td><td style="text-align:center;"><input type="number" value="${item.qty}" min="1" style="width:55px;padding:4px 7px;border:1px solid #d1d5db;border-radius:6px;font-size:12px;text-align:center;" onchange="ocrItems[${i}].qty=parseInt(this.value)||1"/></td><td style="text-align:right;"><input type="number" value="${item.unit_price}" step="0.01" style="width:80px;padding:4px 7px;border:1px solid #d1d5db;border-radius:6px;font-size:12px;text-align:right;" onchange="ocrItems[${i}].unit_price=parseFloat(this.value)||0"/></td><td>${mH}</td><td><button onclick="ocrItems.splice(${i},1);renderOcrItems(${isSale})" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:16px;"></button></td></tr>`;
+  // STATE 1: Confirmed — matched via alias (previously confirmed by user)
+  // STATE 2: Auto-matched — system found a match but user hasn't confirmed yet
+  // STATE 3: Not found — no match at all
+  const isConfirmed = prod && (item._fromAlias || item._linkedProd);
+  const isAutoMatch = prod && !isConfirmed;
+  const isNotFound  = !prod;
+
+  let matchCell;
+  if(isConfirmed){
+   matchCell=`<span class="badge bg" style="margin-right:5px;">✓ ${esc(prod.fields[F.P.NM]||'')}</span><span style="font-size:10.5px;color:#10b981;font-weight:600;">remembered</span> <button onclick="linkOcrItem(${i})" style="font-size:11px;padding:2px 7px;border:1px solid #d1d5db;border-radius:5px;background:#f8fafc;cursor:pointer;color:#64748b;margin-left:4px;">✏️ Change</button>`;
+  } else if(isAutoMatch){
+   matchCell=`<span class="badge by" style="margin-right:5px;background:#fef9c3;color:#92400e;border:1px solid #fbbf24;">⚠ ${esc(prod.fields[F.P.NM]||'')}</span><br><button onclick="confirmOcrItem(${i})" style="font-size:11.5px;padding:3px 10px;border:none;border-radius:6px;background:#10b981;color:#fff;cursor:pointer;font-weight:600;margin-top:3px;">✓ Confirm &amp; Remember</button> <button onclick="linkOcrItem(${i})" style="font-size:11px;padding:3px 8px;border:1px solid #d1d5db;border-radius:6px;background:#f8fafc;cursor:pointer;color:#475569;margin-top:3px;">✏️ Change</button>`;
+  } else {
+   matchCell=`<span class="badge br" style="margin-right:5px;">✗ Not found</span><br><button onclick="linkOcrItem(${i})" style="font-size:11.5px;padding:3px 10px;border:none;border-radius:6px;background:#4f46e5;color:#fff;cursor:pointer;font-weight:600;margin-top:3px;">🔗 Link Product</button>`;
+  }
+
+  return`<tr style="${isNotFound?'background:#fff7f7;':isAutoMatch?'background:#fffbeb;':''}"><td><input type="text" value="${esc(item.sku)}" style="width:90px;padding:4px 7px;border:1px solid #d1d5db;border-radius:6px;font-size:12px;" onchange="ocrItems[${i}].sku=this.value;renderOcrItems(${isSale})"/></td><td><input type="text" value="${esc(item.description)}" style="width:200px;padding:4px 7px;border:1px solid #d1d5db;border-radius:6px;font-size:12px;" onchange="ocrItems[${i}].description=this.value"/></td><td style="text-align:center;"><input type="number" value="${item.qty}" min="1" style="width:55px;padding:4px 7px;border:1px solid #d1d5db;border-radius:6px;font-size:12px;text-align:center;" onchange="ocrItems[${i}].qty=parseInt(this.value)||1"/></td><td style="text-align:right;"><input type="number" value="${item.unit_price}" step="0.01" style="width:80px;padding:4px 7px;border:1px solid #d1d5db;border-radius:6px;font-size:12px;text-align:right;" onchange="ocrItems[${i}].unit_price=parseFloat(this.value)||0"/></td><td style="white-space:nowrap;min-width:180px;">${matchCell}</td><td><button onclick="ocrItems.splice(${i},1);renderOcrItems(${isSale})" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:16px;"></button></td></tr>`;
  }).join('');
 }
+
+// Confirm an auto-matched item — saves alias permanently
+function confirmOcrItem(i){
+ const item=ocrItems[i];
+ const prod=findOcrMatch(item);
+ if(!prod)return;
+ const descKey=String(item.description||item.sku||'').toLowerCase().trim();
+ if(descKey)saveAlias(descKey,prod.id);
+ ocrItems[i]._linkedProd=prod;
+ ocrItems[i]._fromAlias=true;
+ renderOcrItems(ocrType==='sale');
+ toast(`✓ Confirmed & remembered: "${item.description||item.sku}" → ${prod.fields[F.P.NM]||''}`);
+}
+
 
 function linkOcrItem(i){
  const item=ocrItems[i];
