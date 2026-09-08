@@ -1150,6 +1150,7 @@ CRITICAL RULES:
 13. Extract every product row exactly once. Never merge or split rows.
 14. Do not treat VAT, tax, discounts, shipping, subtotals or invoice totals as products.
 15. Preserve the original product description exactly as printed.
+16. JSON NUMERIC FORMAT: In all numeric fields (qty, unit_price, line_total), output pure numbers with no thousands commas (e.g. write 1188.00, NEVER 1,188.00) because commas break standard JSON.
 
 Return ONLY valid JSON array. No markdown. No explanations.`;
 
@@ -1187,13 +1188,16 @@ Return ONLY valid JSON array. No markdown. No explanations.`;
 
   // ── JSON SANITIZER ────────────────────────────────────────────────
   // Handles: markdown fences (```json ... ```), bad escape sequences,
+  // thousands separators in numbers (e.g. 1,188.00 -> 1188.00),
   // literal control characters inside strings, trailing commas.
   function sanitizeJson(raw){
    // 1. Strip ALL markdown code fences globally anywhere in the string
    let s=raw.replace(/```[\w]*\n?/g,'').replace(/```/g,'').trim();
    // 2. Remove invalid JSON escape sequences (keep only valid: " \ / b f n r t uXXXX)
    s=s.replace(/\\([^"\\\/bfnrtu])/g,'$1');
-   // 3. Remove literal newlines/tabs inside strings (they break JSON.parse)
+   // 3. Fix numbers formatted with thousands separators (e.g. : 1,188.00 -> : 1188.00)
+   s=s.replace(/:\s*([0-9]{1,3}(?:,[0-9]{3})+(?:\.[0-9]+)?)/g, (m, num) => ': ' + num.replace(/,/g, ''));
+   // 4. Remove literal newlines/tabs inside strings (they break JSON.parse)
    let out='',inStr=false,esc=false;
    for(let i=0;i<s.length;i++){
     const ch=s[i];
@@ -1203,7 +1207,7 @@ Return ONLY valid JSON array. No markdown. No explanations.`;
     if(inStr&&(ch==='\n'||ch==='\r'||ch==='\t')){out+=' ';continue;}
     out+=ch;
    }
-   // 4. Remove trailing commas before } or ]
+   // 5. Remove trailing commas before } or ]
    return out.replace(/,([\s\r\n]*[}\]])/g,'$1');
   }
 
