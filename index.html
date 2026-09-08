@@ -599,6 +599,7 @@ const LOCAL_CONFIG = window.MAKEUPSTATIC_CONFIG || {};
 const AT_TOKEN = LOCAL_CONFIG.AT_TOKEN || atob('cGF0eDBnd0ZxeUQxQjhBaDEuZGNjMDc5YThjODI3ZTJmMDliY2MxNmZjZDhlNzk2N2NmOWVmMTI5OTNiMWM3NjdkYWNmNTQ0NjkzYmFmZTJmYQ==');
 const AT_BASE = 'appivKVm0EYXvid1p';
 const OPENAI_KEY = LOCAL_CONFIG.OPENAI_KEY || atob('c2stcHJvai01SXp3U1VIcUw0SnlCNUZSMUFVQ3NBdGlKSGNSOVFoT3pLWS12SU13ckUwN0lZb3dhQzRtOVNXZWp5UUdseDI2UnEyWjJNaS1MR1QzQmxia0ZKeU5XMkw2RGkwYm04QnpORHFfWmFNT3YxNGZGOGNvOXE2YWdZb2ktX0Rqb0p1NUszTFpvc3FmWTlRQkVhMzROVVVybkVLOVR5Y0E=');
+const MISTRAL_KEY = LOCAL_CONFIG.MISTRAL_KEY || '';
 const API = `https://api.airtable.com/v0/${AT_BASE}`;
 
 const TBL = { P:'tbldVXyKnRuW3OAVe', TX:'tblRTwZRoIn1k08Ji', PO:'tblp1lQYKMRK44vTl', AI:'tbl0ZFGabsWg9wAHP', CU:'tblA5Z7T3thkn9Nc0' };
@@ -1154,14 +1155,33 @@ Return ONLY valid JSON array. No markdown. No explanations.`;
 
   const prompt=isSale?salePrompt:supplierPrompt;
 
-  let resp;
+  let resp,apiUsed='proxy';
+  // Chain: 1) Proxy → 2) Mistral Pixtral → 3) OpenAI gpt-4o
   try{
    resp=await fetch('/api/ocr',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,image_data_url:`data:${imgData.mime};base64,${imgData.base64}`})});
    if(!resp.ok&&resp.status===404)throw new Error('no proxy');
+   if(!resp.ok)throw new Error('proxy error');
   }catch(proxyErr){
-   resp=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Authorization':`Bearer ${OPENAI_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({model:'gpt-4o',messages:[{role:'user',content:[{type:'text',text:prompt},{type:'image_url',image_url:{url:`data:${imgData.mime};base64,${imgData.base64}`}}]}],max_tokens:4000})});
+   if(MISTRAL_KEY){
+    // Try Mistral Pixtral
+    try{
+     document.getElementById('ocr-msg').textContent=' Sending to Mistral Pixtral...';
+     resp=await fetch('https://api.mistral.ai/v1/chat/completions',{method:'POST',headers:{'Authorization':`Bearer ${MISTRAL_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({model:'pixtral-large-latest',messages:[{role:'user',content:[{type:'text',text:prompt},{type:'image_url',image_url:{url:`data:${imgData.mime};base64,${imgData.base64}`}}]}],max_tokens:8000,response_format:{type:'json_object'}})});
+     if(!resp.ok)throw new Error('mistral error');
+     apiUsed='mistral';
+    }catch(mistralErr){
+     // Fall through to OpenAI
+     document.getElementById('ocr-msg').textContent=' Mistral failed, trying OpenAI...';
+     resp=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Authorization':`Bearer ${OPENAI_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({model:'gpt-4o',messages:[{role:'user',content:[{type:'text',text:prompt},{type:'image_url',image_url:{url:`data:${imgData.mime};base64,${imgData.base64}`}}]}],max_tokens:8000})});
+     apiUsed='openai';
+    }
+   } else {
+    // No Mistral key — use OpenAI directly
+    resp=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Authorization':`Bearer ${OPENAI_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({model:'gpt-4o',messages:[{role:'user',content:[{type:'text',text:prompt},{type:'image_url',image_url:{url:`data:${imgData.mime};base64,${imgData.base64}`}}]}],max_tokens:8000})});
+    apiUsed='openai';
+   }
   }
-  if(!resp.ok){const errTxt=await resp.text();throw new Error(`OpenAI ${resp.status}: ${errTxt}`);}
+  if(!resp.ok){const errTxt=await resp.text();throw new Error(`API error (${apiUsed}) ${resp.status}: ${errTxt}`);}
   const data=await resp.json();
   const content=data.choices?data.choices[0].message.content:'';
   document.getElementById('ocr-msg').textContent=' Analysis complete!';document.getElementById('ocr-raw').style.display='block';document.getElementById('ocr-raw').textContent=content;
