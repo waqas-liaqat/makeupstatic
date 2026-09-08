@@ -35,7 +35,7 @@ export default async function handler(req, res) {
             role: 'user',
             content: [
               { type: 'text', text: prompt },
-              { type: 'image_url', image_url: { url: image_data_url } }
+              { type: 'image_url', image_url: { url: image_data_url, detail: 'high' } }
             ]
           }
         ],
