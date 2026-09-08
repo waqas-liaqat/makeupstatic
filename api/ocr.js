@@ -13,7 +13,7 @@ export default async function handler(req, res) {
 
   try {
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
-    const { prompt, image_data_url } = body;
+    const { prompt, image_data_url, max_tokens, model } = body;
 
     if (!prompt || !image_data_url) {
       return res.status(400).json({ error: 'Missing prompt or image_data_url' });
@@ -29,7 +29,7 @@ export default async function handler(req, res) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'gpt-4o',
+        model: model || 'gpt-4o',
         messages: [
           {
             role: 'user',
@@ -39,7 +39,7 @@ export default async function handler(req, res) {
             ]
           }
         ],
-        max_tokens: 2500
+        max_tokens: max_tokens || 16000
       })
     });
 

@@ -1158,7 +1158,7 @@ Return ONLY valid JSON array. No markdown. No explanations.`;
   let resp,apiUsed='proxy';
   // Chain: 1) Proxy → 2) Mistral Pixtral → 3) OpenAI gpt-4o
   try{
-   resp=await fetch('/api/ocr',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,image_data_url:`data:${imgData.mime};base64,${imgData.base64}`})});
+   resp=await fetch('/api/ocr',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,image_data_url:`data:${imgData.mime};base64,${imgData.base64}`,model:'gpt-4o',max_tokens:16000})});
    if(!resp.ok&&resp.status===404)throw new Error('no proxy');
    if(!resp.ok)throw new Error('proxy error');
   }catch(proxyErr){
