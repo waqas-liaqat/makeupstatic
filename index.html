@@ -604,7 +604,7 @@ const API = `https://api.airtable.com/v0/${AT_BASE}`;
 
 const TBL = { P:'tbldVXyKnRuW3OAVe', TX:'tblRTwZRoIn1k08Ji', PO:'tblp1lQYKMRK44vTl', AI:'tbl0ZFGabsWg9wAHP', CU:'tblA5Z7T3thkn9Nc0' };
 const F = {
- P:{ SKU:'fldiHXqL3ExYvt3dU', BR:'fldrO0lnqgov4vqEb', NM:'fldhyiTalaEOFE3jM', SH:'fldVs7xsItdmFj7wF',
+ P:{ SKU:'fldiHXqL3ExYvt3dU', BR:'fldrO0lnqgov4vqEb', NM:'fldhyiTalaEOFE3jM', SH:'fldVs7xsItdmFj7wF', BC:'fldHzVzvqtVSZjmj8',
  SP:'fldQLqGLBuKovTAa5', CP:'fldZRTHKmKp5xCKpQ',
  B:'fldQ4jd5RoGp45uuv', BS:'fldTQCSPyDOaxZT17', J:'fldleBxfDdweZxlCE',
  MB:'fld9ytZWyBuRXm2gO', MBS:'fldsSiHbOzGSjYUyM', MJ:'fldOwr2DRusvS0fJH',
@@ -1297,9 +1297,9 @@ function findOcrMatch(item){
  const barcodeMap=loadBarcodeMap();
  const barcode=String(item.barcode||'').trim();
  if(barcode&&barcodeMap[barcode]){const bp=allP.find(x=>x.id===barcodeMap[barcode]);if(bp)return Object.assign({},bp,{_fromAlias:true});}
- // 1. Exact barcode match against product fields
- if(barcode.length>=8){
-  let p=allP.find(x=>String(x.fields[F.P.BC]||x.fields['Barcode']||'').trim()===barcode);
+ // 1. Exact barcode match against Airtable Barcode field
+ if(barcode.length>=6){
+  let p=allP.find(x=>String(x.fields[F.P.BC]||'').trim()===barcode);
   if(p)return p;
  }
  const sku=String(item.sku||'').toLowerCase().trim();
@@ -1501,7 +1501,9 @@ async function ocrImport(){
   [F.P.SKU]:(item.sku||'').trim(),
   [F.P.NM]:(item.description||item.sku||'New Item').trim(),
   [F.P.BR]:sup||'INGLOT',
-  [F.P.CP]:cost
+  [F.P.CP]:cost,
+  ...(item.barcode?{[F.P.BC]:(item.barcode||'').trim()}:{}),
+  ...(item.shade?{[F.P.SH]:(item.shade||'').trim()}:{})
   };
   prodRec=await atPost(TBL.P,newFlds);
   allP.push(prodRec);
