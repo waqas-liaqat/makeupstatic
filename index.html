@@ -1165,19 +1165,19 @@ Return ONLY valid JSON array. No markdown. No explanations.`;
    if(MISTRAL_KEY){
     // Try Mistral Pixtral
     try{
-     document.getElementById('ocr-msg').textContent=' Sending to Mistral Pixtral...';
-     resp=await fetch('https://api.mistral.ai/v1/chat/completions',{method:'POST',headers:{'Authorization':`Bearer ${MISTRAL_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({model:'pixtral-large-latest',messages:[{role:'user',content:[{type:'text',text:prompt},{type:'image_url',image_url:{url:`data:${imgData.mime};base64,${imgData.base64}`}}]}],max_tokens:8000,response_format:{type:'json_object'}})});
+      document.getElementById('ocr-msg').textContent=' Sending to Mistral Pixtral...';
+     resp=await fetch('https://api.mistral.ai/v1/chat/completions',{method:'POST',headers:{'Authorization':`Bearer ${MISTRAL_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({model:'pixtral-large-latest',messages:[{role:'user',content:[{type:'text',text:prompt},{type:'image_url',image_url:{url:`data:${imgData.mime};base64,${imgData.base64}`}}]}],max_tokens:16000,response_format:{type:'json_object'}})});
      if(!resp.ok)throw new Error('mistral error');
      apiUsed='mistral';
     }catch(mistralErr){
      // Fall through to OpenAI
      document.getElementById('ocr-msg').textContent=' Mistral failed, trying OpenAI...';
-     resp=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Authorization':`Bearer ${OPENAI_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({model:'gpt-4o',messages:[{role:'user',content:[{type:'text',text:prompt},{type:'image_url',image_url:{url:`data:${imgData.mime};base64,${imgData.base64}`}}]}],max_tokens:8000})});
+     resp=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Authorization':`Bearer ${OPENAI_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({model:'gpt-4o',messages:[{role:'user',content:[{type:'text',text:prompt},{type:'image_url',image_url:{url:`data:${imgData.mime};base64,${imgData.base64}`}}]}],max_tokens:16000,response_format:{type:'json_object'}})});
      apiUsed='openai';
     }
    } else {
     // No Mistral key — use OpenAI directly
-    resp=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Authorization':`Bearer ${OPENAI_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({model:'gpt-4o',messages:[{role:'user',content:[{type:'text',text:prompt},{type:'image_url',image_url:{url:`data:${imgData.mime};base64,${imgData.base64}`}}]}],max_tokens:8000})});
+    resp=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Authorization':`Bearer ${OPENAI_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({model:'gpt-4o',messages:[{role:'user',content:[{type:'text',text:prompt},{type:'image_url',image_url:{url:`data:${imgData.mime};base64,${imgData.base64}`}}]}],max_tokens:16000,response_format:{type:'json_object'}})});
     apiUsed='openai';
    }
   }
