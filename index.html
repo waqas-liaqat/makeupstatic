@@ -1165,19 +1165,19 @@ Return ONLY valid JSON array. No markdown. No explanations.`;
    if(MISTRAL_KEY){
     // Try Mistral Pixtral
     try{
-      document.getElementById('ocr-msg').textContent=' Sending to Mistral Pixtral...';
-     resp=await fetch('https://api.mistral.ai/v1/chat/completions',{method:'POST',headers:{'Authorization':`Bearer ${MISTRAL_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({model:'pixtral-large-latest',messages:[{role:'user',content:[{type:'text',text:prompt},{type:'image_url',image_url:{url:`data:${imgData.mime};base64,${imgData.base64}`}}]}],max_tokens:16000,response_format:{type:'json_object'}})});
+     document.getElementById('ocr-msg').textContent=' Sending to Mistral Pixtral...';
+     resp=await fetch('https://api.mistral.ai/v1/chat/completions',{method:'POST',headers:{'Authorization':`Bearer ${MISTRAL_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({model:'pixtral-large-latest',messages:[{role:'user',content:[{type:'text',text:prompt},{type:'image_url',image_url:{url:`data:${imgData.mime};base64,${imgData.base64}`}}]}],max_tokens:16000})});
      if(!resp.ok)throw new Error('mistral error');
      apiUsed='mistral';
     }catch(mistralErr){
      // Fall through to OpenAI
      document.getElementById('ocr-msg').textContent=' Mistral failed, trying OpenAI...';
-     resp=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Authorization':`Bearer ${OPENAI_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({model:'gpt-4o',messages:[{role:'user',content:[{type:'text',text:prompt},{type:'image_url',image_url:{url:`data:${imgData.mime};base64,${imgData.base64}`}}]}],max_tokens:16000,response_format:{type:'json_object'}})});
+     resp=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Authorization':`Bearer ${OPENAI_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({model:'gpt-4o',messages:[{role:'user',content:[{type:'text',text:prompt},{type:'image_url',image_url:{url:`data:${imgData.mime};base64,${imgData.base64}`}}]}],max_tokens:16000})});
      apiUsed='openai';
     }
    } else {
     // No Mistral key — use OpenAI directly
-    resp=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Authorization':`Bearer ${OPENAI_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({model:'gpt-4o',messages:[{role:'user',content:[{type:'text',text:prompt},{type:'image_url',image_url:{url:`data:${imgData.mime};base64,${imgData.base64}`}}]}],max_tokens:16000,response_format:{type:'json_object'}})});
+    resp=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Authorization':`Bearer ${OPENAI_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({model:'gpt-4o',messages:[{role:'user',content:[{type:'text',text:prompt},{type:'image_url',image_url:{url:`data:${imgData.mime};base64,${imgData.base64}`}}]}],max_tokens:16000})});
     apiUsed='openai';
    }
   }
@@ -1212,8 +1212,9 @@ Return ONLY valid JSON array. No markdown. No explanations.`;
   //   A. Pure JSON array:              [{...}, {...}]
   //   B. Wrapped object (json_object): {"items": [{...}]} or {"data": [...]}
   //   C. Single object:                {...}   → wrapped into [{...}]
-  //   D. Array buried in text:         Some text... [{...}] ...more text
+  //   D. Auto-repair truncated array:  [..., {...} (unclosed array)
   function extractJsonItems(raw){
+   if(!raw || !raw.trim()) throw new Error('AI returned an empty response.');
    const s=sanitizeJson(raw);
    // A. Direct array [...]
    const arrM=s.match(/\[[\s\S]*\]/);
@@ -1230,8 +1231,20 @@ Return ONLY valid JSON array. No markdown. No explanations.`;
    }
    // C. Single object {...} — treat as one-item invoice
    if(objM){try{const o=JSON.parse(objM[0]);if(typeof o==='object'&&o!==null&&!Array.isArray(o))return[o];}catch(e){}}
-   // D. Nothing worked
-   throw new Error('Could not parse AI response as JSON. Raw response shown above.');
+   // D. Repair truncated array: if '[' exists, find last '}' and close with ']'
+   if(s.includes('[')){
+    const startIdx=s.indexOf('[');
+    const partial=s.slice(startIdx);
+    const lastBrace=partial.lastIndexOf('}');
+    if(lastBrace!==-1){
+     const repaired=partial.slice(0,lastBrace+1)+']';
+     try{
+      const r=JSON.parse(sanitizeJson(repaired));
+      if(Array.isArray(r)&&r.length>0)return r;
+     }catch(e){}
+    }
+   }
+   throw new Error('Could not parse AI response as JSON.');
   }
 
   // ── PARSE WITH 1 AUTO-RETRY ───────────────────────────────────────
@@ -1240,23 +1253,32 @@ Return ONLY valid JSON array. No markdown. No explanations.`;
    try{
     return extractJsonItems(firstContent);
    }catch(firstErr){
-    document.getElementById('ocr-msg').textContent=' Parsing failed — retrying with AI...';
-    document.getElementById('ocr-raw').textContent='First attempt failed. Retrying...';
-    // Retry the same API call
+    console.warn('First OCR parse attempt failed:', firstErr, firstContent);
+    document.getElementById('ocr-msg').textContent=' Parsing failed — retrying with AI (attempt 2/2)...';
+    document.getElementById('ocr-raw').textContent=`Attempt 1 could not be parsed: ${firstErr.message}\nRetrying...\n\n--- Raw Attempt 1 ---\n${firstContent}`;
+    
+    // In retry prompt, add strict reinforcement
+    const retryPrompt = prompt + "\n\nCRITICAL REMINDER: Output MUST begin with [ and end with ]. Valid JSON array only. No commentary.";
+    
     let retryResp;
     try{
-     retryResp=await fetch('/api/ocr',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,image_data_url:`data:${imgData.mime};base64,${imgData.base64}`,model:'gpt-4o',max_tokens:16000})});
+     retryResp=await fetch('/api/ocr',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:retryPrompt,image_data_url:`data:${imgData.mime};base64,${imgData.base64}`,model:'gpt-4o',max_tokens:16000})});
      if(!retryResp.ok)throw new Error('retry proxy failed');
     }catch(e){
-     retryResp=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Authorization':`Bearer ${OPENAI_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({model:'gpt-4o',messages:[{role:'user',content:[{type:'text',text:prompt},{type:'image_url',image_url:{url:`data:${imgData.mime};base64,${imgData.base64}`}}]}],max_tokens:16000,response_format:{type:'json_object'}})});
+     retryResp=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Authorization':`Bearer ${OPENAI_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({model:'gpt-4o',messages:[{role:'user',content:[{type:'text',text:retryPrompt},{type:'image_url',image_url:{url:`data:${imgData.mime};base64,${imgData.base64}`}}]}],max_tokens:16000})});
     }
-    if(!retryResp.ok)throw new Error('Retry also failed: '+firstErr.message);
+    if(!retryResp.ok){
+     const errTxt=await retryResp.text().catch(()=>'');
+     throw new Error('Retry API call failed: ' + (errTxt || firstErr.message));
+    }
     const retryData=await retryResp.json();
     const retryContent=retryData.choices?retryData.choices[0].message.content:'';
     document.getElementById('ocr-raw').textContent=retryContent;
-    // If retry also fails to parse, throw the original error
-    try{return extractJsonItems(retryContent);}
-    catch(e){throw new Error('Parse failed after retry. Raw response shown above.');}
+    try{
+     return extractJsonItems(retryContent);
+    }catch(retryErr){
+     throw new Error('Parse failed after retry. Raw response shown above.');
+    }
    }
   }
 
