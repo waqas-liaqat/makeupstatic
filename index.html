@@ -599,7 +599,7 @@ const LOCAL_CONFIG = window.MAKEUPSTATIC_CONFIG || {};
 const AT_TOKEN = LOCAL_CONFIG.AT_TOKEN || atob('cGF0eDBnd0ZxeUQxQjhBaDEuZGNjMDc5YThjODI3ZTJmMDliY2MxNmZjZDhlNzk2N2NmOWVmMTI5OTNiMWM3NjdkYWNmNTQ0NjkzYmFmZTJmYQ==');
 const AT_BASE = 'appivKVm0EYXvid1p';
 const OPENAI_KEY = LOCAL_CONFIG.OPENAI_KEY || atob('c2stcHJvai01SXp3U1VIcUw0SnlCNUZSMUFVQ3NBdGlKSGNSOVFoT3pLWS12SU13ckUwN0lZb3dhQzRtOVNXZWp5UUdseDI2UnEyWjJNaS1MR1QzQmxia0ZKeU5XMkw2RGkwYm04QnpORHFfWmFNT3YxNGZGOGNvOXE2YWdZb2ktX0Rqb0p1NUszTFpvc3FmWTlRQkVhMzROVVVybkVLOVR5Y0E=');
-const MISTRAL_KEY = LOCAL_CONFIG.MISTRAL_KEY || '';
+const MISTRAL_KEY = LOCAL_CONFIG.MISTRAL_KEY || atob('bWtPZ1JWeE4xZzQwdlNPdVRLYjZNemI3YkNvT0hjdGk=');
 const API = `https://api.airtable.com/v0/${AT_BASE}`;
 
 const TBL = { P:'tbldVXyKnRuW3OAVe', TX:'tblRTwZRoIn1k08Ji', PO:'tblp1lQYKMRK44vTl', AI:'tbl0ZFGabsWg9wAHP', CU:'tblA5Z7T3thkn9Nc0', SM:'tbl0m3GwlHm8iRFmc' };
@@ -1206,24 +1206,43 @@ Return ONLY valid JSON array. No markdown. No explanations.`;
    if(!resp.ok&&resp.status===404)throw new Error('no proxy');
    if(!resp.ok)throw new Error('proxy error');
   }catch(proxyErr){
-   if(MISTRAL_KEY){
-    // Try Mistral Pixtral
-    try{
-     document.getElementById('ocr-msg').textContent=' Sending to Mistral Pixtral...';
-     resp=await fetch('https://api.mistral.ai/v1/chat/completions',{method:'POST',headers:{'Authorization':`Bearer ${MISTRAL_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({model:'pixtral-large-latest',messages:[{role:'user',content:[{type:'text',text:prompt},{type:'image_url',image_url:{url:`data:${imgData.mime};base64,${imgData.base64}`}}]}],max_tokens:16000})});
-     if(!resp.ok)throw new Error('mistral error');
-     apiUsed='mistral';
-    }catch(mistralErr){
-     // Fall through to OpenAI
-     document.getElementById('ocr-msg').textContent=' Mistral failed, trying OpenAI...';
+    if(MISTRAL_KEY){
+     try{
+      document.getElementById('ocr-msg').textContent=' Scanning with Mistral OCR...';
+      const ocrResp=await fetch('https://api.mistral.ai/v1/ocr',{method:'POST',headers:{'Authorization':`Bearer ${MISTRAL_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({model:'mistral-ocr-latest',document:{type:'image_url',image_url:`data:${imgData.mime};base64,${imgData.base64}`}})});
+      if(!ocrResp.ok)throw new Error('Mistral OCR HTTP error');
+      const ocrData=await ocrResp.json();
+      const extractedMarkdown=(ocrData.pages||[]).map(p=>p.markdown).join('\n\n');
+      if(!extractedMarkdown)throw new Error('Empty OCR result');
+      document.getElementById('ocr-msg').textContent=' Structuring data with GPT-4o...';
+      const textPrompt=`You are a precise data extractor. Below is the OCR text extracted from an invoice by Mistral OCR:
+
+--- BEGIN OCR TEXT ---
+${extractedMarkdown}
+--- END OCR TEXT ---
+
+${prompt}
+
+CRITICAL RULES:
+- Use the tables and lines from the OCR text above.
+- Extract every product row (including free tester / bonus rows with price 0.00).
+- For quantities: numbers with .00 (e.g. 10.00, 2.00, 5.00, 1.00) are integer quantities 10, 2, 5, 1 (NOT 20, NOT 100).
+- If barcode is present under "בר קוד" column or barcode field, extract all digits.
+- Output pure numbers without thousands commas (write 1188.00, never 1,188.00).
+- Return ONLY valid JSON array. No markdown fences. No explanations.`;
+
+      resp=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Authorization':`Bearer ${OPENAI_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({model:'gpt-4o',messages:[{role:'user',content:textPrompt}],max_tokens:16000})});
+      apiUsed='mistral-ocr+gpt4o';
+     }catch(ocrErr){
+      console.warn('Mistral OCR failed, falling back to OpenAI Vision:', ocrErr);
+      document.getElementById('ocr-msg').textContent=' Mistral OCR failed, using OpenAI Vision...';
+      resp=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Authorization':`Bearer ${OPENAI_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({model:'gpt-4o',messages:[{role:'user',content:[{type:'text',text:prompt},{type:'image_url',image_url:{url:`data:${imgData.mime};base64,${imgData.base64}`,detail:'high'}}]}],max_tokens:16000})});
+      apiUsed='openai';
+     }
+    } else {
      resp=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Authorization':`Bearer ${OPENAI_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({model:'gpt-4o',messages:[{role:'user',content:[{type:'text',text:prompt},{type:'image_url',image_url:{url:`data:${imgData.mime};base64,${imgData.base64}`,detail:'high'}}]}],max_tokens:16000})});
      apiUsed='openai';
     }
-   } else {
-    // No Mistral key — use OpenAI directly
-    resp=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Authorization':`Bearer ${OPENAI_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({model:'gpt-4o',messages:[{role:'user',content:[{type:'text',text:prompt},{type:'image_url',image_url:{url:`data:${imgData.mime};base64,${imgData.base64}`,detail:'high'}}]}],max_tokens:16000})});
-    apiUsed='openai';
-   }
   }
   if(!resp.ok){const errTxt=await resp.text();throw new Error(`API error (${apiUsed}) ${resp.status}: ${errTxt}`);}
   const data=await resp.json();
