@@ -20,7 +20,7 @@ export default async function handler(req, res) {
     }
 
     const defaultOpenAI = Buffer.from('c2stcHJvai01SXp3U1VIcUw0SnlCNUZSMUFVQ3NBdGlKSGNSOVFoT3pLWS12SU13ckUwN0lZb3dhQzRtOVNXZWp5UUdseDI2UnEyWjJNaS1MR1QzQmxia0ZKeU5XMkw2RGkwYm04QnpORHFfWmFNT3YxNGZGOGNvOXE2YWdZb2ktX0Rqb0p1NUszTFpvc3FmWTlRQkVhMzROVVVybkVLOVR5Y0E=', 'base64').toString('ascii');
-    const defaultMistral = Buffer.from('bWtPZ1JWeE4xZzQwdlNPdVRLYjZNemI3YkNvT0hjdGk=', 'base64').toString('ascii');
+    const defaultMistral = Buffer.from('TTVNV0tKZ2lpUkdHUURSQXlvbFRxRHlNeWRIUEZIV2g=', 'base64').toString('ascii');
 
     const openAiKey = process.env.OPENAI_KEY || defaultOpenAI;
     const mistralKey = process.env.MISTRAL_KEY || defaultMistral;
