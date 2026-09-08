@@ -1166,7 +1166,8 @@ Return ONLY valid JSON array. No markdown. No explanations.`;
   const content=data.choices?data.choices[0].message.content:'';
   document.getElementById('ocr-msg').textContent=' Analysis complete!';document.getElementById('ocr-raw').style.display='block';document.getElementById('ocr-raw').textContent=content;
   function sanitizeJson(raw){
-   let s=raw.replace(/^```[\w]*\n?/,'').replace(/\n?```$/,'').trim();
+   // Strip ALL markdown code fences globally (```json ... ``` anywhere in string)
+   let s=raw.replace(/```[\w]*\n?/g,'').replace(/```/g,'').trim();
    s=s.replace(/\\([^"\\\/bfnrtu])/g,'$1');
    let out='',inStr=false,esc=false;
    for(let i=0;i<s.length;i++){
