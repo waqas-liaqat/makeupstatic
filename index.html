@@ -1165,7 +1165,6 @@ Return ONLY valid JSON array. No markdown. No explanations.`;
   const data=await resp.json();
   const content=data.choices?data.choices[0].message.content:'';
   document.getElementById('ocr-msg').textContent=' Analysis complete!';document.getElementById('ocr-raw').style.display='block';document.getElementById('ocr-raw').textContent=content;
-  const jm=content.match(/\[[\s\S]*\]/);if(!jm)throw new Error('No JSON array found in response');
   function sanitizeJson(raw){
    let s=raw.replace(/^```[\w]*\n?/,'').replace(/\n?```$/,'').trim();
    s=s.replace(/\\([^"\\\/bfnrtu])/g,'$1');
@@ -1174,13 +1173,25 @@ Return ONLY valid JSON array. No markdown. No explanations.`;
     const ch=s[i];
     if(esc){out+=ch;esc=false;continue;}
     if(ch==='\\'&&inStr){out+=ch;esc=true;continue;}
-     if(ch=='"'){inStr=!inStr;out+=ch;continue;}
+    if(ch=='"'){inStr=!inStr;out+=ch;continue;}
     if(inStr&&(ch==='\n'||ch==='\r'||ch==='\t')){out+=' ';continue;}
     out+=ch;
    }
    return out.replace(/,([\s\r\n]*[}\]])/g,'$1');
   }
-  ocrItems=JSON.parse(sanitizeJson(jm[0]));
+  function extractJsonItems(raw){
+   const s=sanitizeJson(raw);
+   // Try 1: direct array [...]
+   const arrM=s.match(/\[[\s\S]*\]/);
+   if(arrM){try{const r=JSON.parse(arrM[0]);if(Array.isArray(r))return r;}catch(e){}}
+   // Try 2: whole content is an object with an array value (e.g. {"items":[...]})
+   const objM=s.match(/\{[\s\S]*\}/);
+   if(objM){try{const o=JSON.parse(objM[0]);const arr=Object.values(o).find(v=>Array.isArray(v));if(arr)return arr;}catch(e){}}
+   // Try 3: single object {...} — wrap in array
+   if(objM){try{const o=JSON.parse(objM[0]);if(typeof o==='object'&&o!==null)return[o];}catch(e){}}
+   throw new Error('Could not parse AI response as JSON. Raw response shown above.');
+  }
+  ocrItems=extractJsonItems(content);
   const skippedLines=ocrItems.filter(x=>x.is_product===false);
   ocrItems=ocrItems.filter(x=>x.is_product!==false);
   if(skippedLines.length){const sm=document.getElementById('ocr-skip-msg');if(sm){sm.style.display='block';sm.textContent=` ${skippedLines.length} non-product line(s) excluded (VAT, discounts, totals).`;}}
