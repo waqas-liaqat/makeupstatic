@@ -162,6 +162,7 @@
  <div style="display:flex;gap:7px;flex-wrap:wrap;align-items:center;">
  <button class="btn btn-p" onclick="openModal('m-pos')"> Upload POS Files</button>
  <button class="btn btn-s" onclick="openModal('m-ocr')" title="Upload invoice photo (sale or new stock) — AI extracts details"> Invoice OCR</button>
+ <button class="btn btn-s" onclick="openModal('m-sm')" title="View and manage remembered supplier product mappings"> Mappings</button>
  <button class="btn btn-s" onclick="openModal('m-tx')" title="Record a single manual transaction"> Manual Transaction</button>
  <button class="btn btn-s" onclick="openModal('m-trf')"> Transfer</button>
  <button class="btn btn-s" onclick="openModal('m-po')"> New PO</button>
@@ -224,6 +225,7 @@
  <select id="p-br" onchange="filterProds()" style="min-width:140px;"><option value="">All Brands</option></select>
  <select id="p-st" onchange="filterProds()" style="min-width:140px;"><option value="">All Stock Levels</option><option value="low"> Low Stock</option><option value="ok"> OK</option></select>
  <span style="font-size:13px;color:#64748b;margin-left:auto;white-space:nowrap;"><span id="p-cnt">--</span> products</span>
+ <button class="btn btn-s btn-sm" onclick="openModal('m-sm')" style="margin-left:8px;" title="View all confirmed invoice-to-product mappings"> Saved Mappings (<span id="sm-cnt-btn">0</span>)</button>
  </div>
  <div class="card"><div style="overflow-x:auto;"><table><thead><tr>
  <th>SKU</th><th>Brand</th><th>Product Name</th><th>Shade</th>
@@ -384,6 +386,9 @@
  <div><h2> Invoice OCR — AI Reads Invoice Photo</h2>
  <p>Upload a photo of any invoice. Choose the type so the system knows what action to take.</p>
  </div>
+ <div style="display:flex;align-items:center;gap:8px;margin-left:auto;margin-right:12px;">
+  <button class="btn btn-s btn-sm" onclick="openModal('m-sm')" title="View and manage remembered supplier mappings">📋 Saved Mappings</button>
+ </div>
  <button class="m-x" onclick="closeModal('m-ocr')">&times;</button>
  </div>
  <div class="m-body">
@@ -431,7 +436,10 @@
  <div id="ocr-s3" style="display:none;">
  <div id="ocr-res-banner" class="a-ok" style="margin-bottom:12px;"></div>
  <div id="ocr-skip-msg" style="display:none;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:8px 14px;margin-bottom:10px;font-size:12.5px;color:#1d4ed8;"></div>
- <div class="fld"><label>Supplier / From</label><input type="text" id="ocr-sup" placeholder="Supplier or seller name"/></div>
+ <div class="g2" style="margin-bottom:12px;">
+  <div class="fld"><label>Supplier / From</label><input type="text" id="ocr-sup" placeholder="Supplier or seller name"/></div>
+  <div class="fld"><label>Invoice Date</label><input type="date" id="ocr-inv-dt"/></div>
+ </div>
  <div style="border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;margin-bottom:10px;">
  <table><thead><tr id="ocr-thead-row"><th>SKU / Code</th><th>Description</th><th style="text-align:center;">Qty</th><th style="text-align:right;">Price &#8362;</th><th>Match</th><th></th></tr></thead>
  <tbody id="ocr-items"></tbody></table>
@@ -588,6 +596,42 @@
  </div>
 </div>
 
+<!-- ── 7. SUPPLIER MAPPINGS MODAL ─────────────────────────── -->
+<div class="modal-ov" id="m-sm">
+ <div class="modal m-lg">
+  <div class="m-hdr">
+   <div>
+    <h2> Saved Supplier Mappings</h2>
+    <p>Permanent product mappings remembered from invoice confirmations. These auto-match future invoices 100% reliably.</p>
+   </div>
+   <button class="m-x" onclick="closeModal('m-sm')">&times;</button>
+  </div>
+  <div class="m-body">
+   <div class="fbar" style="margin-bottom:12px;">
+    <input class="fsrch" type="text" id="sm-q" placeholder=" Search supplier, invoice description, barcode, or product..." oninput="renderSupplierMappings()"/>
+    <span style="font-size:13px;color:#64748b;margin-left:auto;white-space:nowrap;"><span id="sm-cnt-display">0</span> saved mappings</span>
+   </div>
+   <div style="border:1px solid #e2e8f0;border-radius:8px;overflow-x:auto;max-height:450px;">
+    <table>
+     <thead>
+      <tr>
+       <th>Supplier</th>
+       <th>Invoice Description / Alias</th>
+       <th>Barcode</th>
+       <th>Mapped Product &amp; SKU</th>
+       <th style="text-align:center;">Action</th>
+      </tr>
+     </thead>
+     <tbody id="sm-body"></tbody>
+    </table>
+   </div>
+  </div>
+  <div class="m-foot">
+   <button class="btn btn-s" onclick="closeModal('m-sm')">Close</button>
+  </div>
+ </div>
+</div>
+
 <div id="toast-c"></div>
 
 <!-- ════ JAVASCRIPT ════════════════════════════════════════════ -->
@@ -653,6 +697,7 @@ async function atGet(tbl,extra={}) {
 }
 async function atPost(tbl,fields){const r=await fetch(`${API}/${tbl}`,{method:'POST',headers:HDR,body:JSON.stringify({records:[{fields}]})});if(!r.ok)throw new Error(`AT ${r.status}: ${await r.text()}`);return(await r.json()).records[0];}
 async function atPatch(tbl,id,fields){const r=await fetch(`${API}/${tbl}/${id}`,{method:'PATCH',headers:HDR,body:JSON.stringify({fields})});if(!r.ok)throw new Error(`AT ${r.status}: ${await r.text()}`);return await r.json();}
+async function atDelete(tbl,id){const r=await fetch(`${API}/${tbl}/${id}`,{method:'DELETE',headers:HDR});if(!r.ok)throw new Error(`AT ${r.status}: ${await r.text()}`);return await r.json();}
 async function atPostMany(tbl,farr){const res=[];for(let i=0;i<farr.length;i+=10){const ch=farr.slice(i,i+10);const r=await fetch(`${API}/${tbl}`,{method:'POST',headers:HDR,body:JSON.stringify({records:ch.map(f=>({fields:f}))})});if(!r.ok)throw new Error(`AT ${r.status}: ${await r.text()}`);res.push(...(await r.json()).records);}return res;}
 async function atSearch(tbl,formula,maxR=5){const u=new URL(`${API}/${tbl}`);u.searchParams.set('filterByFormula',formula);u.searchParams.set('returnFieldsByFieldId','true');u.searchParams.set('maxRecords',maxR);const r=await fetch(u,{headers:HDR});if(!r.ok)throw new Error(`AT ${r.status}`);return(await r.json()).records||[];}
 
@@ -714,7 +759,7 @@ function fmtDT(dt){if(!dt)return'--';try{const d=new Date(dt);return d.toLocaleD
 function fmtD(d){if(!d)return'--';try{return new Date(d+'T00:00:00').toLocaleDateString('en-GB');}catch{return d;}}
 function setLd(btn,on,lbl){btn.disabled=on;if(on)btn.innerHTML='<span class="spin"></span>';else if(lbl!=null)btn.innerHTML=lbl;}
 function clr(ids){ids.forEach(id=>{const e=document.getElementById(id);if(e)e.value=''});}
-function parseHebDate(s){if(!s)return null;try{const[d,m,y]=String(s).split('/');if(y&&m&&d)return`${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;return null;}catch{return null;}}
+function parseHebDate(s){if(!s)return null;try{s=String(s).trim();if(/^\d{4}-\d{2}-\d{2}$/.test(s))return s;const p=s.split(/[\/\.\-]/);if(p.length===3){let[d,m,y]=p;if(d.length===4)return`${d}-${m.padStart(2,'0')}-${y.padStart(2,'0')}`;if(y.length===2)y='20'+y;if(y.length===4)return`${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;}return null;}catch{return null;}}
 function normPhone(p){if(!p)return'';const d=String(p).replace(/\D/g,'');return d.length>=9?d.slice(-9):d;}
 function isLow(f){return(f[F.P.MB]>0&&(f[F.P.B]??0)<f[F.P.MB])||(f[F.P.MBS]>0&&(f[F.P.BS]??0)<f[F.P.MBS])||(f[F.P.MJ]>0&&(f[F.P.J]??0)<f[F.P.MJ])||((f[F.P.SHT]||0)>0);}
 
@@ -756,7 +801,7 @@ async function ldTX(){allTX=await atGet(TBL.TX,{'sort[0][field]':F.TX.DT,'sort[0
 async function ldPO(){allPO=await atGet(TBL.PO,{'sort[0][field]':F.PO.DT,'sort[0][direction]':'desc'});filtPO=[...allPO];renderPOs();}
 async function ldAI(){allAI=await atGet(TBL.AI,{'sort[0][field]':F.AI.DT,'sort[0][direction]':'desc'});renderApprov();updApprBadge();}
 async function ldCU(){allCU=await atGet(TBL.CU,{'sort[0][field]':F.CU.CR,'sort[0][direction]':'desc'});filtCU=[...allCU];renderCusts();}
-async function ldSM(){try{allSM=await atGet(TBL.SM);}catch(e){console.warn('Supplier Mappings load:',e);allSM=[];}}
+async function ldSM(){try{allSM=await atGet(TBL.SM);}catch(e){console.warn('Supplier Mappings load:',e);allSM=[];}renderSupplierMappings();}
 async function refreshAll(){const b=document.getElementById('refresh-btn');b.disabled=true;document.getElementById('r-ico').textContent='';await loadAll();document.getElementById('r-ico').textContent='';b.disabled=false;}
 
 // ── RENDER OVERVIEW ────────────────────────────────────────────
@@ -1175,10 +1220,18 @@ HEBREW INVOICE TABLE STRUCTURE (READS RIGHT-TO-LEFT):
    Row B: Free tester / bonus units (e.g. qty 2, price 0.00, total 0.00)
    Extract both rows accurately as product lines. For free units, unit_price is 0 and line_total is 0.
 
-4. BARCODES:
-   Look carefully at the "בר קוד" column (far right). If a barcode is printed (e.g. "4043993458034", "4043993473860"), extract every digit. If no barcode is visible, return "".
+4. BARCODES (CRITICAL):
+   - Check the barcode column ("בר קוד", "ברקוד", "Barcode", "EAN", "UPC", "קוד בינלאומי").
+   - ALSO inspect the entire row for any 7 to 14 digit number (EAN-13, UPC, etc., e.g. 5901905031346, 4043993458034). If found, extract ALL digits into "barcode".
+   - Never leave barcode blank if a 7-14 digit barcode number appears on that row. If no barcode appears, return "".
 
-5. For every product row return:
+5. UNIT PRICE (MANDATORY):
+   - Extract unit price from "מחיר", "מחיר יח'", "מחיר ליח'", "Price", "Unit Price".
+   - For free samples / testers / bonus rows, unit_price is 0.00.
+   - If unit price column is blank or unreadable but line_total and qty exist, calculate unit_price = line_total / qty.
+   - Every product row MUST have a valid numeric unit_price (never null).
+
+6. For every product row return:
 {
   "supplier": "supplier name from document header",
   "invoice_date": "date printed (e.g. 04/02/2026)",
@@ -1193,7 +1246,7 @@ HEBREW INVOICE TABLE STRUCTURE (READS RIGHT-TO-LEFT):
   "needs_review": false unless value is illegible
 }
 
-6. JSON NUMERIC FORMAT: In all numeric fields (qty, unit_price, line_total), output pure numbers with no thousands commas (e.g. write 1188.00, NEVER 1,188.00).
+7. JSON NUMERIC FORMAT: In all numeric fields (qty, unit_price, line_total), output pure numbers with no thousands commas (e.g. write 1188.00, NEVER 1,188.00).
 
 Return ONLY valid JSON array. No markdown. No explanations.`;
 
@@ -1223,13 +1276,29 @@ ${extractedMarkdown}
 
 ${prompt}
 
-CRITICAL RULES:
-- Use the tables and lines from the OCR text above.
-- Extract every product row (including free tester / bonus rows with price 0.00).
-- For quantities: numbers with .00 (e.g. 10.00, 2.00, 5.00, 1.00) are integer quantities 10, 2, 5, 1 (NOT 20, NOT 100).
-- If barcode is present under "בר קוד" column or barcode field, extract all digits.
-- Output pure numbers without thousands commas (write 1188.00, never 1,188.00).
-- Return ONLY valid JSON array. No markdown fences. No explanations.`;
+CRITICAL EXTRACTION RULES:
+1. SUPPLIER & DATE (MANDATORY):
+   - Extract the supplier/company name from the invoice header (e.g. at the top of the invoice) into the "supplier" property of EVERY item.
+   - Extract the invoice date from the invoice header/metadata (e.g. "04/02/2026", "27/07/2025") into the "invoice_date" property of EVERY item.
+
+2. PRODUCT ROWS:
+   - Extract every single product line (including free tester / bonus rows with price 0.00).
+   - For quantities: numbers with .00 (e.g. 10.00, 2.00, 5.00, 1.00) are integer quantities 10, 2, 5, 1 (NOT 20, NOT 100).
+
+3. BARCODE EXTRACTION (HIGH PRIORITY):
+   - Check the barcode column ("בר קוד", "ברקוד", "Barcode", "EAN", "UPC", "קוד בינלאומי").
+   - ALSO inspect every column and line of the product row for any 7 to 14 digit number (EAN-13, UPC, etc., e.g. 5901905031346, 4043993458034). If found, extract ALL digits into "barcode".
+   - Never leave barcode blank if an 7-14 digit barcode number appears on that row.
+
+4. UNIT PRICE EXTRACTION (MANDATORY):
+   - Extract unit price from "מחיר", "מחיר יח'", "מחיר ליח'", "Price", "Unit Price".
+   - If free sample / tester / בונוס / טסטר, unit_price is 0.00.
+   - If unit price column is blank but line_total and qty exist, compute unit_price = line_total / qty.
+   - Every product row MUST have a valid numeric unit_price (never null).
+
+5. FORMAT:
+   - Numbers must be pure numbers without thousands commas (write 1188.00, never 1,188.00).
+   - Return ONLY a valid JSON array of objects. No markdown fences. No explanations.`;
 
       resp=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Authorization':`Bearer ${OPENAI_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({model:'gpt-4o',messages:[{role:'user',content:textPrompt}],max_tokens:16000})});
       apiUsed='mistral-ocr+gpt4o';
@@ -1357,8 +1426,27 @@ CRITICAL RULES:
   if(skippedLines.length){const sm=document.getElementById('ocr-skip-msg');if(sm){sm.style.display='block';sm.textContent=` ${skippedLines.length} non-product line(s) excluded (VAT, discounts, totals).`;}}
   if(!ocrItems.length)throw new Error('No items found in invoice');
 
-  // Set supplier name from first item
-  const sup=ocrItems[0].supplier||'';document.getElementById('ocr-sup').value=sup;
+  // Unit price fallback calculation & numeric sanitize
+  ocrItems.forEach(item => {
+    if((item.unit_price === null || item.unit_price === undefined || isNaN(item.unit_price)) && item.qty && item.line_total != null) {
+      item.unit_price = Math.round((Number(item.line_total) / Number(item.qty)) * 100) / 100;
+    }
+  });
+
+  // Set supplier name and invoice date from first item
+  const sup=ocrItems[0].supplier||'';
+  if(document.getElementById('ocr-sup')) document.getElementById('ocr-sup').value=sup;
+  const rawDt=ocrItems[0].invoice_date||'';
+  const parsedDt=parseHebDate(rawDt);
+  if(parsedDt){
+    const invDtEl=document.getElementById('ocr-inv-dt');
+    if(invDtEl) invDtEl.value=parsedDt;
+    const dtEl=document.getElementById('ocr-dt');
+    if(dtEl) dtEl.value=parsedDt;
+  } else {
+    const invDtEl=document.getElementById('ocr-inv-dt');
+    if(invDtEl) invDtEl.value=document.getElementById('ocr-dt')?.value||today();
+  }
 
   // Count needs_review rows
   const reviewCount=ocrItems.filter(x=>x.needs_review).length;
@@ -1437,9 +1525,68 @@ async function saveSupplierMapping(supplier, descKey, bc, productId){
   };
   if(bc) flds[F.SM.BC] = String(bc).trim();
   const rec = await atPost(TBL.SM, flds);
-  if(rec) allSM.push(rec);
+  if(rec){
+   allSM.push(rec);
+   renderSupplierMappings();
+  }
  }catch(e){
   console.warn('Airtable SM save:', e);
+ }
+}
+
+function renderSupplierMappings(){
+ const q=(document.getElementById('sm-q')?.value||'').toLowerCase().trim();
+ const tbody=document.getElementById('sm-body');
+ const cntDisp=document.getElementById('sm-cnt-display');
+ const btnCnt=document.getElementById('sm-cnt-btn');
+ if(btnCnt)btnCnt.textContent=(allSM||[]).length;
+ if(!tbody)return;
+ const hits=(allSM||[]).filter(r=>{
+  if(!q)return true;
+  const desc=String(r.fields[F.SM.DESC]||'').toLowerCase();
+  const sup=String(r.fields[F.SM.SUP]||'').toLowerCase();
+  const bc=String(r.fields[F.SM.BC]||'').toLowerCase();
+  const pId=(r.fields[F.SM.PR]||[])[0];
+  const prod=allP.find(x=>x.id===pId);
+  const pNm=prod?String(prod.fields[F.P.NM]||'').toLowerCase():'';
+  const pSku=prod?String(prod.fields[F.P.SKU]||'').toLowerCase():'';
+  return desc.includes(q)||sup.includes(q)||bc.includes(q)||pNm.includes(q)||pSku.includes(q);
+ });
+ if(cntDisp)cntDisp.textContent=hits.length;
+ if(!hits.length){
+  tbody.innerHTML=`<tr><td colspan="5" style="text-align:center;color:#94a3b8;padding:24px;">${allSM.length?'No matching mappings found.':'No saved supplier mappings yet. When you confirm items during Invoice OCR, they will be remembered here permanently.'}</td></tr>`;
+  return;
+ }
+ tbody.innerHTML=hits.map(r=>{
+  const pId=(r.fields[F.SM.PR]||[])[0];
+  const prod=allP.find(x=>x.id===pId);
+  const sup=r.fields[F.SM.SUP]||'—';
+  const desc=r.fields[F.SM.DESC]||'—';
+  const bc=r.fields[F.SM.BC]||'—';
+  const prodText=prod
+   ?`<strong>${esc(prod.fields[F.P.NM]||'')}</strong> <span style="font-size:11.5px;color:#4f46e5;font-family:monospace;">(${esc(prod.fields[F.P.SKU]||'')})</span>`
+   :`<span style="color:#ef4444;font-size:12px;">Product not found (ID: ${pId||'none'})</span>`;
+  return`<tr>
+   <td><span class="badge bgr">${esc(sup)}</span></td>
+   <td style="font-weight:600;font-size:13px;">${esc(desc)}</td>
+   <td style="font-family:monospace;font-size:12px;color:#374151;">${esc(bc)}</td>
+   <td>${prodText}</td>
+   <td style="text-align:center;">
+    <button onclick="deleteSupplierMapping('${r.id}')" style="background:#fff1f2;border:1px solid #fecdd3;color:#e11d48;padding:4px 8px;border-radius:6px;font-size:11.5px;font-weight:600;cursor:pointer;" title="Delete this mapping">Delete</button>
+   </td>
+  </tr>`;
+ }).join('');
+}
+
+async function deleteSupplierMapping(recId){
+ if(!confirm('Delete this saved mapping? Future invoices will no longer auto-match this description/barcode.'))return;
+ try{
+  await atDelete(TBL.SM,recId);
+  allSM=allSM.filter(r=>r.id!==recId);
+  renderSupplierMappings();
+  toast('Supplier mapping deleted','ok');
+ }catch(e){
+  toast('Failed to delete mapping: '+e.message,'err');
  }
 }
 
@@ -1459,7 +1606,10 @@ function findOcrMatch(item){
    }
   }
   if(desc.length>=2){
-   const m=allSM.find(r=>String(r.fields[F.SM.DESC]||'').toLowerCase().trim()===desc);
+   const m=allSM.find(r=>{
+    const d=String(r.fields[F.SM.DESC]||'').toLowerCase().trim();
+    return d&&(d===desc||(desc.length>=4&&d.length>=4&&(desc.includes(d)||d.includes(desc))));
+   });
    if(m&&m.fields[F.SM.PR]&&m.fields[F.SM.PR].length){
     const ap=allP.find(x=>x.id===m.fields[F.SM.PR][0]);
     if(ap)return Object.assign({},ap,{_fromAlias:true});
@@ -1613,7 +1763,7 @@ function ocrAddRow(){
 }
 
 async function ocrImport(){
- const branch=document.getElementById('ocr-br').value,dt=document.getElementById('ocr-dt').value,sup=document.getElementById('ocr-sup').value.trim(),isSale=ocrType==='sale';
+ const branch=document.getElementById('ocr-br').value,dt=document.getElementById('ocr-inv-dt')?.value||document.getElementById('ocr-dt')?.value||today(),sup=document.getElementById('ocr-sup').value.trim(),isSale=ocrType==='sale';
  if(!branch||!dt){toast('Branch and date required','err');return;}if(!ocrItems.length){toast('No items to import','err');return;}
  const btn=document.getElementById('ocr-import-btn');setLd(btn,true);
  try{
@@ -1707,7 +1857,7 @@ async function ocrImport(){
  ['ocr-s1','ocr-s2','ocr-s3'].forEach((id,i)=>{document.getElementById(id).style.display=i===0?'block':'none';});
  document.getElementById('ocr-import-btn').style.display='none';document.getElementById('ocr-analyze-btn').style.display='none';
  document.getElementById('ocr-img').style.display='none';document.getElementById('ocr-ico').textContent='';document.getElementById('ocr-ttl').textContent='Drop invoice photo here or click to browse';
- ['ocr-cust-name','ocr-cust-phone','ocr-cust-email','ocr-sup'].forEach(id=>document.getElementById(id).value='');
+ ['ocr-cust-name','ocr-cust-phone','ocr-cust-email','ocr-sup','ocr-inv-dt'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
  setOcrType('sale');
  await loadAll();
  }catch(e){toast('Import failed: '+e.message,'err');}

@@ -69,13 +69,29 @@ ${extractedMarkdown}
 
 ${prompt}
 
-CRITICAL RULES:
-- Use the tables and lines from the OCR text above.
-- Extract every product row (including free tester / bonus rows with price 0.00).
-- For quantities: numbers with .00 (e.g. 10.00, 2.00, 5.00, 1.00) are integer quantities 10, 2, 5, 1 (NOT 20, NOT 100).
-- If barcode is present under "בר קוד" column or barcode field, extract all digits.
-- Output pure numbers without thousands commas (write 1188.00, never 1,188.00).
-- Return ONLY valid JSON array. No markdown fences. No explanations.`;
+CRITICAL EXTRACTION RULES:
+1. SUPPLIER & DATE (MANDATORY):
+   - Extract the supplier/company name from the invoice header (e.g. at the top of the invoice) into the "supplier" property of EVERY item.
+   - Extract the invoice date from the invoice header/metadata (e.g. "04/02/2026", "27/07/2025") into the "invoice_date" property of EVERY item.
+
+2. PRODUCT ROWS:
+   - Extract every single product line (including free tester / bonus rows with price 0.00).
+   - For quantities: numbers with .00 (e.g. 10.00, 2.00, 5.00, 1.00) are integer quantities 10, 2, 5, 1 (NOT 20, NOT 100).
+
+3. BARCODE EXTRACTION (HIGH PRIORITY):
+   - Check the barcode column ("בר קוד", "ברקוד", "Barcode", "EAN", "UPC", "קוד בינלאומי").
+   - ALSO inspect every column and line of the product row for any 7 to 14 digit number (EAN-13, UPC, etc., e.g. 5901905031346, 4043993458034). If found, extract ALL digits into "barcode".
+   - Never leave barcode blank if an 7-14 digit barcode number appears on that row.
+
+4. UNIT PRICE EXTRACTION (MANDATORY):
+   - Extract unit price from "מחיר", "מחיר יח'", "מחיר ליח'", "Price", "Unit Price".
+   - If free sample / tester / בונוס / טסטר, unit_price is 0.00.
+   - If unit price column is blank but line_total and qty exist, compute unit_price = line_total / qty.
+   - Every product row MUST have a valid numeric unit_price (never null).
+
+5. FORMAT:
+   - Numbers must be pure numbers without thousands commas (write 1188.00, never 1,188.00).
+   - Return ONLY a valid JSON array of objects. No markdown fences. No explanations.`;
 
       resp = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
