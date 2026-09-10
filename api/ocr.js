@@ -74,22 +74,27 @@ CRITICAL EXTRACTION RULES:
    - Extract the supplier/company name from the invoice header (e.g. at the top of the invoice) into the "supplier" property of EVERY item.
    - Extract the invoice date from the invoice header/metadata (e.g. "04/02/2026", "27/07/2025") into the "invoice_date" property of EVERY item.
 
-2. PRODUCT ROWS:
-   - Extract every single product line (including free tester / bonus rows with price 0.00).
+2. PRODUCT ROWS & FREE GIFTS / TESTERS:
+   - Extract every single product line (including free tester / bonus / gift rows with price 0.00).
+   - If a product is a gift, tester, or bonus ("בונוס", "מתנה", "טסטר", or price 0.00): set unit_price = 0.00, line_total = 0.00, is_gift = true.
    - For quantities: numbers with .00 (e.g. 10.00, 2.00, 5.00, 1.00) are integer quantities 10, 2, 5, 1 (NOT 20, NOT 100).
 
 3. BARCODE EXTRACTION (HIGH PRIORITY):
    - Check the barcode column ("בר קוד", "ברקוד", "Barcode", "EAN", "UPC", "קוד בינלאומי").
-   - ALSO inspect every column and line of the product row for any 7 to 14 digit number (EAN-13, UPC, etc., e.g. 5901905031346, 4043993458034). If found, extract ALL digits into "barcode".
-   - Never leave barcode blank if an 7-14 digit barcode number appears on that row.
+   - ALSO inspect the row for any 7 to 14 digit number (EAN-13, UPC, etc., e.g. 5901905031346, 4043993458034). If found, extract ALL digits into "barcode".
+   - If NO barcode appears on the row, return "" (empty string). DO NOT invent a barcode and DO NOT put the item code/SKU into the barcode field.
 
-4. UNIT PRICE EXTRACTION (MANDATORY):
-   - Extract unit price from "מחיר", "מחיר יח'", "מחיר ליח'", "Price", "Unit Price".
-   - If free sample / tester / בונוס / טסטר, unit_price is 0.00.
-   - If unit price column is blank but line_total and qty exist, compute unit_price = line_total / qty.
-   - Every product row MUST have a valid numeric unit_price (never null).
+4. PRICES & DISCOUNTS (COST PRICE vs CONSUMER PRICE):
+   - Extract catalog / list / consumer price ("מחיר מחירון", "מחיר לצרכן", "מחירון") into "list_price" as number (or null if absent).
+   - Extract discount percent ("% הנחה", "הנחה") into "discount_pct" as number (e.g. 50, 40, 10; or 0 if none).
+   - Extract net purchase / cost price per unit ("מחיר נטו", "מחיר לאחר הנחה", "מחיר", "מחיר יח'") into "unit_price".
+   - If unit_price is missing but list_price and discount_pct exist: calculate unit_price = list_price * (1 - discount_pct/100).
+   - If unit_price is missing but line_total and qty exist: calculate unit_price = line_total / qty.
 
-5. FORMAT:
+5. EMPLOYEE / SALESPERSON (FOR SALES RECEIPTS):
+   - Look for employee / cashier / salesperson ("עובד", "עובדת", "קופאי", "קופאית", "מוכר", "מוכרת", "נציג/ה") and extract into "employee".
+
+6. FORMAT:
    - Numbers must be pure numbers without thousands commas (write 1188.00, never 1,188.00).
    - Return ONLY a valid JSON array of objects. No markdown fences. No explanations.`;
 
