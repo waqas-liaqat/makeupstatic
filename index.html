@@ -418,14 +418,6 @@
  <div class="fld"><label>Branch *</label><select id="ocr-br" translate="no"><option value="">Select branch...</option><option value="Beitar">Beitar</option><option value="Beit Shemesh">Beit Shemesh</option><option value="Jerusalem">Jerusalem</option></select></div>
  <div class="fld"><label>Date *</label><input type="date" id="ocr-dt"/></div>
  </div>
- <!-- Customer field (shown for Sale type only) -->
- <div id="ocr-cust-row" style="display:none;">
- <div class="g3">
- <div class="fld"><label>Customer Name <span style="font-weight:400;color:#94a3b8;">from invoice</span></label><input type="text" id="ocr-cust-name" placeholder="Customer name"/></div>
- <div class="fld"><label>Customer Phone <span style="font-weight:400;color:#94a3b8;">from invoice</span></label><input type="text" id="ocr-cust-phone" placeholder="Phone number"/></div>
- <div class="fld"><label>Customer Email <span style="font-weight:400;color:#94a3b8;">from invoice</span></label><input type="text" id="ocr-cust-email" placeholder="email@example.com"/></div>
- </div>
- </div>
  </div>
  <!-- OCR processing -->
  <div id="ocr-s2" style="display:none;">
@@ -439,6 +431,18 @@
  <div class="g2" style="margin-bottom:12px;">
   <div class="fld"><label>Supplier / From</label><input type="text" id="ocr-sup" placeholder="Supplier or seller name"/></div>
   <div class="fld"><label>Invoice Date</label><input type="date" id="ocr-inv-dt"/></div>
+ </div>
+ <!-- Customer row for Sale Invoices in Step 3 -->
+ <div id="ocr-s3-cust-row" style="display:none;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px 14px;margin-bottom:12px;">
+  <div style="font-weight:700;font-size:12.5px;color:#374151;margin-bottom:8px;display:flex;align-items:center;gap:8px;">
+   <span>👤 Customer Details</span>
+   <span id="ocr-cust-status-badge"></span>
+  </div>
+  <div class="g3">
+   <div class="fld"><label>Customer Name</label><input type="text" id="ocr-cust-name" placeholder="Customer name" oninput="updOcrCustBadge()"/></div>
+   <div class="fld"><label>Customer Phone</label><input type="text" id="ocr-cust-phone" placeholder="Phone number" oninput="updOcrCustBadge()"/></div>
+   <div class="fld"><label>Customer Email</label><input type="text" id="ocr-cust-email" placeholder="email@example.com" oninput="updOcrCustBadge()"/></div>
+  </div>
  </div>
  <div style="border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;margin-bottom:10px;">
  <table><thead><tr id="ocr-thead-row"><th>SKU / Code</th><th>Description</th><th style="text-align:center;">Qty</th><th style="text-align:right;">Price &#8362;</th><th>Match</th><th></th></tr></thead>
@@ -1070,7 +1074,28 @@ function setOcrType(t){
  const sEl=document.getElementById('ocr-type-sale'),stEl=document.getElementById('ocr-type-stock');
  if(t==='sale'){sEl.style.borderColor='#4f46e5';sEl.style.background='#eef2ff';stEl.style.borderColor='#e2e8f0';stEl.style.background='#f8fafc';}
  else{stEl.style.borderColor='#4f46e5';stEl.style.background='#eef2ff';sEl.style.borderColor='#e2e8f0';sEl.style.background='#f8fafc';}
- document.getElementById('ocr-cust-row').style.display=t==='sale'?'block':'none';
+ const s3CRow=document.getElementById('ocr-s3-cust-row');if(s3CRow)s3CRow.style.display=t==='sale'?'block':'none';
+}
+
+function updOcrCustBadge(){
+ const nm=(document.getElementById('ocr-cust-name')?.value||'').trim();
+ const ph=(document.getElementById('ocr-cust-phone')?.value||'').trim();
+ const em=(document.getElementById('ocr-cust-email')?.value||'').trim();
+ const badge=document.getElementById('ocr-cust-status-badge');
+ if(!badge)return;
+ if(!nm && !ph && !em){
+  badge.innerHTML='<span class="badge bgr">Anonymous / No Customer</span>';
+  return;
+ }
+ const cr=findCust(nm, ph, em);
+ if(cr.id){
+  const c=allCU.find(x=>x.id===cr.id);
+  badge.innerHTML=`<span class="badge bg">✓ Linked: ${esc(c?.fields[F.CU.NM]||nm)}</span>`;
+ } else if(cr.how==='conflict'){
+  badge.innerHTML=`<span class="badge by">⚠ Multiple matches (${cr.count}) — please specify phone</span>`;
+ } else {
+  badge.innerHTML=`<span class="badge bb">➕ New Customer: "${esc(nm||ph)}" (will be auto-saved to Airtable)</span>`;
+ }
 }
 function setOcrFile(f){if(!f)return;ocrFile=f;document.getElementById('ocr-ico').textContent='';document.getElementById('ocr-ttl').textContent=f.name;const r=new FileReader();r.onload=ev=>{const img=document.getElementById('ocr-img');img.src=ev.target.result;img.style.display='block';};r.readAsDataURL(f);document.getElementById('ocr-analyze-btn').style.display='inline-flex';}
 function ocrDrop(e){e.preventDefault();document.getElementById('ocr-dz').classList.remove('dg');if(e.dataTransfer.files[0])setOcrFile(e.dataTransfer.files[0]);}
@@ -1451,7 +1476,16 @@ CRITICAL EXTRACTION RULES:
   // Count needs_review rows
   const reviewCount=ocrItems.filter(x=>x.needs_review).length;
 
-  if(isSale){const nm=ocrItems[0].customer_name||'';const ph=ocrItems[0].customer_phone||'';const em=ocrItems[0].customer_email||'';document.getElementById('ocr-cust-name').value=nm;document.getElementById('ocr-cust-phone').value=ph;document.getElementById('ocr-cust-email').value=em;}
+  if(isSale){
+   const nm=ocrItems[0].customer_name||'';const ph=ocrItems[0].customer_phone||'';const em=ocrItems[0].customer_email||'';
+   if(document.getElementById('ocr-cust-name')) document.getElementById('ocr-cust-name').value=nm;
+   if(document.getElementById('ocr-cust-phone')) document.getElementById('ocr-cust-phone').value=ph;
+   if(document.getElementById('ocr-cust-email')) document.getElementById('ocr-cust-email').value=em;
+   const s3CRow=document.getElementById('ocr-s3-cust-row');if(s3CRow)s3CRow.style.display='block';
+   updOcrCustBadge();
+  } else {
+   const s3CRow=document.getElementById('ocr-s3-cust-row');if(s3CRow)s3CRow.style.display='none';
+  }
   document.getElementById('ocr-s2').style.display='none';document.getElementById('ocr-s3').style.display='block';
   document.getElementById('ocr-import-btn').style.display='inline-flex';
   document.getElementById('ocr-imp-lbl').textContent=isSale?'Deduct from Stock & Save':'Create PO & Add to Stock';
@@ -1637,15 +1671,44 @@ function findOcrMatch(item){
   p=allP.find(x=>{const s=String(x.fields[F.P.SKU]||'').toLowerCase();return s.length>=6&&(sku.includes(s)||s.includes(sku));});
   if(p)return p;
  }
- // 4. Description keyword match — check if product name words appear in the invoice description
- if(desc.length>=4){
-  p=allP.find(x=>{
-   const nm=String(x.fields[F.P.NM]||'').toLowerCase();
-   const sh=String(x.fields[F.P.SH]||'').toLowerCase();
-   const words=nm.split(/\s+/).filter(w=>w.length>3);
-   return words.length>0&&words.every(w=>desc.includes(w)||(sh&&desc.includes(sh)));
-  });
-  if(p)return p;
+ // 4. Intelligent Shade & Hebrew Token Overlap Matching
+ if(desc.length>=2){
+  const rawShade=String(item.shade||'').trim();
+  const numbersInDesc=(desc.match(/\b\d{1,4}\b/g)||[]);
+  const trailingNum=desc.match(/[^\d](\d{1,4})$/);
+  if(trailingNum)numbersInDesc.push(trailingNum[1]);
+  const candidateShades=[...new Set([rawShade,...numbersInDesc])].filter(Boolean);
+
+  const cleanDesc=desc.replace(/(גוון|מספר|מס'|shade|יח'|מוצר)/g,' ');
+  const descTokens=cleanDesc.split(/[\s\-_,./\\]+/).filter(w=>w.length>=2&&isNaN(w));
+
+  let bestProd=null,bestScore=0;
+  for(const prod of allP){
+   const pNm=String(prod.fields[F.P.NM]||'').toLowerCase();
+   const pSh=String(prod.fields[F.P.SH]||'').trim().toLowerCase();
+   const pBrand=String(prod.fields[F.P.BR]||'').toLowerCase();
+   const pTokens=(pNm+' '+pBrand).split(/[\s\-_,./\\]+/).filter(w=>w.length>=2&&isNaN(w));
+
+   let score=0;
+   const shadeMatch=candidateShades.some(s=>s.toLowerCase()===pSh);
+   if(shadeMatch&&pSh.length>0)score+=40;
+
+   for(const dt of descTokens){
+    if(pTokens.some(pt=>pt===dt||(pt.length>=3&&dt.length>=3&&(pt.includes(dt)||dt.includes(pt))))){
+     score+=20;
+    }
+   }
+
+   if(pSh&&candidateShades.length>0&&!shadeMatch)score-=35;
+   if(pBrand&&desc.includes(pBrand))score+=10;
+
+   const minScore=candidateShades.length>0?50:35;
+   if(score>bestScore&&score>=minScore){
+    bestScore=score;
+    bestProd=prod;
+   }
+  }
+  if(bestProd)return bestProd;
  }
  return null;
 }
@@ -1768,40 +1831,72 @@ async function ocrImport(){
  const btn=document.getElementById('ocr-import-btn');setLd(btn,true);
  try{
  if(isSale){
- // Sale invoice: deduct stock, link customer if found (no auto-creation)
- const cnm=document.getElementById('ocr-cust-name').value.trim();
- const cph=document.getElementById('ocr-cust-phone').value.trim();
- const cem=document.getElementById('ocr-cust-email').value.trim();
- const cr=findCust(cnm,cph,cem);
- const cId=cr.id||null;
- let custMsg='';
- if((cnm||cph||cem)&&!cId){
- if(cr.how==='not-found')custMsg=`Customer "${cnm||cph}" not found in Airtable — transaction imported without customer link. Go to Airtable → Customers to add them.`;
- else if(cr.how==='conflict')custMsg=`Customer "${cnm}" matched ${cr.count} records (ambiguous) — no customer link added. Please fix duplicates in Airtable.`;
- }
- const ref=`SALE-OCR-${dt}-${uid()}`;
- const txFields=[];const stockOps=[];const prodMissing=[];
- for(const item of ocrItems){
- const pr=findProd(item.sku,item.description);
- const qty=parseInt(item.qty)||1;
- const noteParts=[`${sup||'Sale'}: ${item.description||item.sku} · OCR Invoice`];
- if(!pr.prod){
- prodMissing.push(item.sku||item.description);
- noteParts.push(` Product not matched: "${item.sku||item.description}" — please identify and link in Airtable`);
- }
- const flds={[F.TX.NM]:`${ref}-${uid()}`,[F.TX.DT]:dtISO(dt),[F.TX.BR]:branch,[F.TX.QTY]:-qty,[F.TX.TY]:'Sale',[F.TX.SRC]:'Manual',[F.TX.REF]:ref,[F.TX.NO]:noteParts.join(' | ')};
- if(pr.prod){flds[F.TX.PR]=[pr.prod.id];stockOps.push({productId:pr.prod.id,branch,qtyChange:-qty});}
- if(cId)flds[F.TX.CU]=[cId];
- txFields.push(flds);
- }
- if(txFields.length){
- await atPostMany(TBL.TX,txFields);
- if(stockOps.length)await updateStockMany(stockOps);
- }
- let msg=` Sale imported: ${txFields.length} item(s) deducted from ${branch}`;
- if(prodMissing.length)msg+=` · ${prodMissing.length} product(s) not found in Airtable: ${prodMissing.join(', ')} — add them then re-import`;
- if(custMsg)toast(custMsg,'warn');
- toast(msg,prodMissing.length?'warn':'ok');
+  // 1. Block import if any items are unlinked
+  const unmatched = ocrItems.filter(item => !findOcrMatch(item));
+  if(unmatched.length){
+   toast(`Please link ${unmatched.length} product(s) marked "Not found" using "Link Product" before importing, so stock can be deducted.`,'err');
+   setLd(btn,false,' <span id="ocr-imp-lbl">Deduct from Stock & Save</span>');
+   return;
+  }
+
+  // 2. Customer resolution (auto-create if new)
+  const cnm=(document.getElementById('ocr-cust-name')?.value||'').trim();
+  const cph=(document.getElementById('ocr-cust-phone')?.value||'').trim();
+  const cem=(document.getElementById('ocr-cust-email')?.value||'').trim();
+  let cId=null;
+  let custMsg='';
+
+  if(cnm||cph||cem){
+   const cr=findCust(cnm,cph,cem);
+   if(cr.id){
+    cId=cr.id;
+   } else if(cr.how==='conflict'){
+    custMsg=`Customer "${cnm}" matched multiple records in Airtable — transaction saved without customer link.`;
+   } else {
+    // New customer -> auto-create in Airtable
+    try{
+     const newCustFlds={
+      [F.CU.NM]: cnm || 'Customer',
+      [F.CU.TY]: 'CUSTOMER',
+      [F.CU.SRC]: 'Manual'
+     };
+     if(cph) newCustFlds[F.CU.PH]=cph;
+     if(cem) newCustFlds[F.CU.EM]=cem;
+     const newCust=await atPost(TBL.CU, newCustFlds);
+     if(newCust){
+      allCU.push(newCust);
+      cId=newCust.id;
+      custMsg=`✓ Customer "${cnm||cph}" created in Airtable`;
+     }
+    }catch(custErr){
+     console.warn('Customer auto-create error:', custErr);
+     custMsg=`Note: Customer "${cnm}" could not be auto-created: ${custErr.message}`;
+    }
+   }
+  }
+
+  const ref=`SALE-OCR-${dt}-${uid()}`;
+  const txFields=[];const stockOps=[];
+  for(const item of ocrItems){
+   const matchedProd=findOcrMatch(item);
+   let pr=matchedProd?{prod:matchedProd}:findProd(item.sku,item.description);
+   const qty=parseInt(item.qty)||1;
+   const noteParts=[`${sup||'Sale'}: ${item.description||item.sku} · OCR Invoice`];
+   if(item.barcode) noteParts.push(`Barcode: ${item.barcode}`);
+   if(item.shade) noteParts.push(`Shade: ${item.shade}`);
+   const flds={[F.TX.NM]:`${ref}-${uid()}`,[F.TX.DT]:dtISO(dt),[F.TX.BR]:branch,[F.TX.QTY]:-qty,[F.TX.TY]:'Sale',[F.TX.SRC]:'Manual',[F.TX.REF]:ref,[F.TX.NO]:noteParts.join(' · ')};
+   if(pr.prod){flds[F.TX.PR]=[pr.prod.id];stockOps.push({productId:pr.prod.id,branch,qtyChange:-qty});}
+   if(cId)flds[F.TX.CU]=[cId];
+   if(item.unit_price)flds[F.TX.ASP]=item.unit_price;
+   txFields.push(flds);
+  }
+  if(txFields.length){
+   await atPostMany(TBL.TX,txFields);
+   if(stockOps.length)await updateStockMany(stockOps);
+  }
+  let msg=` Sale imported: ${txFields.length} item(s) deducted from ${branch}`;
+  if(custMsg)toast(custMsg,'ok');
+  toast(msg,'ok');
  } else {
   // Supplier invoice (New Inventory): add stock + create PO + auto-create missing products
   // Block import if any row still needs review
@@ -1884,16 +1979,26 @@ function findCust(nm, ph, email) {
  // 2. Email
  if(email){const em=email.toLowerCase().trim();const m=allCU.find(c=>(c.fields[F.CU.EM]||'').toLowerCase()===em);if(m)return{id:m.id,how:'email'};}
  // 3. Exact name
- if(nm){
- const exact=allCU.filter(c=>(c.fields[F.CU.NM]||'').toLowerCase()===nm.toLowerCase());
- if(exact.length===1)return{id:exact[0].id,how:'name'};
- if(exact.length>1)return{id:null,how:'conflict',count:exact.length};
- // 4. Partial name (one name contains the other)
- const partial=allCU.filter(c=>{const cn=(c.fields[F.CU.NM]||'').toLowerCase(),qn=nm.toLowerCase();return cn.includes(qn)||qn.includes(cn);});
- if(partial.length===1)return{id:partial[0].id,how:'partial-name'};
- if(partial.length>1)return{id:null,how:'conflict',count:partial.length};
+ const qn = nm ? nm.toLowerCase().trim() : '';
+ if(qn && qn.length >= 2){
+  const exact=allCU.filter(c=>{
+   const cn=String(c.fields[F.CU.NM]||'').toLowerCase().trim();
+   return cn && cn===qn;
+  });
+  if(exact.length===1)return{id:exact[0].id,how:'name'};
+  if(exact.length>1)return{id:null,how:'conflict',count:exact.length};
+
+  // 4. Partial name (both strings must have at least 3 characters)
+  if(qn.length>=3){
+   const partial=allCU.filter(c=>{
+    const cn=String(c.fields[F.CU.NM]||'').toLowerCase().trim();
+    return cn && cn.length>=3 && (cn.includes(qn)||qn.includes(cn));
+   });
+   if(partial.length===1)return{id:partial[0].id,how:'partial-name'};
+   if(partial.length>1)return{id:null,how:'conflict',count:partial.length};
+  }
  }
- return{id:null,how:'not-found'};
+ return {id:null, how:'not-found'};
 }
 
 // ── PRODUCT LOOKUP (no silent skip) ───────────────────────────
