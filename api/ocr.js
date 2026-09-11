@@ -99,10 +99,12 @@ CRITICAL EXTRACTION RULES:
 
 5. EMPLOYEE / CASHIER vs CUSTOMER (CRITICAL):
    - "מוכר/ת", "מוכר", "קופאי/ת", "קופאי", "עובד/ת", "עובד", "נציג/ה" means CASHIER / SALESPERSON.
-     Extract this name (e.g. "רבקי רבינוביץ") into "employee" property on EVERY item.
-   - NEVER put the cashier/seller/employee name into "customer_name"!
-   - Retail cash register receipts are almost always anonymous walk-in sales.
-   - "customer_name" MUST be "" (empty string) unless there is an explicit customer label like "לקוח/ה:", "לכבוד:", "שם לקוח:".
+     Extract this name (e.g. "רבקי רבינוביץ", "עובד כללי") into "employee" property on EVERY item.
+   - If the receipt contains an explicit customer section or label ("לקוח:", "לקוח/ה:", "לכבוד:", "שם לקוח:") or customer phone ("טלפון:"):
+     * Extract the customer name (e.g. "שרי דייטש") into "customer_name" on EVERY item.
+     * Extract the customer phone (e.g. "0534198810") into "customer_phone" on EVERY item.
+   - If NO customer section/label appears on the receipt, "customer_name" MUST be "" (empty string). NEVER put the cashier/seller into customer_name!
+   - NEVER put the customer name into "employee"! The customer and employee must be distinct.
 
 6. FORMAT:
    - Numbers must be pure numbers without thousands commas (write 1188.00, never 1,188.00).
