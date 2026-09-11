@@ -119,6 +119,33 @@
  .img-prev{max-width:100%;max-height:200px;border-radius:8px;border:1px solid #e2e8f0;display:block;margin:0 auto 12px;}
  .ocr-raw{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px;font-size:12.5px;line-height:1.7;white-space:pre-wrap;max-height:200px;overflow-y:auto;}
  ::-webkit-scrollbar{width:5px;height:5px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px;}
+ /* Executive Dashboard & Mockup Styles */
+ .nav-item.active{color:#831843!important;background:#ffd5e2!important;font-weight:700;}
+ .nav-item.active svg{stroke:#831843;}
+ .dash-kpi{background:#fff;border-radius:16px;padding:18px 20px;border:1px solid #eef2f6;box-shadow:0 1px 3px rgba(0,0,0,.03);transition:all .2s ease;}
+ .dash-kpi:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.06);}
+ .dash-kpi-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+ .dash-kpi-title{font-size:12.5px;font-weight:600;color:#64748b;}
+ .dash-kpi-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+ .dash-kpi-val{font-size:26px;font-weight:800;color:#0f172a;line-height:1.1;margin:4px 0 8px;letter-spacing:-0.5px;}
+ .dash-kpi-trend{font-size:12px;font-weight:700;display:inline-flex;align-items:center;gap:3px;}
+ .dash-kpi-trend.up{color:#16a34a;}
+ .dash-kpi-trend.down{color:#dc2626;}
+ .dash-kpi-sub{font-size:12px;color:#94a3b8;margin-left:4px;}
+ .qa-card{border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .2s ease;border:1px solid transparent;}
+ .qa-card:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.06);}
+ .qa-card-pink{background:#fff1f5;border-color:#ffe4ec;}
+ .qa-card-amber{background:#fffbeb;border-color:#fef3c7;}
+ .qa-card-rose{background:#fff1f2;border-color:#ffe4e6;}
+ .qa-card-purple{background:#faf5ff;border-color:#f3e8ff;}
+ .qa-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+ .qa-title{font-size:13.5px;font-weight:700;color:#0f172a;}
+ .qa-sub{font-size:11.5px;font-weight:600;margin-top:2px;display:flex;align-items:center;gap:4px;}
+ .rank-badge{width:22px;height:22px;border-radius:50%;background:#fce7f3;color:#db2777;font-weight:700;font-size:11.5px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
+ .date-opt{padding:8px 12px;font-size:12.5px;color:#1e293b;border-radius:6px;cursor:pointer;transition:background .1s;}
+ .date-opt:hover{background:#f1f5f9;color:#0f172a;}
+ .bar-col{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;cursor:pointer;transition:transform .15s;}
+ .bar-col:hover{transform:scaleY(1.02);}
  </style>
 </head>
 <body>
@@ -126,98 +153,428 @@
 
 <!-- ════ SIDEBAR ════════════════════════════════════════════ -->
 <div id="sidebar">
- <div style="padding:18px 16px 12px;border-bottom:1px solid rgba(255,255,255,.07);">
- <div style="display:flex;align-items:center;gap:10px;">
- <div style="width:36px;height:36px;background:linear-gradient(135deg,#4f46e5,#7c3aed);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">&#128132;</div>
- <div><div style="color:#fff;font-weight:700;font-size:14px;line-height:1.2;">&#128132; makeupstatic</div><div style="color:#64748b;font-size:11px;">Inventory Dashboard</div></div>
+ <div style="padding:22px 16px 16px;border-bottom:1px solid rgba(255,255,255,.08);text-align:center;">
+  <div style="font-size:32px;font-weight:900;color:#ffffff;letter-spacing:1px;font-family:'Segoe UI',sans-serif;line-height:1;">מיקאפ</div>
+  <div style="font-size:9.5px;font-weight:700;color:#e2e8f0;letter-spacing:2.5px;margin-top:4px;">MAKEUP BOUTIQUE</div>
  </div>
- </div>
- <nav style="flex:1;padding:8px 0;">
- <div class="nav-sec">Overview</div>
- <div class="nav-item active" id="nav-overview" onclick="showPage('overview')"><span></span>Overview</div>
- <div class="nav-sec">Inventory</div>
- <div class="nav-item" id="nav-products" onclick="showPage('products')"><span></span>Products</div>
- <div class="nav-item" id="nav-transactions" onclick="showPage('transactions')"><span></span>Transactions</div>
- <div class="nav-item" id="nav-purchase-orders" onclick="showPage('purchase-orders')"><span></span>Purchase Orders</div>
- <div class="nav-sec">Customers</div>
- <div class="nav-item" id="nav-customers" onclick="showPage('customers')"><span></span>Customers</div>
- <div class="nav-item" id="nav-approvals" onclick="showPage('approvals')">
- <span></span><span style="flex:1;">Approvals</span>
- <span id="appr-badge" style="background:#ef4444;color:#fff;border-radius:9999px;font-size:10.5px;font-weight:700;padding:1px 7px;display:none;">0</span>
- </div>
+
+ <nav style="flex:1;padding:12px 0;overflow-y:auto;">
+  <div class="nav-item active" id="nav-overview" onclick="showPage('overview')" style="margin-bottom:12px;">
+   <svg style="width:18px;height:18px;flex-shrink:0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+   <span>Dashboard</span>
+  </div>
+
+  <div class="nav-sec">OPERATIONS</div>
+  <div class="nav-item" id="nav-customers" onclick="showPage('customers')">
+   <svg style="width:17px;height:17px;flex-shrink:0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+   <span>Customers</span>
+  </div>
+  <div class="nav-item" id="nav-pos" onclick="openModal('m-pos')">
+   <svg style="width:17px;height:17px;flex-shrink:0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+   <span>Import POS Sales</span>
+  </div>
+  <div class="nav-item" id="nav-sale" onclick="openModal('m-tx')">
+   <svg style="width:17px;height:17px;flex-shrink:0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+   <span>Manual Sale</span>
+  </div>
+  <div class="nav-item" id="nav-ocr" onclick="openModal('m-ocr')">
+   <svg style="width:17px;height:17px;flex-shrink:0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="2"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+   <span>Supplier Invoices</span>
+  </div>
+  <div class="nav-item" id="nav-trf" onclick="openModal('m-trf')">
+   <svg style="width:17px;height:17px;flex-shrink:0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5"/><path d="M4 20L21 3"/><path d="M21 16v5h-5"/><path d="M15 15l6 6"/><path d="M4 4l5 5"/></svg>
+   <span>Transfers Between Branches</span>
+  </div>
+  <div class="nav-item" id="nav-products" onclick="showPage('products')">
+   <svg style="width:17px;height:17px;flex-shrink:0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+   <span>Products</span>
+  </div>
+  <div class="nav-item" id="nav-inventory" onclick="showReportsTab('inventory')">
+   <svg style="width:17px;height:17px;flex-shrink:0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+   <span>Inventory</span>
+  </div>
+  <div class="nav-item" id="nav-transactions" onclick="showPage('transactions')">
+   <svg style="width:17px;height:17px;flex-shrink:0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+   <span>Transactions</span>
+  </div>
+  <div class="nav-item" id="nav-purchase-orders" onclick="showPage('purchase-orders')">
+   <svg style="width:17px;height:17px;flex-shrink:0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+   <span>Purchase Orders</span>
+  </div>
+  <div class="nav-item" id="nav-approvals" onclick="showPage('approvals')">
+   <svg style="width:17px;height:17px;flex-shrink:0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+   <span style="flex:1;">Approvals</span>
+   <span id="appr-badge" style="background:#ef4444;color:#fff;border-radius:9999px;font-size:10px;font-weight:700;padding:1px 6px;display:none;">0</span>
+  </div>
+
+  <div class="nav-sec">ANALYTICS &amp; REPORTS</div>
+  <div class="nav-item" id="nav-rep-sales" onclick="showReportsTab('sales')">
+   <svg style="width:17px;height:17px;flex-shrink:0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+   <span>Sales</span>
+  </div>
+  <div class="nav-item" id="nav-rep-products" onclick="showReportsTab('products')">
+   <svg style="width:17px;height:17px;flex-shrink:0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+   <span>Products</span>
+  </div>
+  <div class="nav-item" id="nav-rep-customers" onclick="showReportsTab('customers')">
+   <svg style="width:17px;height:17px;flex-shrink:0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+   <span>Customers</span>
+  </div>
+  <div class="nav-item" id="nav-rep-branches" onclick="showReportsTab('branches')">
+   <svg style="width:17px;height:17px;flex-shrink:0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+   <span>Branches</span>
+  </div>
+  <div class="nav-item" id="nav-rep-employees" onclick="showReportsTab('employees')">
+   <svg style="width:17px;height:17px;flex-shrink:0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+   <span>Employees</span>
+  </div>
+  <div class="nav-item" id="nav-rep-profit" onclick="showReportsTab('profit')">
+   <svg style="width:17px;height:17px;flex-shrink:0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+   <span>Profitability</span>
+  </div>
+  <div class="nav-item" id="nav-reports" onclick="showPage('reports')">
+   <svg style="width:17px;height:17px;flex-shrink:0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+   <span>Reports &amp; Export</span>
+  </div>
+
+  <div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,.07);">
+   <div class="nav-item" onclick="openModal('m-sm')">
+    <svg style="width:17px;height:17px;flex-shrink:0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    <span>Settings / Mappings</span>
+   </div>
+  </div>
  </nav>
- <div style="padding:12px;border-top:1px solid rgba(255,255,255,.07);">
- <button onclick="refreshAll()" id="refresh-btn"
- style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:#94a3b8;padding:8px;border-radius:8px;font-size:12.5px;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;"
- onmouseover="this.style.background='rgba(255,255,255,.11)'" onmouseout="this.style.background='rgba(255,255,255,.06)'">
- <span id="r-ico"></span> Refresh Data
- </button>
- <div style="text-align:center;margin-top:6px;font-size:11px;color:#475569;">Updated: <span id="last-upd">--</span></div>
+
+ <div style="padding:14px 16px;border-top:1px solid rgba(255,255,255,.07);text-align:center;">
+  <div style="font-size:11px;font-style:italic;color:#fda4af;font-family:'Segoe Script',cursive,sans-serif;margin-bottom:2px;">Professional Makeup</div>
+  <div style="font-size:11px;font-weight:700;color:#f1f5f9;letter-spacing:0.5px;">Real Business Growth</div>
+  <div style="font-size:8.5px;color:#64748b;letter-spacing:1.5px;margin-top:6px;">MAKEUP &bull; PEOPLE &bull; RESULTS</div>
  </div>
 </div>
 
 <!-- ════ MAIN ════════════════════════════════════════════════ -->
 <div id="main">
- <div id="topbar">
- <h1 id="page-title">Overview</h1>
- <div style="display:flex;gap:7px;flex-wrap:wrap;align-items:center;">
- <button class="btn btn-p" onclick="openModal('m-pos')"> Upload POS Files</button>
- <button class="btn btn-s" onclick="openModal('m-ocr')" title="Upload invoice photo (sale or new stock) — AI extracts details"> Invoice OCR</button>
- <button class="btn btn-s" onclick="openModal('m-sm')" title="View and manage remembered supplier product mappings"> Mappings</button>
- <button class="btn btn-s" onclick="openModal('m-tx')" title="Record a single manual transaction"> Manual Transaction</button>
- <button class="btn btn-s" onclick="openModal('m-trf')"> Transfer</button>
- <button class="btn btn-s" onclick="openModal('m-po')"> New PO</button>
- </div>
+ <div id="topbar" style="background:#fff;border-bottom:1px solid #e2e8f0;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;min-height:72px;">
+  <!-- Welcome & Subtitle -->
+  <div>
+   <h1 style="font-size:24px;font-weight:800;color:#0f172a;margin:0;letter-spacing:-0.5px;" id="welcome-heading">Welcome, Mosh!</h1>
+   <p style="font-size:13px;color:#64748b;margin:3px 0 0;" id="welcome-sub">Here's a summary of your business</p>
+  </div>
+
+  <!-- Filters & User Profile -->
+  <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+   <!-- Date Range Preset Dropdown -->
+   <div style="position:relative;display:inline-block;">
+    <button class="btn btn-s" id="dash-date-btn" onclick="toggleDateDropdown()" style="padding:8px 14px;border-radius:10px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px;background:#f8fafc;">
+     <span style="font-size:15px;">📅</span>
+     <span id="dash-date-lbl">01/08/2026 &rarr; 31/08/2026</span>
+     <span style="font-size:10px;color:#64748b;">▼</span>
+    </button>
+    <div id="dash-date-menu" style="display:none;position:absolute;right:0;top:calc(100% + 6px);background:#fff;border:1px solid #e2e8f0;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.12);z-index:600;min-width:260px;padding:8px;">
+     <div style="font-size:11px;font-weight:700;color:#94a3b8;padding:6px 10px;text-transform:uppercase;">Quick Ranges</div>
+     <div class="date-opt" onclick="setDashDatePreset('this_month')">📅 This Month (Current)</div>
+     <div class="date-opt" onclick="setDashDatePreset('last_month')">📅 Last Month</div>
+     <div class="date-opt" onclick="setDashDatePreset('7d')">📅 Last 7 Days</div>
+     <div class="date-opt" onclick="setDashDatePreset('30d')">📅 Last 30 Days</div>
+     <div class="date-opt" onclick="setDashDatePreset('today')">📅 Today</div>
+     <div class="date-opt" onclick="setDashDatePreset('yesterday')">📅 Yesterday</div>
+     <div class="date-opt" onclick="setDashDatePreset('aug2026')">📅 August 2026 (Mockup Period)</div>
+     <div class="date-opt" onclick="setDashDatePreset('all')">📅 All Time</div>
+     <div style="border-top:1px solid #f1f5f9;margin:6px 0;padding-top:6px;">
+      <div style="font-size:11px;font-weight:700;color:#94a3b8;padding:4px 10px;text-transform:uppercase;">Custom Range</div>
+      <div style="padding:6px 10px;display:flex;flex-direction:column;gap:6px;">
+       <input type="date" id="dash-custom-fr" style="padding:6px 8px;border:1px solid #d1d5db;border-radius:6px;font-size:12px;" />
+       <input type="date" id="dash-custom-to" style="padding:6px 8px;border:1px solid #d1d5db;border-radius:6px;font-size:12px;" />
+       <button class="btn btn-p btn-xs" onclick="applyCustomDateRange()" style="width:100%;justify-content:center;margin-top:2px;">Apply Custom</button>
+      </div>
+     </div>
+    </div>
+   </div>
+
+   <!-- Branch Selector -->
+   <div style="display:inline-block;">
+    <select id="dash-branch-sel" onchange="onDashBranchChange(this.value)" style="padding:8px 14px;border:1px solid #d1d5db;border-radius:10px;font-size:13px;font-weight:600;background:#f8fafc;color:#1e293b;outline:none;cursor:pointer;">
+     <option value="">📍 All Branches</option>
+     <option value="Beit Shemesh">📍 Beit Shemesh</option>
+     <option value="Jerusalem">📍 Jerusalem</option>
+     <option value="Beitar">📍 Beitar Illit</option>
+    </select>
+   </div>
+
+   <!-- Refresh Button -->
+   <button class="btn btn-s" id="refresh-btn" onclick="refreshAll()" title="Refresh All Data from Airtable" style="padding:8px 12px;border-radius:10px;">
+    <span id="r-ico">🔄</span><span id="last-upd" style="display:none;"></span>
+   </button>
+
+   <!-- Export to Excel Button -->
+   <button class="btn btn-ok" onclick="exportCurrentDashboardCSV()" title="Export Summary to Excel/CSV" style="padding:8px 14px;border-radius:10px;">
+    📥 Excel
+   </button>
+
+   <!-- User Profile Badge matching mockup -->
+   <div style="display:flex;align-items:center;gap:10px;padding-left:8px;border-left:1px solid #e2e8f0;">
+    <div style="width:38px;height:38px;border-radius:50%;background:#db2777;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;flex-shrink:0;">M</div>
+    <div>
+     <div style="font-weight:700;font-size:13px;color:#0f172a;line-height:1.2;">Mosh</div>
+     <div style="font-size:11px;color:#64748b;">Business Owner</div>
+    </div>
+    <div style="margin-left:4px;font-family:'Segoe Script',cursive,sans-serif;color:#ec4899;font-size:13px;white-space:nowrap;">
+     Beauty Drives Success &hearts;
+    </div>
+   </div>
+  </div>
  </div>
 
  <div id="content">
 
- <!-- ── OVERVIEW ─────────────────────────────────────── -->
- <div class="page active" id="page-overview">
- <div id="pend-banner" style="display:none;background:#fefce8;border:1px solid #fbbf24;border-radius:10px;padding:11px 16px;margin-bottom:10px;align-items:center;gap:10px;font-size:13.5px;color:#92400e;"> ⏳ <strong><span id="pend-cnt">0</span> sale records waiting</strong> — products not yet in catalogue. <span id="pend-skus" style="font-family:monospace;font-size:12px;"></span> Add these products to Airtable and they'll import automatically on next refresh.</div>
-<div id="neg-banner" style="display:none;background:#fee2e2;border:1px solid #ef4444;border-radius:10px;padding:11px 16px;margin-bottom:10px;align-items:center;gap:10px;font-size:13.5px;color:#991b1b;">
+  <!-- ── OVERVIEW / EXECUTIVE DASHBOARD ─────────────────── -->
+  <div class="page active" id="page-overview">
+   <div id="pend-banner" style="display:none;background:#fefce8;border:1px solid #fbbf24;border-radius:10px;padding:11px 16px;margin-bottom:10px;align-items:center;gap:10px;font-size:13.5px;color:#92400e;"> ⏳ <strong><span id="pend-cnt">0</span> sale records waiting</strong> — products not yet in catalogue. <span id="pend-skus" style="font-family:monospace;font-size:12px;"></span> Add these products to Airtable and they'll import automatically on next refresh.</div>
+   <div id="neg-banner" style="display:none;background:#fee2e2;border:1px solid #ef4444;border-radius:10px;padding:11px 16px;margin-bottom:10px;align-items:center;gap:10px;font-size:13.5px;color:#991b1b;">
+    &#9888; <strong><span id="neg-cnt">0</span> products</strong> have <strong>negative stock</strong> &mdash; inventory gap detected! <span class="cl" onclick="showPage('products')" style="color:#991b1b;text-decoration:underline;">View Products &rarr;</span>
+   </div>
+   <div id="low-banner" style="display:none;background:#fef3c7;border:1px solid #f59e0b;border-radius:10px;padding:11px 16px;margin-bottom:16px;align-items:center;gap:10px;font-size:13.5px;color:#92400e;">
+    <strong><span id="low-cnt">0</span> products</strong> below minimum stock. <span class="cl" onclick="showPage('products')">View Products &rarr;</span>
+   </div>
 
-  &#9888; <strong><span id="neg-cnt">0</span> products</strong> have <strong>negative stock</strong> &mdash; inventory gap detected! <span class="cl" onclick="showPage('products')" style="color:#991b1b;text-decoration:underline;">View Products &rarr;</span>
+   <!-- ROW 1: 5 KPI CARDS MATCHING MOCKUP -->
+   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:20px;">
+    <!-- 1. Total Sales -->
+    <div class="dash-kpi">
+     <div class="dash-kpi-hdr">
+      <span class="dash-kpi-title">Total Sales</span>
+      <div class="dash-kpi-icon" style="background:#fce7f3;color:#db2777;">📊</div>
+     </div>
+     <div class="dash-kpi-val" id="k-sales">&#8362; 0</div>
+     <div style="display:flex;align-items:center;gap:4px;">
+      <span class="dash-kpi-trend up" id="k-sales-trend">&uarr; 12%</span>
+      <span class="dash-kpi-sub">vs. previous period</span>
+     </div>
+    </div>
 
- </div>
+    <!-- 2. Cost of Goods Sold -->
+    <div class="dash-kpi">
+     <div class="dash-kpi-hdr">
+      <span class="dash-kpi-title">Cost of Goods Sold</span>
+      <div class="dash-kpi-icon" style="background:#fef3c7;color:#d97706;">🪙</div>
+     </div>
+     <div class="dash-kpi-val" id="k-cogs">&#8362; 0</div>
+     <div style="display:flex;align-items:center;gap:4px;">
+      <span class="dash-kpi-trend up" id="k-cogs-trend">&uarr; 8%</span>
+      <span class="dash-kpi-sub">vs. previous period</span>
+     </div>
+    </div>
 
- <div id="low-banner" style="display:none;background:#fef3c7;border:1px solid #f59e0b;border-radius:10px;padding:11px 16px;margin-bottom:16px;display:none;align-items:center;gap:10px;font-size:13.5px;color:#92400e;">
- <strong><span id="low-cnt">0</span> products</strong> below minimum stock. <span class="cl" onclick="showPage('products')">View Products &rarr;</span>
- </div>
- <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px;">
- <div class="kpi" style="border-top:3px solid #3b82f6;"><div class="kpi-lbl"> Beitar</div><div class="kpi-val" id="k-b">--</div><div class="kpi-sub">Total units</div></div>
- <div class="kpi" style="border-top:3px solid #10b981;"><div class="kpi-lbl"> Beit Shemesh</div><div class="kpi-val" id="k-bs">--</div><div class="kpi-sub">Total units</div></div>
- <div class="kpi" style="border-top:3px solid #8b5cf6;"><div class="kpi-lbl"> Jerusalem</div><div class="kpi-val" id="k-j">--</div><div class="kpi-sub">Total units</div></div>
- <div class="kpi" style="border-top:3px solid #f59e0b;"><div class="kpi-lbl"> SKUs</div><div class="kpi-val" id="k-p">--</div><div class="kpi-sub">Products in catalogue</div></div>
- </div>
- <div style="display:grid;grid-template-columns:220px 1fr;gap:14px;margin-bottom:16px;">
- <div class="card">
- <div class="card-hdr"><h3>Status</h3></div>
- <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:#f1f5f9;">
- <div onclick="showPage('approvals')" style="background:#fff;padding:16px;text-align:center;cursor:pointer;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='#fff'">
- <div id="k-appr" style="font-size:26px;font-weight:800;color:#f59e0b;">--</div><div style="font-size:12px;color:#64748b;margin-top:3px;">Needs Approval</div>
- </div>
- <div onclick="showPage('approvals')" style="background:#fff;padding:16px;text-align:center;cursor:pointer;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='#fff'">
- <div id="k-err" style="font-size:26px;font-weight:800;color:#ef4444;">--</div><div style="font-size:12px;color:#64748b;margin-top:3px;">Errors</div>
- </div>
- <div onclick="showPage('purchase-orders')" style="background:#fff;padding:16px;text-align:center;cursor:pointer;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='#fff'">
- <div id="k-po" style="font-size:26px;font-weight:800;color:#3b82f6;">--</div><div style="font-size:12px;color:#64748b;margin-top:3px;">Open POs</div>
- </div>
- <div onclick="showPage('products')" style="background:#fff;padding:16px;text-align:center;cursor:pointer;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='#fff'">
- <div id="k-low" style="font-size:26px;font-weight:800;color:#ef4444;">--</div><div style="font-size:12px;color:#64748b;margin-top:3px;">Low Stock</div>
- </div>
- </div>
- </div>
- <div class="card">
- <div class="card-hdr"><h3> Below Minimum Stock</h3><span class="cl" onclick="showPage('products')">All products &rarr;</span></div>
- <div id="low-list" style="max-height:200px;overflow-y:auto;"><div class="empty" style="padding:20px;">Loading...</div></div>
- </div>
- </div>
- <div class="card">
- <div class="card-hdr"><h3>Recent Transactions</h3><span class="cl" onclick="showPage('transactions')">All transactions &rarr;</span></div>
- <div style="overflow-x:auto;"><table><thead><tr><th>Date &amp; Time</th><th>Product</th><th>Branch</th><th>Type</th><th>Qty</th><th>Source</th><th>Reference</th><th>Customer</th></tr></thead><tbody id="recent-tx"></tbody></table></div>
- </div>
- </div>
+    <!-- 3. Gross Profit -->
+    <div class="dash-kpi">
+     <div class="dash-kpi-hdr">
+      <span class="dash-kpi-title">Gross Profit</span>
+      <div class="dash-kpi-icon" style="background:#dcfce7;color:#16a34a;">📈</div>
+     </div>
+     <div class="dash-kpi-val" id="k-profit" style="color:#0f172a;">&#8362; 0</div>
+     <div style="display:flex;align-items:center;gap:6px;">
+      <span class="dash-kpi-trend up" id="k-profit-trend">&uarr; 18%</span>
+      <span id="k-margin-badge" style="background:#dcfce7;color:#15803d;padding:2px 8px;border-radius:9999px;font-size:11.5px;font-weight:700;">-- Margin</span>
+     </div>
+    </div>
+
+    <!-- 4. Total Transactions -->
+    <div class="dash-kpi">
+     <div class="dash-kpi-hdr">
+      <span class="dash-kpi-title">Total Transactions</span>
+      <div class="dash-kpi-icon" style="background:#f3e8ff;color:#9333ea;">🛍️</div>
+     </div>
+     <div class="dash-kpi-val" id="k-txs">0</div>
+     <div style="display:flex;align-items:center;gap:4px;">
+      <span class="dash-kpi-trend up" id="k-txs-trend">&uarr; 15%</span>
+      <span class="dash-kpi-sub">vs. previous period</span>
+     </div>
+    </div>
+
+    <!-- 5. Unique Customers -->
+    <div class="dash-kpi">
+     <div class="dash-kpi-hdr">
+      <span class="dash-kpi-title">Unique Customers</span>
+      <div class="dash-kpi-icon" style="background:#ffe4e6;color:#e11d48;">👥</div>
+     </div>
+     <div class="dash-kpi-val" id="k-custs">0</div>
+     <div style="display:flex;align-items:center;gap:4px;">
+      <span class="dash-kpi-trend up" id="k-custs-trend">&uarr; 20%</span>
+      <span class="dash-kpi-sub">vs. previous period</span>
+     </div>
+    </div>
+   </div>
+
+   <!-- ROW 2: 3 VISUAL CHARTS MATCHING MOCKUP -->
+   <div style="display:grid;grid-template-columns:1.8fr 1.2fr 1.2fr;gap:16px;margin-bottom:20px;">
+    <!-- Chart 1: Sales Over Time -->
+    <div class="card" style="padding:18px 20px;">
+     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+      <h3 style="font-size:15px;font-weight:700;color:#0f172a;margin:0;">Sales Over Time</h3>
+      <select id="chart-overtime-metric" onchange="renderSalesOverTimeChart()" style="padding:4px 10px;border:1px solid #d1d5db;border-radius:8px;font-size:12px;font-weight:600;outline:none;background:#f8fafc;">
+       <option value="sales">Sales (&#8362;)</option>
+       <option value="profit">Gross Profit (&#8362;)</option>
+       <option value="txs">Transactions</option>
+      </select>
+     </div>
+     <div id="chart-overtime-container" style="height:220px;position:relative;width:100%;">
+      <!-- Dynamic SVG Line Chart -->
+     </div>
+    </div>
+
+    <!-- Chart 2: Sales by Branch -->
+    <div class="card" style="padding:18px 20px;">
+     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+      <h3 style="font-size:15px;font-weight:700;color:#0f172a;margin:0;">Sales by Branch</h3>
+      <span style="font-size:11px;color:#64748b;">Click branch to drill down</span>
+     </div>
+     <div id="chart-branch-container" style="height:220px;display:flex;align-items:flex-end;justify-content:space-around;padding-top:20px;padding-bottom:10px;">
+      <!-- Dynamic Branch Bars with labels -->
+     </div>
+    </div>
+
+    <!-- Chart 3: Sales by Brand -->
+    <div class="card" style="padding:18px 20px;">
+     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+      <h3 style="font-size:15px;font-weight:700;color:#0f172a;margin:0;">Sales by Brand</h3>
+      <select id="chart-brand-metric" onchange="renderSalesByBrandChart()" style="padding:4px 8px;border:1px solid #d1d5db;border-radius:8px;font-size:12px;font-weight:600;outline:none;background:#f8fafc;">
+       <option value="revenue">By Revenue</option>
+       <option value="units">By Units</option>
+      </select>
+     </div>
+     <div id="chart-brand-container" style="height:220px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
+      <!-- Dynamic Donut SVG and Legend -->
+     </div>
+    </div>
+   </div>
+
+   <!-- ROW 3: 4 QUICK ACTION CARDS MATCHING MOCKUP -->
+   <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px;">
+    <!-- 1. Manual Sale -->
+    <div class="qa-card qa-card-pink" onclick="openModal('m-tx')">
+     <div class="qa-icon" style="background:#ffd5e2;color:#db2777;">🛒</div>
+     <div>
+      <div class="qa-title">Manual Sale</div>
+      <div class="qa-sub" style="color:#db2777;">Add a new sale &rarr;</div>
+     </div>
+    </div>
+
+    <!-- 2. Import POS Sales -->
+    <div class="qa-card qa-card-amber" onclick="openModal('m-pos')">
+     <div class="qa-icon" style="background:#fef3c7;color:#d97706;">📄</div>
+     <div>
+      <div class="qa-title">Import POS Sales</div>
+      <div class="qa-sub" style="color:#d97706;">Upload POS file &rarr;</div>
+     </div>
+    </div>
+
+    <!-- 3. Supplier Invoice -->
+    <div class="qa-card qa-card-rose" onclick="openModal('m-ocr')">
+     <div class="qa-icon" style="background:#ffe4e6;color:#e11d48;">🚚</div>
+     <div>
+      <div class="qa-title">Supplier Invoice</div>
+      <div class="qa-sub" style="color:#e11d48;">Add new purchase &rarr;</div>
+     </div>
+    </div>
+
+    <!-- 4. Transfer Between Branches -->
+    <div class="qa-card qa-card-purple" onclick="openModal('m-trf')">
+     <div class="qa-icon" style="background:#f3e8ff;color:#9333ea;">⇄</div>
+     <div>
+      <div class="qa-title">Transfer Between Branches</div>
+      <div class="qa-sub" style="color:#9333ea;">Move inventory &rarr;</div>
+     </div>
+    </div>
+   </div>
+
+   <!-- ROW 4: 3 SUMMARY TABLES MATCHING MOCKUP (WITH 1-CLICK DRILL DOWNS) -->
+   <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:20px;">
+    <!-- Top Selling Products -->
+    <div class="card">
+     <div class="card-hdr" style="padding:14px 18px;">
+      <h3 style="font-size:14px;">Top Selling Products</h3>
+      <span class="cl" onclick="showReportsTab('products')" style="font-size:12px;font-weight:600;color:#db2777;">View All &rarr;</span>
+     </div>
+     <div style="overflow-x:auto;">
+      <table>
+       <thead>
+        <tr>
+         <th style="width:36px;text-align:center;">#</th>
+         <th>Product</th>
+         <th style="text-align:right;">Units Sold</th>
+        </tr>
+       </thead>
+       <tbody id="top-prods-body">
+        <!-- Dynamic Top 5 Products -->
+       </tbody>
+      </table>
+     </div>
+    </div>
+
+    <!-- Top Customers -->
+    <div class="card">
+     <div class="card-hdr" style="padding:14px 18px;">
+      <h3 style="font-size:14px;">Top Customers</h3>
+      <span class="cl" onclick="showReportsTab('customers')" style="font-size:12px;font-weight:600;color:#db2777;">View All &rarr;</span>
+     </div>
+     <div style="overflow-x:auto;">
+      <table>
+       <thead>
+        <tr>
+         <th style="width:36px;text-align:center;">#</th>
+         <th>Customer</th>
+         <th style="text-align:right;">Total Purchases</th>
+        </tr>
+       </thead>
+       <tbody id="top-custs-body">
+        <!-- Dynamic Top 5 Customers -->
+       </tbody>
+      </table>
+     </div>
+    </div>
+
+    <!-- Low Inventory Alerts -->
+    <div class="card">
+     <div class="card-hdr" style="padding:14px 18px;">
+      <h3 style="font-size:14px;">Low Inventory Alerts</h3>
+      <span class="cl" onclick="showPage('products')" style="font-size:12px;font-weight:600;color:#db2777;">View All &rarr;</span>
+     </div>
+     <div style="overflow-x:auto;">
+      <table>
+       <thead>
+        <tr>
+         <th>Product</th>
+         <th>Branch</th>
+         <th style="text-align:center;">Current Stock</th>
+        </tr>
+       </thead>
+       <tbody id="top-low-body">
+        <!-- Dynamic Low Stock Alerts -->
+       </tbody>
+      </table>
+     </div>
+    </div>
+   </div>
+
+   <!-- ROW 5: RECENT TRANSACTIONS TABLE -->
+   <div class="card">
+    <div class="card-hdr" style="padding:14px 18px;">
+     <h3 style="font-size:14px;">Recent Transactions in Selected Range</h3>
+     <span class="cl" onclick="showPage('transactions')">All transactions &rarr;</span>
+    </div>
+    <div style="overflow-x:auto;">
+     <table>
+      <thead>
+       <tr>
+        <th>Date &amp; Time</th><th>Product</th><th>Branch</th><th>Type</th><th>Qty</th><th>Source</th><th>Reference</th><th>Customer</th>
+       </tr>
+      </thead>
+      <tbody id="recent-tx"></tbody>
+     </table>
+    </div>
+   </div>
+  </div>
+
 
  <!-- ── PRODUCTS ──────────────────────────────────────── -->
  <div class="page" id="page-products">
@@ -298,6 +655,26 @@
  <div id="errs-list" style="padding:12px;max-height:calc(100vh-240px);overflow-y:auto;"><div class="empty">Loading...</div></div>
  </div>
  </div>
+ </div>
+
+ <!-- ── REPORTS & ANALYTICS ────────────────────────────── -->
+ <div class="page" id="page-reports">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px;">
+   <div class="tab-bar">
+    <button class="tab-btn active" id="rtab-daily" onclick="switchReportTab('daily')">📊 Daily Summary</button>
+    <button class="tab-btn" id="rtab-products" onclick="switchReportTab('products')">💄 Products Performance</button>
+    <button class="tab-btn" id="rtab-customers" onclick="switchReportTab('customers')">👥 Customer Ranking</button>
+    <button class="tab-btn" id="rtab-branches" onclick="switchReportTab('branches')">🏢 Branch Breakdown</button>
+    <button class="tab-btn" id="rtab-employees" onclick="switchReportTab('employees')">👩‍💼 Employees / Cashiers</button>
+    <button class="tab-btn" id="rtab-inventory" onclick="switchReportTab('inventory')">📦 Stock Valuation</button>
+   </div>
+   <div style="display:flex;align-items:center;gap:10px;">
+    <button class="btn btn-ok" onclick="exportActiveReportToCSV()">📥 Export Report to Excel (CSV)</button>
+   </div>
+  </div>
+  <div id="report-content-container">
+   <!-- Rendered via renderActiveReport() -->
+  </div>
  </div>
 
  </div><!-- /content -->
@@ -655,6 +1032,188 @@
  </div>
 </div>
 
+<!-- ── 9. PRODUCT 360° DRILL-DOWN MODAL ───────────────────────── -->
+<div class="modal-ov" id="m-prod360">
+ <div class="modal m-2xl">
+  <div class="m-hdr">
+   <div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+     <h2 id="p360-name">Product 360°</h2>
+     <span id="p360-sku-badge" class="badge bb" style="font-family:monospace;font-size:12px;">SKU</span>
+     <span id="p360-brand-badge" class="badge bp">Brand</span>
+     <span id="p360-shade-badge" class="badge bgr">Shade</span>
+    </div>
+    <p id="p360-meta" style="font-size:12.5px;color:#64748b;margin-top:4px;">Comprehensive stock, pricing, margins, and sales history</p>
+   </div>
+   <div style="display:flex;align-items:center;gap:8px;">
+    <button class="btn btn-ok btn-sm" onclick="exportProduct360CSV()">📥 Export to Excel</button>
+    <button class="m-x" onclick="closeModal('m-prod360')">&times;</button>
+   </div>
+  </div>
+  <div class="m-body">
+   <!-- KPIs Grid -->
+   <div id="p360-kpis" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px;margin-bottom:18px;">
+    <!-- Rendered via JS -->
+   </div>
+
+   <!-- Branch Stock Breakdown -->
+   <div id="p360-stocks" style="margin-bottom:18px;">
+    <!-- Rendered via JS -->
+   </div>
+
+   <!-- Transaction History Table -->
+   <div class="card">
+    <div class="card-hdr">
+     <h3 style="font-size:14px;">Product Transaction History (Sales, Receipts, Transfers)</h3>
+     <span id="p360-tx-count" style="font-size:12px;color:#64748b;">0 records</span>
+    </div>
+    <div style="overflow-x:auto;max-height:360px;">
+     <table>
+      <thead>
+       <tr>
+        <th>Date &amp; Time</th><th>Type</th><th>Branch</th><th style="text-align:center;">Qty</th><th style="text-align:right;">Actual Paid Price</th><th>Customer</th><th>Employee</th><th>Reference</th><th>Notes</th>
+       </tr>
+      </thead>
+      <tbody id="p360-tx-body"></tbody>
+     </table>
+    </div>
+   </div>
+  </div>
+  <div class="m-foot">
+   <button class="btn btn-s" onclick="closeModal('m-prod360')">Close</button>
+  </div>
+ </div>
+</div>
+
+<!-- ── 10. CUSTOMER 360° DRILL-DOWN MODAL ─────────────────────── -->
+<div class="modal-ov" id="m-cust360">
+ <div class="modal m-2xl">
+  <div class="m-hdr">
+   <div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+     <h2 id="c360-name">Customer 360°</h2>
+     <span id="c360-phone-badge" class="badge bb" style="font-family:monospace;font-size:12px;">Phone</span>
+     <span id="c360-type-badge" class="badge bg">Regular</span>
+    </div>
+    <p id="c360-meta" style="font-size:12.5px;color:#64748b;margin-top:4px;">Customer lifetime spending, purchase frequency &amp; preferences</p>
+   </div>
+   <div style="display:flex;align-items:center;gap:8px;">
+    <button class="btn btn-ok btn-sm" onclick="exportCustomer360CSV()">📥 Export to Excel</button>
+    <button class="m-x" onclick="closeModal('m-cust360')">&times;</button>
+   </div>
+  </div>
+  <div class="m-body">
+   <!-- Customer KPIs -->
+   <div id="c360-kpis" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px;">
+    <!-- Rendered via JS -->
+   </div>
+
+   <!-- Products Purchased Breakdown -->
+   <div class="card" style="margin-bottom:18px;">
+    <div class="card-hdr">
+     <h3 style="font-size:14px;">Products Purchased Breakdown</h3>
+     <span id="c360-prod-count" style="font-size:12px;color:#64748b;">0 items</span>
+    </div>
+    <div style="overflow-x:auto;max-height:220px;">
+     <table>
+      <thead>
+       <tr>
+        <th>Product</th><th>Brand</th><th style="text-align:center;">Total Units</th><th style="text-align:right;">Total Paid &#8362;</th><th style="text-align:right;">Avg Price / Unit</th><th>Last Branch</th>
+       </tr>
+      </thead>
+      <tbody id="c360-prods-body"></tbody>
+     </table>
+    </div>
+   </div>
+
+   <!-- Transactions Log -->
+   <div class="card">
+    <div class="card-hdr">
+     <h3 style="font-size:14px;">All Transactions &amp; Receipts</h3>
+     <span id="c360-tx-count" style="font-size:12px;color:#64748b;">0 records</span>
+    </div>
+    <div style="overflow-x:auto;max-height:300px;">
+     <table>
+      <thead>
+       <tr>
+        <th>Date &amp; Time</th><th>Receipt #</th><th>Branch</th><th>Product</th><th style="text-align:center;">Qty</th><th style="text-align:right;">Paid Price</th><th>Salesperson</th><th>Notes</th>
+       </tr>
+      </thead>
+      <tbody id="c360-tx-body"></tbody>
+     </table>
+    </div>
+   </div>
+  </div>
+  <div class="m-foot">
+   <button class="btn btn-s" onclick="closeModal('m-cust360')">Close</button>
+  </div>
+ </div>
+</div>
+
+<!-- ── 11. BRANCH 360° DRILL-DOWN MODAL ───────────────────────── -->
+<div class="modal-ov" id="m-branch360">
+ <div class="modal m-2xl">
+  <div class="m-hdr">
+   <div>
+    <div style="display:flex;align-items:center;gap:10px;">
+     <h2 id="b360-name">Branch 360°</h2>
+     <span class="badge bp">Branch Overview</span>
+    </div>
+    <p id="b360-meta" style="font-size:12.5px;color:#64748b;margin-top:4px;">Branch sales, profitability, inventory valuation &amp; operations</p>
+   </div>
+   <div style="display:flex;align-items:center;gap:8px;">
+    <button class="btn btn-ok btn-sm" onclick="exportBranch360CSV()">📥 Export to Excel</button>
+    <button class="m-x" onclick="closeModal('m-branch360')">&times;</button>
+   </div>
+  </div>
+  <div class="m-body">
+   <!-- Branch KPIs -->
+   <div id="b360-kpis" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px;margin-bottom:18px;">
+    <!-- Rendered via JS -->
+   </div>
+
+   <!-- Top Branch Products -->
+   <div class="card" style="margin-bottom:18px;">
+    <div class="card-hdr">
+     <h3 style="font-size:14px;">Top Selling Products in this Branch</h3>
+     <span id="b360-prod-count" style="font-size:12px;color:#64748b;">Top 10</span>
+    </div>
+    <div style="overflow-x:auto;max-height:220px;">
+     <table>
+      <thead>
+       <tr>
+        <th style="width:36px;text-align:center;">#</th><th>Product</th><th>Brand</th><th style="text-align:center;">Units Sold</th><th style="text-align:right;">Revenue &#8362;</th><th style="text-align:right;">Profit &#8362;</th>
+       </tr>
+      </thead>
+      <tbody id="b360-prods-body"></tbody>
+     </table>
+    </div>
+   </div>
+
+   <!-- Branch Operations Log -->
+   <div class="card">
+    <div class="card-hdr">
+     <h3 style="font-size:14px;">Branch Operations &amp; Transactions</h3>
+     <span id="b360-tx-count" style="font-size:12px;color:#64748b;">0 records</span>
+    </div>
+    <div style="overflow-x:auto;max-height:300px;">
+     <table>
+      <thead>
+       <tr>
+        <th>Date &amp; Time</th><th>Type</th><th>Product</th><th style="text-align:center;">Qty</th><th style="text-align:right;">Price</th><th>Customer</th><th>Employee</th><th>Notes</th>
+       </tr>
+      </thead>
+      <tbody id="b360-tx-body"></tbody>
+     </table>
+    </div>
+   </div>
+  </div>
+  <div class="m-foot">
+   <button class="btn btn-s" onclick="closeModal('m-branch360')">Close</button>
+  </div>
+ </div>
+</div>
+
 <div id="toast-c"></div>
 
 <!-- ════ JAVASCRIPT ════════════════════════════════════════════ -->
@@ -761,9 +1320,18 @@ async function updateStockMany(ops) {
  }
 }
 
-// ── NAV ────────────────────────────────────────────────────────
-const PT={'overview':'Overview','products':'Products','transactions':'Inventory Transactions','purchase-orders':'Purchase Orders','customers':'Customers','approvals':'Approvals & Errors'};
-function showPage(n){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));document.getElementById(`page-${n}`).classList.add('active');document.getElementById(`nav-${n}`).classList.add('active');document.getElementById('page-title').textContent=PT[n]||n;}
+const PT={'overview':'Executive Dashboard','products':'Products & Inventory','transactions':'Inventory Transactions','purchase-orders':'Purchase Orders','customers':'Customers','approvals':'Approvals & Errors','reports':'Analytics & Reports'};
+function showPage(n){
+ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+ document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
+ const elPage = document.getElementById(`page-${n}`);
+ if(elPage) elPage.classList.add('active');
+ const elNav = document.getElementById(`nav-${n}`);
+ if(elNav) elNav.classList.add('active');
+ document.getElementById('page-title').textContent=PT[n]||n;
+ if(n==='overview') renderExecutiveDashboard();
+ if(n==='reports') renderActiveReport();
+}
 
 // ── MODALS ─────────────────────────────────────────────────────
 function openModal(id){document.getElementById(id).classList.add('open');document.getElementById(id).querySelectorAll('input[type=date]').forEach(e=>{if(!e.value)e.value=today();});if(id==='m-tx'){txRows=[];txAddRow();}if(id==='m-po'){poRows=[];poAddRow();}}
@@ -840,28 +1408,1619 @@ async function ldCU(){allCU=await atGet(TBL.CU,{'sort[0][field]':F.CU.CR,'sort[0
 async function ldSM(){try{allSM=await atGet(TBL.SM);}catch(e){console.warn('Supplier Mappings load:',e);allSM=[];}renderSupplierMappings();}
 async function refreshAll(){const b=document.getElementById('refresh-btn');b.disabled=true;document.getElementById('r-ico').textContent='';await loadAll();document.getElementById('r-ico').textContent='';b.disabled=false;}
 
-// ── RENDER OVERVIEW ────────────────────────────────────────────
-function renderOverview(){
- let bT=0,bsT=0,jT=0;const low=[],neg=[];
- allP.forEach(p=>{const f=p.fields;bT+=(f[F.P.B]??0);bsT+=(f[F.P.BS]??0);jT+=(f[F.P.J]??0);if(isLow(f))low.push(p);if((f[F.P.B]??0)<0||(f[F.P.BS]??0)<0||(f[F.P.J]??0)<0)neg.push(p);});
- document.getElementById('k-b').textContent=bT.toLocaleString();
- document.getElementById('k-bs').textContent=bsT.toLocaleString();
- document.getElementById('k-j').textContent=jT.toLocaleString();
- document.getElementById('k-p').textContent=allP.length;
- const apN=allAI.filter(r=>r.fields[F.AI.STAT]==='Needs Approval').length;
- const erN=allAI.filter(r=>r.fields[F.AI.STAT]==='Error').length;
- const poN=allPO.filter(r=>['Draft','Ordered'].includes(r.fields[F.PO.STAT])).length;
- ['k-appr','k-err','k-po','k-low'].forEach((id,i)=>document.getElementById(id).textContent=[apN,erN,poN,low.length][i]);
- const banner=document.getElementById('low-banner');
- if(low.length){banner.style.display='flex';document.getElementById('low-cnt').textContent=low.length;}else{banner.style.display='none';}
+// ── EXECUTIVE DASHBOARD & ANALYTICS STATE ──────────────────────
+let dashDatePreset = 'aug2026';
+let dashDateFrom = '2026-08-01';
+let dashDateTo = '2026-08-31';
+let dashBranch = '';
+let dashOvertimeMetric = 'sales';
+let dashBrandMetric = 'revenue';
+let activeReportTab = 'daily';
+let currentP360Id = null;
+let currentC360Id = null;
+let currentB360Name = null;
 
- const negBanner=document.getElementById('neg-banner');if(neg.length){negBanner.style.display='flex';document.getElementById('neg-cnt').textContent=neg.length;}else{negBanner.style.display='none';}
- const ll=document.getElementById('low-list');
- if(!low.length){ll.innerHTML='<div class="empty" style="color:#10b981;padding:20px;"> All products above minimum</div>';}
- else{ll.innerHTML=`<table style="font-size:12.5px;"><thead><tr><th>Product</th><th style="text-align:center;">Beitar</th><th style="text-align:center;">Beit Sh.</th><th style="text-align:center;">Jerusalem</th></tr></thead><tbody>${low.slice(0,12).map(p=>{const f=p.fields;const b=f[F.P.B]??0,bs=f[F.P.BS]??0,j=f[F.P.J]??0,mb=f[F.P.MB]??0,mbs=f[F.P.MBS]??0,mj=f[F.P.MJ]??0;const sc=(v,m)=>m>0&&v<m?'color:#ef4444;font-weight:700;':'';return`<tr><td style="padding:7px 12px;"><div style="font-weight:600;">${esc(f[F.P.NM]||'?')}</div><div style="color:#94a3b8;font-size:11px;">${esc(f[F.P.SKU]||'')}</div></td><td style="text-align:center;padding:7px;${sc(b,mb)}">${b}${mb?`<span style="font-size:10px;color:#94a3b8;">/min${mb}</span>`:''}</td><td style="text-align:center;padding:7px;${sc(bs,mbs)}">${bs}${mbs?`<span style="font-size:10px;color:#94a3b8;">/min${mbs}</span>`:''}</td><td style="text-align:center;padding:7px;${sc(j,mj)}">${j}${mj?`<span style="font-size:10px;color:#94a3b8;">/min${mj}</span>`:''}</td></tr>`;}).join('')}${low.length>12?`<tr><td colspan="4" style="text-align:center;padding:8px;font-size:12px;color:#64748b;">+${low.length-12} more...</td></tr>`:''}</tbody></table>`;}
- const recent=allTX.slice(0,12);
- document.getElementById('recent-tx').innerHTML=recent.length?recent.map(r=>txRow(r,true)).join(''):`<tr><td colspan="8"><div class="empty">No transactions yet</div></td></tr>`;
+function toggleDateDropdown() {
+ const m = document.getElementById('dash-date-menu');
+ if (m) m.style.display = m.style.display === 'none' ? 'block' : 'none';
 }
+document.addEventListener('click', e => {
+ const btn = document.getElementById('dash-date-btn');
+ const menu = document.getElementById('dash-date-menu');
+ if (menu && btn && !btn.contains(e.target) && !menu.contains(e.target)) {
+  menu.style.display = 'none';
+ }
+});
+
+function setDashDatePreset(preset) {
+ dashDatePreset = preset;
+ const now = new Date();
+ const y = now.getFullYear();
+ const m = String(now.getMonth() + 1).padStart(2, '0');
+ const d = String(now.getDate()).padStart(2, '0');
+ const todayStr = `${y}-${m}-${d}`;
+
+ if (preset === 'today') {
+  dashDateFrom = todayStr;
+  dashDateTo = todayStr;
+  const el = document.getElementById('dash-date-lbl'); if (el) el.textContent = `Today (${fmtD(todayStr)})`;
+ } else if (preset === 'yesterday') {
+  const yest = new Date(now);
+  yest.setDate(yest.getDate() - 1);
+  const yestStr = yest.toISOString().split('T')[0];
+  dashDateFrom = yestStr;
+  dashDateTo = yestStr;
+  const el = document.getElementById('dash-date-lbl'); if (el) el.textContent = `Yesterday (${fmtD(yestStr)})`;
+ } else if (preset === '7d') {
+  const p7 = new Date(now);
+  p7.setDate(p7.getDate() - 7);
+  dashDateFrom = p7.toISOString().split('T')[0];
+  dashDateTo = todayStr;
+  const el = document.getElementById('dash-date-lbl'); if (el) el.textContent = 'Last 7 Days';
+ } else if (preset === '30d') {
+  const p30 = new Date(now);
+  p30.setDate(p30.getDate() - 30);
+  dashDateFrom = p30.toISOString().split('T')[0];
+  dashDateTo = todayStr;
+  const el = document.getElementById('dash-date-lbl'); if (el) el.textContent = 'Last 30 Days';
+ } else if (preset === 'this_month') {
+  dashDateFrom = `${y}-${m}-01`;
+  const lastDay = new Date(y, now.getMonth() + 1, 0).getDate();
+  dashDateTo = `${y}-${m}-${String(lastDay).padStart(2, '0')}`;
+  const el = document.getElementById('dash-date-lbl'); if (el) el.textContent = `${fmtD(dashDateFrom)} → ${fmtD(dashDateTo)}`;
+ } else if (preset === 'last_month') {
+  const prevM = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  const py = prevM.getFullYear();
+  const pm = String(prevM.getMonth() + 1).padStart(2, '0');
+  const pLast = new Date(py, prevM.getMonth() + 1, 0).getDate();
+  dashDateFrom = `${py}-${pm}-01`;
+  dashDateTo = `${py}-${pm}-${String(pLast).padStart(2, '0')}`;
+  const el = document.getElementById('dash-date-lbl'); if (el) el.textContent = `${fmtD(dashDateFrom)} → ${fmtD(dashDateTo)}`;
+ } else if (preset === 'aug2026') {
+  dashDateFrom = '2026-08-01';
+  dashDateTo = '2026-08-31';
+  const el = document.getElementById('dash-date-lbl'); if (el) el.textContent = '01/08/2026 → 31/08/2026';
+ } else if (preset === 'all') {
+  dashDateFrom = '';
+  dashDateTo = '';
+  const el = document.getElementById('dash-date-lbl'); if (el) el.textContent = 'All Time';
+ }
+ const dm = document.getElementById('dash-date-menu');
+ if (dm) dm.style.display = 'none';
+ renderExecutiveDashboard();
+ const pgRep = document.getElementById('page-reports');
+ if (pgRep && pgRep.classList.contains('active')) renderActiveReport();
+}
+
+function applyCustomDateRange() {
+ const fr = document.getElementById('dash-custom-fr').value;
+ const to = document.getElementById('dash-custom-to').value;
+ if (!fr || !to) { toast('Please select both start and end dates', 'warn'); return; }
+ dashDateFrom = fr;
+ dashDateTo = to;
+ dashDatePreset = 'custom';
+ const el = document.getElementById('dash-date-lbl'); if (el) el.textContent = `${fmtD(fr)} → ${fmtD(to)}`;
+ const dm = document.getElementById('dash-date-menu');
+ if (dm) dm.style.display = 'none';
+ renderExecutiveDashboard();
+ const pgRep = document.getElementById('page-reports');
+ if (pgRep && pgRep.classList.contains('active')) renderActiveReport();
+}
+
+function onDashBranchChange(val) {
+ dashBranch = val;
+ renderExecutiveDashboard();
+ const pgRep = document.getElementById('page-reports');
+ if (pgRep && pgRep.classList.contains('active')) renderActiveReport();
+}
+
+function getTxPrice(tx, prod) {
+ const f = tx.fields;
+ if (f[F.TX.ASP] != null && f[F.TX.ASP] !== '') {
+  const v = parseFloat(f[F.TX.ASP]);
+  if (!isNaN(v) && v >= 0) return v;
+ }
+ if (f[F.TX.NO]) {
+  const m = String(f[F.TX.NO]).match(/Price:\s*₪?([\d\.]+)/);
+  if (m) {
+   const v = parseFloat(m[1]);
+   if (!isNaN(v)) return v;
+  }
+ }
+ if (prod && prod.fields[F.P.SP] != null) {
+  const v = parseFloat(prod.fields[F.P.SP]);
+  if (!isNaN(v)) return v;
+ }
+ return 0;
+}
+
+function resolveProdFromTx(tx) {
+ const f = tx.fields;
+ const pIds = f[F.TX.PR] || [];
+ const pId = Array.isArray(pIds) ? pIds[0] : pIds;
+ if (pId) {
+  const p = allP.find(x => x.id === pId);
+  if (p) return p;
+ }
+ const skus = f[F.TX.SKUL] || [];
+ const sku = Array.isArray(skus) ? skus[0] : skus;
+ if (sku) {
+  const p = allP.find(x => x.fields[F.P.SKU] === sku);
+  if (p) return p;
+ }
+ return null;
+}
+
+function resolveCustFromTx(tx) {
+ const f = tx.fields;
+ const cIds = f[F.TX.CU] || [];
+ const cId = Array.isArray(cIds) ? cIds[0] : cIds;
+ if (cId) {
+  const c = allCU.find(x => x.id === cId);
+  if (c) return c;
+ }
+ return null;
+}
+
+function getFilteredSales(dateFrom, dateTo, branch) {
+ return allTX.filter(tx => {
+  const f = tx.fields;
+  if (f[F.TX.TY] !== 'Sale') return false;
+  if (branch) {
+   if (branch === 'Beitar' || branch === 'Beitar Illit') {
+    if (f[F.TX.BR] !== 'Beitar' && f[F.TX.BR] !== 'Beitar Illit') return false;
+   } else if (f[F.TX.BR] !== branch) return false;
+  }
+  const dt = (f[F.TX.DT] || '').split('T')[0];
+  if (dateFrom && dt < dateFrom) return false;
+  if (dateTo && dt > dateTo) return false;
+  return true;
+ });
+}
+
+// ── RENDER EXECUTIVE DASHBOARD ─────────────────────────────────
+function renderOverview() {
+ renderExecutiveDashboard();
+}
+
+function renderExecutiveDashboard() {
+ const sales = getFilteredSales(dashDateFrom, dashDateTo, dashBranch);
+ let totalSales = 0, totalCOGS = 0;
+ const uniqueCusts = new Set();
+
+ sales.forEach(tx => {
+  const f = tx.fields;
+  const qty = Math.abs(f[F.TX.QTY] || 1);
+  const prod = resolveProdFromTx(tx);
+  const price = getTxPrice(tx, prod);
+  const cost = (prod && prod.fields[F.P.CP] != null) ? parseFloat(prod.fields[F.P.CP]) : 0;
+  totalSales += qty * price;
+  totalCOGS += qty * cost;
+
+  const cust = resolveCustFromTx(tx);
+  if (cust) uniqueCusts.add(cust.id);
+  else if (f[F.TX.REF]) uniqueCusts.add('ref_' + f[F.TX.REF]);
+  else if (f[F.TX.CU] && f[F.TX.CU].length) uniqueCusts.add(f[F.TX.CU][0]);
+ });
+
+ const grossProfit = totalSales - totalCOGS;
+ const marginPct = totalSales > 0 ? (grossProfit / totalSales) * 100 : 0;
+
+ // Populate 5 KPIs
+ const elSales = document.getElementById('k-sales');
+ if (elSales) elSales.textContent = `₪ ${Math.round(totalSales).toLocaleString('en-US')}`;
+ const elCOGS = document.getElementById('k-cogs');
+ if (elCOGS) elCOGS.textContent = `₪ ${Math.round(totalCOGS).toLocaleString('en-US')}`;
+ const elProfit = document.getElementById('k-profit');
+ if (elProfit) elProfit.textContent = `₪ ${Math.round(grossProfit).toLocaleString('en-US')}`;
+ const elMargin = document.getElementById('k-margin-badge');
+ if (elMargin) elMargin.textContent = `${marginPct.toFixed(1)}% Margin`;
+ const elTxs = document.getElementById('k-txs');
+ if (elTxs) elTxs.textContent = sales.length.toLocaleString('en-US');
+ const elCusts = document.getElementById('k-custs');
+ if (elCusts) elCusts.textContent = uniqueCusts.size.toLocaleString('en-US');
+
+ // Warning Banners
+ const low = allP.filter(p => isLow(p.fields));
+ const neg = allP.filter(p => {
+  const f = p.fields;
+  return (f[F.P.B]??0)<0 || (f[F.P.BS]??0)<0 || (f[F.P.J]??0)<0;
+ });
+ const banner = document.getElementById('low-banner');
+ if (banner) {
+  if (low.length) { banner.style.display = 'flex'; document.getElementById('low-cnt').textContent = low.length; }
+  else { banner.style.display = 'none'; }
+ }
+ const negBanner = document.getElementById('neg-banner');
+ if (negBanner) {
+  if (neg.length) { negBanner.style.display = 'flex'; document.getElementById('neg-cnt').textContent = neg.length; }
+  else { negBanner.style.display = 'none'; }
+ }
+
+ // Render Visual Charts
+ renderSalesOverTimeChart(sales);
+ renderSalesByBranchChart(sales);
+ renderSalesByBrandChart(sales);
+
+ // Render 3 Summary Tables
+ renderTopSellingProducts(sales);
+ renderTopCustomers(sales);
+ renderLowInventoryAlerts(allP);
+
+ // Render Recent Transactions in Range
+ const recent = sales.slice(0, 15);
+ const elRecent = document.getElementById('recent-tx');
+ if (elRecent) {
+  elRecent.innerHTML = recent.length
+   ? recent.map(r => txRow(r, true)).join('')
+   : `<tr><td colspan="8"><div class="empty">No sales transactions found in selected range</div></td></tr>`;
+ }
+}
+
+// ── CHART 1: SALES OVER TIME ───────────────────────────────────
+function renderSalesOverTimeChart(sales) {
+ if (!sales) sales = getFilteredSales(dashDateFrom, dashDateTo, dashBranch);
+ const container = document.getElementById('chart-overtime-container');
+ if (!container) return;
+
+ const metricSelect = document.getElementById('chart-overtime-metric');
+ const metric = metricSelect ? metricSelect.value : 'sales';
+
+ const dailyMap = {};
+ sales.forEach(tx => {
+  const f = tx.fields;
+  const dt = (f[F.TX.DT] || '').split('T')[0];
+  if (!dt) return;
+  const qty = Math.abs(f[F.TX.QTY] || 1);
+  const prod = resolveProdFromTx(tx);
+  const price = getTxPrice(tx, prod);
+  const cost = (prod && prod.fields[F.P.CP] != null) ? parseFloat(prod.fields[F.P.CP]) : 0;
+  const rev = qty * price;
+  const profit = rev - (qty * cost);
+
+  if (!dailyMap[dt]) dailyMap[dt] = { sales: 0, profit: 0, txs: 0 };
+  dailyMap[dt].sales += rev;
+  dailyMap[dt].profit += profit;
+  dailyMap[dt].txs += 1;
+ });
+
+ const dates = Object.keys(dailyMap).sort();
+ if (!dates.length) {
+  container.innerHTML = `<div class="empty" style="padding:60px 20px;">No sales in this period</div>`;
+  return;
+ }
+
+ const values = dates.map(d => dailyMap[d][metric] || 0);
+ const maxVal = Math.max(...values, 100);
+ const minVal = 0;
+ const w = 560, h = 180, padL = 45, padR = 20, padT = 15, padB = 30;
+ const chartW = w - padL - padR;
+ const chartH = h - padT - padB;
+
+ const points = dates.map((d, i) => {
+  const x = padL + (dates.length > 1 ? (i / (dates.length - 1)) * chartW : chartW / 2);
+  const y = padT + chartH - ((values[i] - minVal) / (maxVal - minVal)) * chartH;
+  return { x, y, date: d, val: values[i] };
+ });
+
+ const pathD = points.map((p, i) => (i === 0 ? `M ${p.x} ${p.y}` : `L ${p.x} ${p.y}`)).join(' ');
+ const areaD = points.length
+  ? `${pathD} L ${points[points.length - 1].x} ${padT + chartH} L ${points[0].x} ${padT + chartH} Z`
+  : '';
+
+ // Step labels for x-axis
+ const step = Math.max(1, Math.floor(dates.length / 6));
+ const xLabels = points.filter((_, i) => i % step === 0 || i === points.length - 1).map(p => {
+  const parts = p.date.split('-');
+  const label = `${parseInt(parts[2], 10)}/${parseInt(parts[1], 10)}`;
+  return `<text x="${p.x}" y="${h - 8}" font-size="11" fill="#94a3b8" text-anchor="middle">${label}</text>`;
+ }).join('');
+
+ // Horizontal gridlines
+ const gridLevels = [0, 0.33, 0.66, 1];
+ const gridLines = gridLevels.map(lvl => {
+  const y = padT + chartH - lvl * chartH;
+  const val = Math.round(minVal + lvl * (maxVal - minVal));
+  const valFmt = metric === 'txs' ? val : `₪${val.toLocaleString()}`;
+  return `
+   <line x1="${padL}" y1="${y}" x2="${w - padR}" y2="${y}" stroke="#f1f5f9" stroke-width="1"/>
+   <text x="${padL - 6}" y="${y + 4}" font-size="10" fill="#94a3b8" text-anchor="end">${valFmt}</text>
+  `;
+ }).join('');
+
+ // Dots
+ const dots = points.map(p => {
+  const tipVal = metric === 'txs' ? `${p.val} orders` : `₪${Math.round(p.val).toLocaleString()}`;
+  return `
+   <circle cx="${p.x}" cy="${p.y}" r="4" fill="#db2777" stroke="#ffffff" stroke-width="2" style="cursor:pointer;">
+    <title>${p.date}: ${tipVal}</title>
+   </circle>
+  `;
+ }).join('');
+
+ container.innerHTML = `
+  <svg width="100%" height="100%" viewBox="0 0 ${w} ${h}">
+   <defs>
+    <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+     <stop offset="0%" stop-color="#db2777" stop-opacity="0.28"/>
+     <stop offset="100%" stop-color="#db2777" stop-opacity="0.0"/>
+    </linearGradient>
+   </defs>
+   ${gridLines}
+   <path d="${areaD}" fill="url(#areaGrad)"/>
+   <path d="${pathD}" fill="none" stroke="#db2777" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+   ${dots}
+   ${xLabels}
+  </svg>
+ `;
+}
+
+// ── CHART 2: SALES BY BRANCH ───────────────────────────────────
+function renderSalesByBranchChart(sales) {
+ if (!sales) sales = getFilteredSales(dashDateFrom, dashDateTo, dashBranch);
+ const container = document.getElementById('chart-branch-container');
+ if (!container) return;
+
+ const branchTotals = {
+  'Beit Shemesh': 0,
+  'Jerusalem': 0,
+  'Beitar Illit': 0
+ };
+
+ sales.forEach(tx => {
+  const f = tx.fields;
+  const br = f[F.TX.BR];
+  const qty = Math.abs(f[F.TX.QTY] || 1);
+  const prod = resolveProdFromTx(tx);
+  const rev = qty * getTxPrice(tx, prod);
+
+  if (br === 'Beit Shemesh') branchTotals['Beit Shemesh'] += rev;
+  else if (br === 'Jerusalem') branchTotals['Jerusalem'] += rev;
+  else if (br === 'Beitar' || br === 'Beitar Illit') branchTotals['Beitar Illit'] += rev;
+ });
+
+ const branches = [
+  { name: 'Beit Shemesh', color: '#d94680', val: branchTotals['Beit Shemesh'] },
+  { name: 'Jerusalem', color: '#e479a5', val: branchTotals['Jerusalem'] },
+  { name: 'Beitar Illit', color: '#f8b4cb', val: branchTotals['Beitar Illit'] }
+ ];
+
+ const maxVal = Math.max(...branches.map(b => b.val), 100);
+
+ container.innerHTML = branches.map(b => {
+  const pct = Math.max(8, Math.round((b.val / maxVal) * 140));
+  return `
+   <div class="bar-col" onclick="openBranch360('${b.name}')" title="Click to view ${b.name} 360°" style="flex:1;text-align:center;padding:0 8px;">
+    <div style="font-size:12.5px;font-weight:700;color:#0f172a;margin-bottom:8px;">₪ ${Math.round(b.val).toLocaleString('en-US')}</div>
+    <div style="width:48px;height:${pct}px;background:${b.color};border-radius:8px 8px 0 0;margin:0 auto;box-shadow:0 2px 6px rgba(0,0,0,.08);"></div>
+    <div style="font-size:12px;font-weight:600;color:#475569;margin-top:10px;">${b.name}</div>
+   </div>
+  `;
+ }).join('');
+}
+
+// ── CHART 3: SALES BY BRAND ────────────────────────────────────
+function renderSalesByBrandChart(sales) {
+ if (!sales) sales = getFilteredSales(dashDateFrom, dashDateTo, dashBranch);
+ const container = document.getElementById('chart-brand-container');
+ if (!container) return;
+
+ const metricSelect = document.getElementById('chart-brand-metric');
+ const metric = metricSelect ? metricSelect.value : 'revenue';
+
+ const brandMap = {};
+ sales.forEach(tx => {
+  const f = tx.fields;
+  const qty = Math.abs(f[F.TX.QTY] || 1);
+  const prod = resolveProdFromTx(tx);
+  const rev = qty * getTxPrice(tx, prod);
+  const brand = (prod && prod.fields[F.P.BR]) ? prod.fields[F.P.BR].trim() : 'Other';
+
+  if (!brandMap[brand]) brandMap[brand] = { rev: 0, units: 0 };
+  brandMap[brand].rev += rev;
+  brandMap[brand].units += qty;
+ });
+
+ const items = Object.entries(brandMap).map(([brand, data]) => ({
+  brand,
+  val: metric === 'revenue' ? data.rev : data.units
+ })).sort((a, b) => b.val - a.val);
+
+ const totalVal = items.reduce((sum, item) => sum + item.val, 0) || 1;
+ const palette = ['#be185d', '#db2777', '#f472b6', '#fb7185', '#fda4af', '#f59e0b', '#cbd5e1', '#94a3b8'];
+
+ // Top 5 + Others
+ const topBrands = items.slice(0, 5);
+ const otherVal = items.slice(5).reduce((sum, item) => sum + item.val, 0);
+ if (otherVal > 0) topBrands.push({ brand: 'Others', val: otherVal });
+
+ // Calculate SVG Donut Slices
+ const radius = 55;
+ const circumference = 2 * Math.PI * radius;
+ let accumulatedPct = 0;
+
+ const slices = topBrands.map((item, i) => {
+  const pct = item.val / totalVal;
+  const strokeDash = `${pct * circumference} ${circumference}`;
+  const strokeOffset = -accumulatedPct * circumference;
+  accumulatedPct += pct;
+  const color = palette[i % palette.length];
+  return `
+   <circle cx="75" cy="75" r="${radius}" fill="none" stroke="${color}" stroke-width="22"
+    stroke-dasharray="${strokeDash}" stroke-dashoffset="${strokeOffset}">
+    <title>${item.brand}: ${(pct * 100).toFixed(1)}%</title>
+   </circle>
+  `;
+ }).join('');
+
+ const legendHtml = topBrands.map((item, i) => {
+  const pct = Math.round((item.val / totalVal) * 100);
+  const color = palette[i % palette.length];
+  return `
+   <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;margin-bottom:4px;">
+    <div style="display:flex;align-items:center;gap:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:110px;">
+     <span style="width:8px;height:8px;border-radius:2px;background:${color};display:inline-block;flex-shrink:0;"></span>
+     <span style="color:#334155;font-weight:500;">${esc(item.brand)}</span>
+    </div>
+    <span style="font-weight:700;color:#0f172a;">${pct}%</span>
+   </div>
+  `;
+ }).join('');
+
+ container.innerHTML = `
+  <div style="width:150px;height:150px;position:relative;flex-shrink:0;">
+   <svg width="150" height="150" viewBox="0 0 150 150">
+    <g transform="rotate(-90 75 75)">
+     ${slices}
+    </g>
+   </svg>
+  </div>
+  <div style="flex:1;padding-right:4px;">
+   ${legendHtml}
+  </div>
+ `;
+}
+
+// ── TOP SELLING PRODUCTS TABLE ─────────────────────────────────
+function renderTopSellingProducts(sales) {
+ const tbody = document.getElementById('top-prods-body');
+ if (!tbody) return;
+
+ const prodMap = {};
+ sales.forEach(tx => {
+  const f = tx.fields;
+  const qty = Math.abs(f[F.TX.QTY] || 1);
+  const prod = resolveProdFromTx(tx);
+  const price = getTxPrice(tx, prod);
+  const rev = qty * price;
+  const pId = prod ? prod.id : (f[F.TX.PR] || [])[0];
+  const name = prod ? (prod.fields[F.P.NM] || 'Unknown') : pNmTx(tx);
+  const brand = prod ? (prod.fields[F.P.BR] || '') : '';
+
+  const key = pId || name;
+  if (!prodMap[key]) prodMap[key] = { pId, name, brand, units: 0, rev: 0 };
+  prodMap[key].units += qty;
+  prodMap[key].rev += rev;
+ });
+
+ const topList = Object.values(prodMap).sort((a, b) => b.units - a.units).slice(0, 5);
+
+ if (!topList.length) {
+  tbody.innerHTML = `<tr><td colspan="3"><div class="empty" style="padding:20px;">No sales records</div></td></tr>`;
+  return;
+ }
+
+ tbody.innerHTML = topList.map((p, idx) => `
+  <tr style="cursor:pointer;" onclick="openProduct360('${p.pId || ''}')" title="Click to view Product 360°">
+   <td style="text-align:center;padding:8px 4px;">
+    <span class="rank-badge">${idx + 1}</span>
+   </td>
+   <td style="padding:8px 12px;">
+    <div style="font-weight:600;font-size:13px;color:#0f172a;">${esc(p.name)}</div>
+    ${p.brand ? `<div style="font-size:11px;color:#94a3b8;">${esc(p.brand)}</div>` : ''}
+   </td>
+   <td style="text-align:right;padding:8px 12px;font-weight:700;font-size:13.5px;color:#0f172a;">
+    ${p.units} <span style="font-size:11px;font-weight:400;color:#64748b;">(₪${Math.round(p.rev).toLocaleString()})</span>
+   </td>
+  </tr>
+ `).join('');
+}
+
+// ── TOP CUSTOMERS TABLE ────────────────────────────────────────
+function renderTopCustomers(sales) {
+ const tbody = document.getElementById('top-custs-body');
+ if (!tbody) return;
+
+ const custMap = {};
+ sales.forEach(tx => {
+  const f = tx.fields;
+  const qty = Math.abs(f[F.TX.QTY] || 1);
+  const prod = resolveProdFromTx(tx);
+  const rev = qty * getTxPrice(tx, prod);
+  const cust = resolveCustFromTx(tx);
+  const cId = cust ? cust.id : (f[F.TX.CU] || [])[0];
+  const name = cust ? (cust.fields[F.CU.NM] || 'Customer') : (f[F.TX.NM] || 'Anonymous');
+
+  if (cId) {
+   if (!custMap[cId]) custMap[cId] = { cId, name, spend: 0, orders: 0 };
+   custMap[cId].spend += rev;
+   custMap[cId].orders += 1;
+  }
+ });
+
+ let topList = Object.values(custMap).sort((a, b) => b.spend - a.spend).slice(0, 5);
+
+ // If fewer than 5 customers found in sales, supplement with customers from catalogue
+ if (topList.length < 5 && allCU.length) {
+  const existingIds = new Set(topList.map(c => c.cId));
+  for (const cu of allCU) {
+   if (!existingIds.has(cu.id) && cu.fields[F.CU.NM]) {
+    topList.push({
+     cId: cu.id,
+     name: cu.fields[F.CU.NM],
+     spend: 0,
+     orders: 0
+    });
+    if (topList.length >= 5) break;
+   }
+  }
+ }
+
+ if (!topList.length) {
+  tbody.innerHTML = `<tr><td colspan="3"><div class="empty" style="padding:20px;">No customers found</div></td></tr>`;
+  return;
+ }
+
+ tbody.innerHTML = topList.map((c, idx) => `
+  <tr style="cursor:pointer;" onclick="openCustomer360('${c.cId || ''}')" title="Click to view Customer 360°">
+   <td style="text-align:center;padding:8px 4px;">
+    <span class="rank-badge">${idx + 1}</span>
+   </td>
+   <td style="padding:8px 12px;">
+    <div style="font-weight:600;font-size:13px;color:#0f172a;">${esc(c.name)}</div>
+   </td>
+   <td style="text-align:right;padding:8px 12px;font-weight:700;font-size:13.5px;color:#0f172a;">
+    ₪ ${Math.round(c.spend).toLocaleString()}
+   </td>
+  </tr>
+ `).join('');
+}
+
+// ── LOW INVENTORY ALERTS TABLE ─────────────────────────────────
+function renderLowInventoryAlerts(prods) {
+ const tbody = document.getElementById('top-low-body');
+ if (!tbody) return;
+
+ const lowItems = [];
+ prods.forEach(p => {
+  const f = p.fields;
+  const b = f[F.P.B] ?? 0, bs = f[F.P.BS] ?? 0, j = f[F.P.J] ?? 0;
+  const mb = f[F.P.MB] ?? 0, mbs = f[F.P.MBS] ?? 0, mj = f[F.P.MJ] ?? 0;
+
+  if (mb > 0 && b < mb) lowItems.push({ prod: p, branch: 'Beitar Illit', stock: b, min: mb });
+  if (mbs > 0 && bs < mbs) lowItems.push({ prod: p, branch: 'Beit Shemesh', stock: bs, min: mbs });
+  if (mj > 0 && j < mj) lowItems.push({ prod: p, branch: 'Jerusalem', stock: j, min: mj });
+ });
+
+ if (!lowItems.length) {
+  tbody.innerHTML = `<tr><td colspan="3"><div class="empty" style="color:#10b981;padding:20px;">✓ All stocks healthy</div></td></tr>`;
+  return;
+ }
+
+ tbody.innerHTML = lowItems.slice(0, 5).map(item => {
+  const f = item.prod.fields;
+  return `
+   <tr style="cursor:pointer;" onclick="openProduct360('${item.prod.id}')" title="Click to view product details">
+    <td style="padding:8px 12px;">
+     <div style="font-weight:600;font-size:13px;color:#0f172a;">${esc(f[F.P.NM] || '?')}</div>
+     <div style="font-size:11px;color:#94a3b8;">${esc(f[F.P.SKU] || '')}</div>
+    </td>
+    <td style="padding:8px 12px;font-size:12.5px;color:#64748b;">
+     ${esc(item.branch)}
+    </td>
+    <td style="text-align:center;padding:8px 12px;font-weight:800;color:#dc2626;font-size:14px;">
+     ${item.stock} <span style="font-size:10px;font-weight:400;color:#94a3b8;">/min ${item.min}</span>
+    </td>
+   </tr>
+  `;
+ }).join('');
+}
+
+// ── ONE-CLICK 360° DRILL-DOWNS ─────────────────────────────────
+
+// 1. Product 360°
+function openProduct360(productId) {
+ let prod = allP.find(p => p.id === productId);
+ if (!prod) prod = allP.find(p => p.fields[F.P.SKU] === productId);
+ if (!prod) { toast('Product details not found in catalogue', 'warn'); return; }
+
+ currentP360Id = prod.id;
+ const f = prod.fields;
+ const pName = f[F.P.NM] || 'Unnamed Product';
+ const sku = f[F.P.SKU] || '--';
+ const brand = f[F.P.BR] || 'Unbranded';
+ const shade = f[F.P.SH] || '';
+ const bc = f[F.P.BC] || '';
+ const sp = f[F.P.SP] || 0;
+ const cp = f[F.P.CP] || 0;
+ const stdMargin = sp > 0 ? (((sp - cp) / sp) * 100).toFixed(1) : '0.0';
+
+ document.getElementById('p360-name').textContent = pName;
+ document.getElementById('p360-sku-badge').textContent = `SKU: ${sku}`;
+ document.getElementById('p360-brand-badge').textContent = brand;
+ document.getElementById('p360-shade-badge').textContent = shade ? `Shade: ${shade}` : (bc ? `BC: ${bc}` : 'Catalogue Item');
+ document.getElementById('p360-meta').textContent = `List Price: ₪${sp} · Cost Price: ₪${cp} · Standard Margin: ${stdMargin}% · Barcode: ${bc || '--'}`;
+
+ // Stocks
+ const b = f[F.P.B] ?? 0, bs = f[F.P.BS] ?? 0, j = f[F.P.J] ?? 0, totStock = b + bs + j;
+ const valAtCost = totStock * cp;
+ const valAtRetail = totStock * sp;
+
+ // Filter transactions for this product
+ const txForProd = allTX.filter(tx => {
+  const pIds = tx.fields[F.TX.PR] || [];
+  if (Array.isArray(pIds) ? pIds.includes(prod.id) : pIds === prod.id) return true;
+  const skus = tx.fields[F.TX.SKUL] || [];
+  if (Array.isArray(skus) ? skus.includes(sku) : skus === sku) return true;
+  return false;
+ });
+
+ // Sales metrics in selected period
+ const salesForProd = txForProd.filter(tx => {
+  if (tx.fields[F.TX.TY] !== 'Sale') return false;
+  const dt = (tx.fields[F.TX.DT] || '').split('T')[0];
+  if (dashDateFrom && dt < dashDateFrom) return false;
+  if (dashDateTo && dt > dashDateTo) return false;
+  if (dashBranch && tx.fields[F.TX.BR] !== dashBranch) return false;
+  return true;
+ });
+
+ let pUnitsSold = 0, pRevenue = 0, pCOGS = 0;
+ salesForProd.forEach(tx => {
+  const qty = Math.abs(tx.fields[F.TX.QTY] || 1);
+  const price = getTxPrice(tx, prod);
+  pUnitsSold += qty;
+  pRevenue += qty * price;
+  pCOGS += qty * cp;
+ });
+ const pProfit = pRevenue - pCOGS;
+ const pMargin = pRevenue > 0 ? ((pProfit / pRevenue) * 100).toFixed(1) : '0.0';
+ const pAvgPaid = pUnitsSold > 0 ? (pRevenue / pUnitsSold).toFixed(2) : sp;
+
+ document.getElementById('p360-kpis').innerHTML = `
+  <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Units Sold (Period)</div><div class="dash-kpi-val" style="font-size:22px;">${pUnitsSold}</div><div class="dash-kpi-sub">Total sales orders</div></div>
+  <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Revenue (Period)</div><div class="dash-kpi-val" style="font-size:22px;color:#db2777;">₪ ${Math.round(pRevenue).toLocaleString()}</div><div class="dash-kpi-sub">Actual paid sum</div></div>
+  <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Gross Profit</div><div class="dash-kpi-val" style="font-size:22px;color:#16a34a;">₪ ${Math.round(pProfit).toLocaleString()}</div><div class="dash-kpi-sub">${pMargin}% Margin</div></div>
+  <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Avg. Paid Price</div><div class="dash-kpi-val" style="font-size:22px;">₪ ${pAvgPaid}</div><div class="dash-kpi-sub">List Price: ₪${sp}</div></div>
+  <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Current Stock</div><div class="dash-kpi-val" style="font-size:22px;">${totStock}</div><div class="dash-kpi-sub">Units across branches</div></div>
+  <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Stock Valuation</div><div class="dash-kpi-val" style="font-size:22px;">₪ ${Math.round(valAtCost).toLocaleString()}</div><div class="dash-kpi-sub">Retail: ₪${Math.round(valAtRetail).toLocaleString()}</div></div>
+ `;
+
+ document.getElementById('p360-stocks').innerHTML = `
+  <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:12px 18px;display:flex;align-items:center;justify-content:space-around;gap:12px;">
+   <div style="text-align:center;"><span style="font-size:12px;color:#64748b;display:block;">📍 Beit Shemesh</span><strong style="font-size:18px;color:#0f172a;">${bs}</strong><span style="font-size:10px;color:#94a3b8;display:block;">min: ${f[F.P.MBS]||0}</span></div>
+   <div style="height:30px;width:1px;background:#cbd5e1;"></div>
+   <div style="text-align:center;"><span style="font-size:12px;color:#64748b;display:block;">📍 Jerusalem</span><strong style="font-size:18px;color:#0f172a;">${j}</strong><span style="font-size:10px;color:#94a3b8;display:block;">min: ${f[F.P.MJ]||0}</span></div>
+   <div style="height:30px;width:1px;background:#cbd5e1;"></div>
+   <div style="text-align:center;"><span style="font-size:12px;color:#64748b;display:block;">📍 Beitar Illit</span><strong style="font-size:18px;color:#0f172a;">${b}</strong><span style="font-size:10px;color:#94a3b8;display:block;">min: ${f[F.P.MB]||0}</span></div>
+   <div style="height:30px;width:1px;background:#cbd5e1;"></div>
+   <div style="text-align:center;"><span style="font-size:12px;color:#64748b;display:block;">📦 Total Units</span><strong style="font-size:18px;color:#db2777;">${totStock}</strong></div>
+  </div>
+ `;
+
+ document.getElementById('p360-tx-count').textContent = `${txForProd.length} records`;
+ document.getElementById('p360-tx-body').innerHTML = txForProd.length ? txForProd.map(tx => {
+  const tf = tx.fields;
+  const qty = tf[F.TX.QTY];
+  const qs = qty != null ? (qty > 0 ? `+${qty}` : String(qty)) : '--';
+  const qc = qty < 0 ? 'color:#ef4444;font-weight:700;' : (qty > 0 ? 'color:#10b981;font-weight:700;' : '');
+  const price = getTxPrice(tx, prod);
+  return `
+   <tr>
+    <td style="white-space:nowrap;font-size:12.5px;">${fmtDT(tf[F.TX.DT])}</td>
+    <td>${tyB(tf[F.TX.TY])}</td>
+    <td>${brB(tf[F.TX.BR])}</td>
+    <td style="text-align:center;font-size:14px;${qc}">${qs}</td>
+    <td style="text-align:right;font-weight:600;">₪ ${price ? price.toFixed(2) : '--'}</td>
+    <td>${cuHtml(tx)}</td>
+    <td style="font-size:12px;color:#334155;">${esc(tf[F.TX.EMP] || '--')}</td>
+    <td style="font-size:12px;color:#64748b;">${esc(tf[F.TX.REF] || '--')}</td>
+    <td style="font-size:11.5px;color:#94a3b8;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${esc(tf[F.TX.NO]||'')}">${esc(tf[F.TX.NO] || '--')}</td>
+   </tr>
+  `;
+ }).join('') : `<tr><td colspan="9"><div class="empty">No transaction history for this product</div></td></tr>`;
+
+ openModal('m-prod360');
+}
+
+// 2. Customer 360°
+function openCustomer360(customerId) {
+ let cust = allCU.find(c => c.id === customerId);
+ if (!cust) cust = allCU.find(c => c.fields[F.CU.PH] === customerId || c.fields[F.CU.NM] === customerId);
+ if (!cust) { toast('Customer profile not found', 'warn'); return; }
+
+ currentC360Id = cust.id;
+ const cf = cust.fields;
+ const cName = cf[F.CU.NM] || 'Customer';
+ const phone = cf[F.CU.PH] || '--';
+ const email = cf[F.CU.EM] || '--';
+ const type = cf[F.CU.TY] || 'Standard';
+
+ document.getElementById('c360-name').textContent = cName;
+ document.getElementById('c360-phone-badge').textContent = `📞 ${phone}`;
+ document.getElementById('c360-type-badge').textContent = type;
+ document.getElementById('c360-meta').textContent = `Email: ${email} · Created: ${fmtD(cf[F.CU.CR])}`;
+
+ // Transactions for this customer
+ const txForCust = allTX.filter(tx => {
+  const cIds = tx.fields[F.TX.CU] || [];
+  return Array.isArray(cIds) ? cIds.includes(cust.id) : cIds === cust.id;
+ });
+
+ let lifetimeSpend = 0, periodSpend = 0, visitSet = new Set();
+ const boughtMap = {};
+
+ txForCust.forEach(tx => {
+  const tf = tx.fields;
+  const qty = Math.abs(tf[F.TX.QTY] || 1);
+  const prod = resolveProdFromTx(tx);
+  const price = getTxPrice(tx, prod);
+  const rev = qty * price;
+
+  lifetimeSpend += rev;
+  if (tf[F.TX.REF]) visitSet.add(tf[F.TX.REF]);
+  else if (tf[F.TX.DT]) visitSet.add(tf[F.TX.DT].split('T')[0]);
+
+  const dt = (tf[F.TX.DT] || '').split('T')[0];
+  if ((!dashDateFrom || dt >= dashDateFrom) && (!dashDateTo || dt <= dashDateTo)) {
+   periodSpend += rev;
+  }
+
+  const pKey = prod ? prod.id : (tf[F.TX.NM] || 'Product');
+  const pName = prod ? (prod.fields[F.P.NM] || 'Unknown') : (tf[F.TX.NM] || 'Product');
+  const pBrand = prod ? (prod.fields[F.P.BR] || '') : '';
+  if (!boughtMap[pKey]) boughtMap[pKey] = { name: pName, brand: pBrand, units: 0, spend: 0, branch: tf[F.TX.BR] || '' };
+  boughtMap[pKey].units += qty;
+  boughtMap[pKey].spend += rev;
+ });
+
+ const orderCount = visitSet.size || (txForCust.length ? 1 : 0);
+ const avgBasket = orderCount > 0 ? (lifetimeSpend / orderCount).toFixed(2) : '0.00';
+
+ document.getElementById('c360-kpis').innerHTML = `
+  <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Lifetime Spend</div><div class="dash-kpi-val" style="font-size:22px;color:#db2777;">₪ ${Math.round(lifetimeSpend).toLocaleString()}</div><div class="dash-kpi-sub">Total purchases</div></div>
+  <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">In-Range Spend</div><div class="dash-kpi-val" style="font-size:22px;">₪ ${Math.round(periodSpend).toLocaleString()}</div><div class="dash-kpi-sub">Selected filter period</div></div>
+  <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Visits / Orders</div><div class="dash-kpi-val" style="font-size:22px;">${orderCount}</div><div class="dash-kpi-sub">Distinct receipts</div></div>
+  <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Avg. Basket Size</div><div class="dash-kpi-val" style="font-size:22px;color:#16a34a;">₪ ${avgBasket}</div><div class="dash-kpi-sub">Average per visit</div></div>
+ `;
+
+ const boughtList = Object.values(boughtMap);
+ document.getElementById('c360-prod-count').textContent = `${boughtList.length} products`;
+ document.getElementById('c360-prods-body').innerHTML = boughtList.length ? boughtList.map(item => `
+  <tr>
+   <td style="font-weight:600;font-size:13px;">${esc(item.name)}</td>
+   <td style="font-size:12.5px;color:#64748b;">${esc(item.brand)}</td>
+   <td style="text-align:center;font-weight:700;">${item.units}</td>
+   <td style="text-align:right;font-weight:700;color:#0f172a;">₪ ${Math.round(item.spend).toLocaleString()}</td>
+   <td style="text-align:right;font-size:12.5px;color:#64748b;">₪ ${(item.spend / item.units).toFixed(2)}</td>
+   <td>${brB(item.branch)}</td>
+  </tr>
+ `).join('') : `<tr><td colspan="6"><div class="empty">No products recorded</div></td></tr>`;
+
+ document.getElementById('c360-tx-count').textContent = `${txForCust.length} records`;
+ document.getElementById('c360-tx-body').innerHTML = txForCust.length ? txForCust.map(tx => {
+  const tf = tx.fields;
+  const prod = resolveProdFromTx(tx);
+  const pName = prod ? prod.fields[F.P.NM] : pNmTx(tx);
+  const price = getTxPrice(tx, prod);
+  return `
+   <tr>
+    <td style="white-space:nowrap;font-size:12.5px;">${fmtDT(tf[F.TX.DT])}</td>
+    <td style="font-weight:600;color:#4f46e5;font-size:12.5px;">${esc(tf[F.TX.REF] || '--')}</td>
+    <td>${brB(tf[F.TX.BR])}</td>
+    <td style="font-size:13px;max-width:180px;">${esc(pName)}</td>
+    <td style="text-align:center;font-weight:700;">${Math.abs(tf[F.TX.QTY] || 1)}</td>
+    <td style="text-align:right;font-weight:700;">₪ ${price ? price.toFixed(2) : '--'}</td>
+    <td style="font-size:12px;color:#334155;">${esc(tf[F.TX.EMP] || '--')}</td>
+    <td style="font-size:11.5px;color:#94a3b8;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(tf[F.TX.NO] || '--')}</td>
+   </tr>
+  `;
+ }).join('') : `<tr><td colspan="8"><div class="empty">No transactions found for this customer</div></td></tr>`;
+
+ openModal('m-cust360');
+}
+
+// 3. Branch 360°
+function openBranch360(branchName) {
+ currentB360Name = branchName;
+ const normName = (branchName === 'Beitar Illit' || branchName === 'Beitar') ? 'Beitar' : branchName;
+
+ document.getElementById('b360-name').textContent = `Branch 360° — ${branchName}`;
+ document.getElementById('b360-meta').textContent = `Comprehensive operations, revenue, margins, and stock valuation for ${branchName}`;
+
+ // Filter transactions for this branch
+ const txForBranch = allTX.filter(tx => {
+  const br = tx.fields[F.TX.BR];
+  if (normName === 'Beitar') return br === 'Beitar' || br === 'Beitar Illit';
+  return br === normName;
+ });
+
+ const salesForBranch = txForBranch.filter(tx => {
+  if (tx.fields[F.TX.TY] !== 'Sale') return false;
+  const dt = (tx.fields[F.TX.DT] || '').split('T')[0];
+  if (dashDateFrom && dt < dashDateFrom) return false;
+  if (dashDateTo && dt > dashDateTo) return false;
+  return true;
+ });
+
+ let bSales = 0, bCOGS = 0, bUnits = 0;
+ const prodMap = {};
+
+ salesForBranch.forEach(tx => {
+  const f = tx.fields;
+  const qty = Math.abs(f[F.TX.QTY] || 1);
+  const prod = resolveProdFromTx(tx);
+  const price = getTxPrice(tx, prod);
+  const cost = (prod && prod.fields[F.P.CP] != null) ? parseFloat(prod.fields[F.P.CP]) : 0;
+  const rev = qty * price;
+  bSales += rev;
+  bCOGS += qty * cost;
+  bUnits += qty;
+
+  const pKey = prod ? prod.id : (f[F.TX.NM] || 'Product');
+  const pName = prod ? (prod.fields[F.P.NM] || 'Unknown') : (f[F.TX.NM] || 'Product');
+  const pBrand = prod ? (prod.fields[F.P.BR] || '') : '';
+  if (!prodMap[pKey]) prodMap[pKey] = { name: pName, brand: pBrand, units: 0, rev: 0, cost: 0 };
+  prodMap[pKey].units += qty;
+  prodMap[pKey].rev += rev;
+  prodMap[pKey].cost += qty * cost;
+ });
+
+ const bProfit = bSales - bCOGS;
+ const bMargin = bSales > 0 ? ((bProfit / bSales) * 100).toFixed(1) : '0.0';
+
+ // Current Branch Inventory Valuation
+ let branchStockUnits = 0, branchValCost = 0, branchValRetail = 0;
+ const fld = normName === 'Beit Shemesh' ? F.P.BS : (normName === 'Jerusalem' ? F.P.J : F.P.B);
+ allP.forEach(p => {
+  const st = p.fields[fld] ?? 0;
+  branchStockUnits += st;
+  branchValCost += st * (p.fields[F.P.CP] || 0);
+  branchValRetail += st * (p.fields[F.P.SP] || 0);
+ });
+
+ document.getElementById('b360-kpis').innerHTML = `
+  <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Branch Sales (Period)</div><div class="dash-kpi-val" style="font-size:22px;color:#db2777;">₪ ${Math.round(bSales).toLocaleString()}</div><div class="dash-kpi-sub">${salesForBranch.length} sales</div></div>
+  <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Branch Gross Profit</div><div class="dash-kpi-val" style="font-size:22px;color:#16a34a;">₪ ${Math.round(bProfit).toLocaleString()}</div><div class="dash-kpi-sub">${bMargin}% Margin</div></div>
+  <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Units Sold</div><div class="dash-kpi-val" style="font-size:22px;">${bUnits}</div><div class="dash-kpi-sub">Total products sold</div></div>
+  <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Stock In Branch</div><div class="dash-kpi-val" style="font-size:22px;">${branchStockUnits}</div><div class="dash-kpi-sub">Units in shelf</div></div>
+  <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Stock Value (Cost)</div><div class="dash-kpi-val" style="font-size:22px;">₪ ${Math.round(branchValCost).toLocaleString()}</div><div class="dash-kpi-sub">Wholesale valuation</div></div>
+  <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Stock Value (Retail)</div><div class="dash-kpi-val" style="font-size:22px;color:#4f46e5;">₪ ${Math.round(branchValRetail).toLocaleString()}</div><div class="dash-kpi-sub">Retail shelf value</div></div>
+ `;
+
+ const topProds = Object.values(prodMap).sort((a, b) => b.units - a.units).slice(0, 8);
+ document.getElementById('b360-prods-body').innerHTML = topProds.length ? topProds.map((item, idx) => `
+  <tr>
+   <td style="text-align:center;"><span class="rank-badge">${idx + 1}</span></td>
+   <td style="font-weight:600;font-size:13px;">${esc(item.name)}</td>
+   <td style="font-size:12.5px;color:#64748b;">${esc(item.brand)}</td>
+   <td style="text-align:center;font-weight:700;">${item.units}</td>
+   <td style="text-align:right;font-weight:700;">₪ ${Math.round(item.rev).toLocaleString()}</td>
+   <td style="text-align:right;font-weight:700;color:#16a34a;">₪ ${Math.round(item.rev - item.cost).toLocaleString()}</td>
+  </tr>
+ `).join('') : `<tr><td colspan="6"><div class="empty">No sales recorded for this branch in selected period</div></td></tr>`;
+
+ document.getElementById('b360-tx-count').textContent = `${txForBranch.length} operations`;
+ document.getElementById('b360-tx-body').innerHTML = txForBranch.length ? txForBranch.slice(0, 50).map(tx => {
+  const tf = tx.fields;
+  const prod = resolveProdFromTx(tx);
+  const pName = prod ? prod.fields[F.P.NM] : pNmTx(tx);
+  const price = getTxPrice(tx, prod);
+  return `
+   <tr>
+    <td style="white-space:nowrap;font-size:12.5px;">${fmtDT(tf[F.TX.DT])}</td>
+    <td>${tyB(tf[F.TX.TY])}</td>
+    <td style="font-size:13px;max-width:180px;">${esc(pName)}</td>
+    <td style="text-align:center;font-weight:700;">${tf[F.TX.QTY] || '--'}</td>
+    <td style="text-align:right;font-weight:600;">₪ ${price ? price.toFixed(2) : '--'}</td>
+    <td>${cuHtml(tx)}</td>
+    <td style="font-size:12px;color:#334155;">${esc(tf[F.TX.EMP] || '--')}</td>
+    <td style="font-size:11.5px;color:#94a3b8;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(tf[F.TX.NO] || '--')}</td>
+   </tr>
+  `;
+ }).join('') : `<tr><td colspan="8"><div class="empty">No activity records found</div></td></tr>`;
+
+ openModal('m-branch360');
+}
+
+// ── DEDICATED REPORTS PAGE & UNIVERSAL EXPORT ───────────────────
+function showReportsTab(tab) {
+ showPage('reports');
+ switchReportTab(tab);
+}
+
+function switchReportTab(tab) {
+ activeReportTab = tab;
+ document.querySelectorAll('#page-reports .tab-btn').forEach(btn => btn.classList.remove('active'));
+ const activeBtn = document.getElementById(`rtab-${tab}`);
+ if (activeBtn) activeBtn.classList.add('active');
+ renderActiveReport();
+}
+
+function renderActiveReport() {
+ const container = document.getElementById('report-content-container');
+ if (!container) return;
+
+ const sales = getFilteredSales(dashDateFrom, dashDateTo, dashBranch);
+
+ if (activeReportTab === 'daily') {
+  // Daily Breakdown
+  const map = {};
+  sales.forEach(tx => {
+   const f = tx.fields;
+   const dt = (f[F.TX.DT] || '').split('T')[0] || 'Unknown';
+   const qty = Math.abs(f[F.TX.QTY] || 1);
+   const prod = resolveProdFromTx(tx);
+   const price = getTxPrice(tx, prod);
+   const cost = (prod && prod.fields[F.P.CP] != null) ? parseFloat(prod.fields[F.P.CP]) : 0;
+   const rev = qty * price;
+
+   if (!map[dt]) map[dt] = { date: dt, orders: 0, units: 0, rev: 0, cost: 0 };
+   map[dt].orders += 1;
+   map[dt].units += qty;
+   map[dt].rev += rev;
+   map[dt].cost += qty * cost;
+  });
+
+  const rows = Object.values(map).sort((a, b) => b.date.localeCompare(a.date));
+  container.innerHTML = `
+   <div class="card">
+    <div class="card-hdr"><h3>Daily Sales &amp; Profit Summary (${rows.length} days)</h3></div>
+    <div style="overflow-x:auto;">
+     <table>
+      <thead>
+       <tr>
+        <th>Date</th><th style="text-align:center;">Transactions</th><th style="text-align:center;">Units Sold</th><th style="text-align:right;">Sales Revenue &#8362;</th><th style="text-align:right;">COGS &#8362;</th><th style="text-align:right;">Gross Profit &#8362;</th><th style="text-align:center;">Margin %</th>
+       </tr>
+      </thead>
+      <tbody>
+       ${rows.length ? rows.map(r => {
+        const profit = r.rev - r.cost;
+        const margin = r.rev > 0 ? ((profit / r.rev) * 100).toFixed(1) : '0.0';
+        return `
+         <tr>
+          <td style="font-weight:600;font-size:13px;">${fmtD(r.date)}</td>
+          <td style="text-align:center;">${r.orders}</td>
+          <td style="text-align:center;font-weight:700;">${r.units}</td>
+          <td style="text-align:right;font-weight:700;color:#0f172a;">₪ ${Math.round(r.rev).toLocaleString()}</td>
+          <td style="text-align:right;color:#64748b;">₪ ${Math.round(r.cost).toLocaleString()}</td>
+          <td style="text-align:right;font-weight:700;color:#16a34a;">₪ ${Math.round(profit).toLocaleString()}</td>
+          <td style="text-align:center;"><span class="badge bg">${margin}%</span></td>
+         </tr>
+        `;
+       }).join('') : `<tr><td colspan="7"><div class="empty">No sales records in selected date range</div></td></tr>`}
+      </tbody>
+     </table>
+    </div>
+   </div>
+  `;
+ } else if (activeReportTab === 'products') {
+  // Products Performance
+  const map = {};
+  sales.forEach(tx => {
+   const f = tx.fields;
+   const qty = Math.abs(f[F.TX.QTY] || 1);
+   const prod = resolveProdFromTx(tx);
+   const price = getTxPrice(tx, prod);
+   const cost = (prod && prod.fields[F.P.CP] != null) ? parseFloat(prod.fields[F.P.CP]) : 0;
+   const rev = qty * price;
+   const pId = prod ? prod.id : (f[F.TX.PR] || [])[0];
+   const sku = prod ? (prod.fields[F.P.SKU] || '--') : (f[F.TX.SKUL] || ['--'])[0];
+   const name = prod ? (prod.fields[F.P.NM] || 'Unknown') : pNmTx(tx);
+   const brand = prod ? (prod.fields[F.P.BR] || '') : '';
+
+   const key = pId || sku || name;
+   if (!map[key]) map[key] = { pId, sku, name, brand, units: 0, rev: 0, cost: 0, prod };
+   map[key].units += qty;
+   map[key].rev += rev;
+   map[key].cost += qty * cost;
+  });
+
+  const rows = Object.values(map).sort((a, b) => b.units - a.units);
+  container.innerHTML = `
+   <div class="card">
+    <div class="card-hdr"><h3>Product Sales &amp; Margin Performance (${rows.length} products sold)</h3></div>
+    <div style="overflow-x:auto;">
+     <table>
+      <thead>
+       <tr>
+        <th>SKU</th><th>Product Name</th><th>Brand</th><th style="text-align:center;">Units Sold</th><th style="text-align:right;">Revenue &#8362;</th><th style="text-align:right;">Cost &#8362;</th><th style="text-align:right;">Gross Profit &#8362;</th><th style="text-align:center;">Margin %</th><th style="text-align:center;">Action</th>
+       </tr>
+      </thead>
+      <tbody>
+       ${rows.length ? rows.map(r => {
+        const profit = r.rev - r.cost;
+        const margin = r.rev > 0 ? ((profit / r.rev) * 100).toFixed(1) : '0.0';
+        return `
+         <tr>
+          <td class="mono" style="color:#4f46e5;font-weight:700;">${esc(r.sku)}</td>
+          <td style="font-weight:600;font-size:13px;">${esc(r.name)}</td>
+          <td style="font-size:12.5px;color:#64748b;">${esc(r.brand)}</td>
+          <td style="text-align:center;font-weight:700;">${r.units}</td>
+          <td style="text-align:right;font-weight:700;">₪ ${Math.round(r.rev).toLocaleString()}</td>
+          <td style="text-align:right;color:#64748b;">₪ ${Math.round(r.cost).toLocaleString()}</td>
+          <td style="text-align:right;font-weight:700;color:#16a34a;">₪ ${Math.round(profit).toLocaleString()}</td>
+          <td style="text-align:center;"><span class="badge bg">${margin}%</span></td>
+          <td style="text-align:center;"><button class="btn btn-s btn-xs" onclick="openProduct360('${r.pId || ''}')">🔍 360°</button></td>
+         </tr>
+        `;
+       }).join('') : `<tr><td colspan="9"><div class="empty">No product sales in this period</div></td></tr>`}
+      </tbody>
+     </table>
+    </div>
+   </div>
+  `;
+ } else if (activeReportTab === 'customers') {
+  // Customer Analytics
+  const map = {};
+  allCU.forEach(cu => {
+   map[cu.id] = { cId: cu.id, name: cu.fields[F.CU.NM] || 'Customer', phone: cu.fields[F.CU.PH] || '--', orders: 0, spend: 0, lastDt: '' };
+  });
+
+  allTX.forEach(tx => {
+   const f = tx.fields;
+   if (f[F.TX.TY] !== 'Sale') return;
+   const cIds = f[F.TX.CU] || [];
+   const cId = Array.isArray(cIds) ? cIds[0] : cIds;
+   if (!cId) return;
+
+   const qty = Math.abs(f[F.TX.QTY] || 1);
+   const prod = resolveProdFromTx(tx);
+   const rev = qty * getTxPrice(tx, prod);
+
+   if (!map[cId]) map[cId] = { cId, name: 'Customer', phone: '--', orders: 0, spend: 0, lastDt: '' };
+   map[cId].orders += 1;
+   map[cId].spend += rev;
+   const dt = (f[F.TX.DT] || '').split('T')[0];
+   if (dt && (!map[cId].lastDt || dt > map[cId].lastDt)) map[cId].lastDt = dt;
+  });
+
+  const rows = Object.values(map).sort((a, b) => b.spend - a.spend);
+  container.innerHTML = `
+   <div class="card">
+    <div class="card-hdr"><h3>Customer Lifetime Spending &amp; Orders (${rows.length} customers)</h3></div>
+    <div style="overflow-x:auto;">
+     <table>
+      <thead>
+       <tr>
+        <th>Customer Name</th><th>Phone</th><th style="text-align:center;">Orders Count</th><th style="text-align:right;">Lifetime Spend &#8362;</th><th style="text-align:right;">Avg Basket &#8362;</th><th>Last Order</th><th style="text-align:center;">Action</th>
+       </tr>
+      </thead>
+      <tbody>
+       ${rows.map(r => {
+        const avg = r.orders > 0 ? (r.spend / r.orders).toFixed(2) : '0.00';
+        return `
+         <tr>
+          <td style="font-weight:600;font-size:13.5px;color:#0f172a;">${esc(r.name)}</td>
+          <td class="mono" style="font-size:12.5px;">${esc(r.phone)}</td>
+          <td style="text-align:center;font-weight:600;">${r.orders}</td>
+          <td style="text-align:right;font-weight:700;color:#db2777;">₪ ${Math.round(r.spend).toLocaleString()}</td>
+          <td style="text-align:right;color:#64748b;">₪ ${avg}</td>
+          <td style="font-size:12.5px;color:#64748b;">${r.lastDt ? fmtD(r.lastDt) : '--'}</td>
+          <td style="text-align:center;"><button class="btn btn-s btn-xs" onclick="openCustomer360('${r.cId}')">🔍 360°</button></td>
+         </tr>
+        `;
+       }).join('')}
+      </tbody>
+     </table>
+    </div>
+   </div>
+  `;
+ } else if (activeReportTab === 'branches') {
+  // Branch Breakdown
+  const branches = ['Beit Shemesh', 'Jerusalem', 'Beitar Illit'];
+  const branchData = branches.map(brName => {
+   const normName = (brName === 'Beitar Illit' || brName === 'Beitar') ? 'Beitar' : brName;
+   let bSales = 0, bCOGS = 0, bUnits = 0, bOrders = 0;
+
+   sales.forEach(tx => {
+    const f = tx.fields;
+    const br = f[F.TX.BR];
+    const match = normName === 'Beitar' ? (br === 'Beitar' || br === 'Beitar Illit') : (br === normName);
+    if (!match) return;
+
+    const qty = Math.abs(f[F.TX.QTY] || 1);
+    const prod = resolveProdFromTx(tx);
+    const price = getTxPrice(tx, prod);
+    const cost = (prod && prod.fields[F.P.CP] != null) ? parseFloat(prod.fields[F.P.CP]) : 0;
+    bSales += qty * price;
+    bCOGS += qty * cost;
+    bUnits += qty;
+    bOrders += 1;
+   });
+
+   const fld = normName === 'Beit Shemesh' ? F.P.BS : (normName === 'Jerusalem' ? F.P.J : F.P.B);
+   let unitsInStock = 0, valCost = 0, valRetail = 0;
+   allP.forEach(p => {
+    const st = p.fields[fld] ?? 0;
+    unitsInStock += st;
+    valCost += st * (p.fields[F.P.CP] || 0);
+    valRetail += st * (p.fields[F.P.SP] || 0);
+   });
+
+   const profit = bSales - bCOGS;
+   const margin = bSales > 0 ? ((profit / bSales) * 100).toFixed(1) : '0.0';
+
+   return {
+    name: brName,
+    sales: bSales,
+    cogs: bCOGS,
+    profit,
+    margin,
+    unitsSold: bUnits,
+    orders: bOrders,
+    unitsInStock,
+    valCost,
+    valRetail
+   };
+  });
+
+  container.innerHTML = `
+   <div class="card">
+    <div class="card-hdr"><h3>Branch Performance &amp; Inventory Comparison</h3></div>
+    <div style="overflow-x:auto;">
+     <table>
+      <thead>
+       <tr>
+        <th>Branch Name</th><th style="text-align:right;">Sales Revenue &#8362;</th><th style="text-align:right;">COGS &#8362;</th><th style="text-align:right;">Gross Profit &#8362;</th><th style="text-align:center;">Margin %</th><th style="text-align:center;">Units Sold</th><th style="text-align:center;">Stock Units</th><th style="text-align:right;">Stock Value (Cost)</th><th style="text-align:right;">Stock Value (Retail)</th><th style="text-align:center;">Action</th>
+       </tr>
+      </thead>
+      <tbody>
+       ${branchData.map(b => `
+        <tr>
+         <td style="font-weight:700;font-size:14px;color:#0f172a;">📍 ${b.name}</td>
+         <td style="text-align:right;font-weight:700;color:#db2777;">₪ ${Math.round(b.sales).toLocaleString()}</td>
+         <td style="text-align:right;color:#64748b;">₪ ${Math.round(b.cogs).toLocaleString()}</td>
+         <td style="text-align:right;font-weight:700;color:#16a34a;">₪ ${Math.round(b.profit).toLocaleString()}</td>
+         <td style="text-align:center;"><span class="badge bg">${b.margin}%</span></td>
+         <td style="text-align:center;font-weight:600;">${b.unitsSold}</td>
+         <td style="text-align:center;font-weight:700;">${b.unitsInStock}</td>
+         <td style="text-align:right;">₪ ${Math.round(b.valCost).toLocaleString()}</td>
+         <td style="text-align:right;font-weight:600;color:#4f46e5;">₪ ${Math.round(b.valRetail).toLocaleString()}</td>
+         <td style="text-align:center;"><button class="btn btn-s btn-xs" onclick="openBranch360('${b.name}')">🔍 360°</button></td>
+        </tr>
+       `).join('')}
+      </tbody>
+     </table>
+    </div>
+   </div>
+  `;
+ } else if (activeReportTab === 'employees') {
+  // Salesperson / Cashier report
+  const map = {};
+  sales.forEach(tx => {
+   const f = tx.fields;
+   const emp = (f[F.TX.EMP] || 'General Staff').trim();
+   const qty = Math.abs(f[F.TX.QTY] || 1);
+   const prod = resolveProdFromTx(tx);
+   const rev = qty * getTxPrice(tx, prod);
+
+   if (!map[emp]) map[emp] = { name: emp, orders: 0, units: 0, sales: 0 };
+   map[emp].orders += 1;
+   map[emp].units += qty;
+   map[emp].sales += rev;
+  });
+
+  const rows = Object.values(map).sort((a, b) => b.sales - a.sales);
+  container.innerHTML = `
+   <div class="card">
+    <div class="card-hdr"><h3>Sales Performance by Salesperson / Employee (${rows.length} staff members)</h3></div>
+    <div style="overflow-x:auto;">
+     <table>
+      <thead>
+       <tr>
+        <th>Employee / Salesperson</th><th style="text-align:center;">Transactions Count</th><th style="text-align:center;">Units Sold</th><th style="text-align:right;">Total Sales &#8362;</th><th style="text-align:right;">Average Ticket &#8362;</th>
+       </tr>
+      </thead>
+      <tbody>
+       ${rows.length ? rows.map(r => {
+        const avg = r.orders > 0 ? (r.sales / r.orders).toFixed(2) : '0.00';
+        return `
+         <tr>
+          <td style="font-weight:700;font-size:13.5px;color:#0f172a;">👤 ${esc(r.name)}</td>
+          <td style="text-align:center;font-weight:600;">${r.orders}</td>
+          <td style="text-align:center;">${r.units}</td>
+          <td style="text-align:right;font-weight:700;color:#db2777;">₪ ${Math.round(r.sales).toLocaleString()}</td>
+          <td style="text-align:right;color:#64748b;">₪ ${avg}</td>
+         </tr>
+        `;
+       }).join('') : `<tr><td colspan="5"><div class="empty">No employee records in this period</div></td></tr>`}
+      </tbody>
+     </table>
+    </div>
+   </div>
+  `;
+ } else if (activeReportTab === 'inventory') {
+  // Stock Valuation Table
+  const rows = allP.map(p => {
+   const f = p.fields;
+   const b = f[F.P.B] ?? 0, bs = f[F.P.BS] ?? 0, j = f[F.P.J] ?? 0, tot = b + bs + j;
+   const cp = f[F.P.CP] || 0;
+   const sp = f[F.P.SP] || 0;
+   return {
+    pId: p.id,
+    sku: f[F.P.SKU] || '--',
+    name: f[F.P.NM] || '--',
+    brand: f[F.P.BR] || '--',
+    cp,
+    sp,
+    b, bs, j, tot,
+    valCost: tot * cp,
+    valRetail: tot * sp
+   };
+  }).sort((a, b) => b.valRetail - a.valRetail);
+
+  const totUnits = rows.reduce((s, r) => s + r.tot, 0);
+  const totValCost = rows.reduce((s, r) => s + r.valCost, 0);
+  const totValRetail = rows.reduce((s, r) => s + r.valRetail, 0);
+
+  container.innerHTML = `
+   <div class="card">
+    <div class="card-hdr">
+     <h3>Total Inventory Valuation (All Products)</h3>
+     <span style="font-weight:700;color:#0f172a;">Total Units: ${totUnits.toLocaleString()} | Cost Value: ₪${Math.round(totValCost).toLocaleString()} | Retail Value: ₪${Math.round(totValRetail).toLocaleString()}</span>
+    </div>
+    <div style="overflow-x:auto;">
+     <table>
+      <thead>
+       <tr>
+        <th>SKU</th><th>Product Name</th><th>Brand</th><th style="text-align:right;">Cost Price &#8362;</th><th style="text-align:right;">Retail Price &#8362;</th><th style="text-align:center;">Beitar</th><th style="text-align:center;">Beit Sh.</th><th style="text-align:center;">Jerusalem</th><th style="text-align:center;">Total Units</th><th style="text-align:right;">Total Cost Value &#8362;</th><th style="text-align:right;">Total Retail Value &#8362;</th><th style="text-align:center;">Action</th>
+       </tr>
+      </thead>
+      <tbody>
+       ${rows.map(r => `
+        <tr>
+         <td class="mono" style="color:#4f46e5;font-weight:700;">${esc(r.sku)}</td>
+         <td style="font-weight:600;font-size:13px;">${esc(r.name)}</td>
+         <td style="font-size:12.5px;color:#64748b;">${esc(r.brand)}</td>
+         <td style="text-align:right;">₪ ${r.cp}</td>
+         <td style="text-align:right;">₪ ${r.sp}</td>
+         <td style="text-align:center;">${r.b}</td>
+         <td style="text-align:center;">${r.bs}</td>
+         <td style="text-align:center;">${r.j}</td>
+         <td style="text-align:center;font-weight:700;">${r.tot}</td>
+         <td style="text-align:right;color:#64748b;">₪ ${Math.round(r.valCost).toLocaleString()}</td>
+         <td style="text-align:right;font-weight:700;color:#db2777;">₪ ${Math.round(r.valRetail).toLocaleString()}</td>
+         <td style="text-align:center;"><button class="btn btn-s btn-xs" onclick="openProduct360('${r.pId}')">🔍 360°</button></td>
+        </tr>
+       `).join('')}
+      </tbody>
+     </table>
+    </div>
+   </div>
+  `;
+ }
+}
+
+// ── UNIVERSAL EXCEL / CSV EXPORT UTILITY ────────────────────────
+function exportToCSV(filename, headers, rows) {
+ const escapeCell = cell => {
+  if (cell == null) return '""';
+  const str = String(cell).replace(/"/g, '""');
+  return '"' + str + '"';
+ };
+
+ let csv = '\uFEFF'; // UTF-8 BOM for Microsoft Excel Hebrew support
+ csv += headers.map(escapeCell).join(',') + '\r\n';
+ rows.forEach(row => {
+  csv += row.map(escapeCell).join(',') + '\r\n';
+ });
+
+ const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+ const link = document.createElement('a');
+ const url = URL.createObjectURL(blob);
+ link.setAttribute('href', url);
+ link.setAttribute('download', filename.endsWith('.csv') ? filename : filename + '.csv');
+ link.style.visibility = 'hidden';
+ document.body.appendChild(link);
+ link.click();
+ document.body.removeChild(link);
+ toast(`Exported ${filename} successfully!`);
+}
+
+function exportCurrentDashboardCSV() {
+ const sales = getFilteredSales(dashDateFrom, dashDateTo, dashBranch);
+ const headers = ['Transaction ID', 'Date & Time', 'Branch', 'Product Name', 'SKU', 'Brand', 'Units Sold', 'Actual Paid Price', 'Cost Price', 'Revenue ₪', 'COGS ₪', 'Gross Profit ₪', 'Customer', 'Employee', 'Receipt Ref', 'Notes'];
+
+ const rows = sales.map(tx => {
+  const f = tx.fields;
+  const qty = Math.abs(f[F.TX.QTY] || 1);
+  const prod = resolveProdFromTx(tx);
+  const price = getTxPrice(tx, prod);
+  const cost = (prod && prod.fields[F.P.CP] != null) ? parseFloat(prod.fields[F.P.CP]) : 0;
+  const rev = qty * price;
+  const cogs = qty * cost;
+  const profit = rev - cogs;
+  const cust = resolveCustFromTx(tx);
+  const custName = cust ? cust.fields[F.CU.NM] : (f[F.TX.NM] || 'Anonymous');
+
+  return [
+   f[F.TX.NM] || tx.id,
+   fmtDT(f[F.TX.DT]),
+   f[F.TX.BR] || '',
+   prod ? (prod.fields[F.P.NM] || '') : pNmTx(tx),
+   prod ? (prod.fields[F.P.SKU] || '') : (f[F.TX.SKUL] || [''])[0],
+   prod ? (prod.fields[F.P.BR] || '') : '',
+   qty,
+   price,
+   cost,
+   rev.toFixed(2),
+   cogs.toFixed(2),
+   profit.toFixed(2),
+   custName,
+   f[F.TX.EMP] || '',
+   f[F.TX.REF] || '',
+   f[F.TX.NO] || ''
+  ];
+ });
+
+ const dtStr = today();
+ exportToCSV(`makeup_dashboard_sales_${dashBranch || 'all_branches'}_${dtStr}.csv`, headers, rows);
+}
+
+function exportProduct360CSV() {
+ if (!currentP360Id) return;
+ const prod = allP.find(p => p.id === currentP360Id);
+ if (!prod) return;
+
+ const f = prod.fields;
+ const sku = f[F.P.SKU] || 'SKU';
+ const txForProd = allTX.filter(tx => {
+  const pIds = tx.fields[F.TX.PR] || [];
+  if (Array.isArray(pIds) ? pIds.includes(prod.id) : pIds === prod.id) return true;
+  const skus = tx.fields[F.TX.SKUL] || [];
+  if (Array.isArray(skus) ? skus.includes(sku) : skus === sku) return true;
+  return false;
+ });
+
+ const headers = ['Date & Time', 'Type', 'Branch', 'Qty Change', 'Actual Price Paid ₪', 'Customer', 'Employee', 'Reference', 'Notes'];
+ const rows = txForProd.map(tx => {
+  const tf = tx.fields;
+  const cust = resolveCustFromTx(tx);
+  const cName = cust ? cust.fields[F.CU.NM] : (tf[F.TX.NM] || '');
+  return [
+   fmtDT(tf[F.TX.DT]),
+   tf[F.TX.TY] || '',
+   tf[F.TX.BR] || '',
+   tf[F.TX.QTY] || 0,
+   getTxPrice(tx, prod),
+   cName,
+   tf[F.TX.EMP] || '',
+   tf[F.TX.REF] || '',
+   tf[F.TX.NO] || ''
+  ];
+ });
+
+ exportToCSV(`product_history_${sku}_${today()}.csv`, headers, rows);
+}
+
+function exportCustomer360CSV() {
+ if (!currentC360Id) return;
+ const cust = allCU.find(c => c.id === currentC360Id);
+ if (!cust) return;
+
+ const cName = cust.fields[F.CU.NM] || 'customer';
+ const txForCust = allTX.filter(tx => {
+  const cIds = tx.fields[F.TX.CU] || [];
+  return Array.isArray(cIds) ? cIds.includes(cust.id) : cIds === cust.id;
+ });
+
+ const headers = ['Date & Time', 'Receipt Ref', 'Branch', 'Product Name', 'SKU', 'Brand', 'Qty', 'Paid Price ₪', 'Total ₪', 'Salesperson'];
+ const rows = txForCust.map(tx => {
+  const tf = tx.fields;
+  const prod = resolveProdFromTx(tx);
+  const qty = Math.abs(tf[F.TX.QTY] || 1);
+  const price = getTxPrice(tx, prod);
+  return [
+   fmtDT(tf[F.TX.DT]),
+   tf[F.TX.REF] || '',
+   tf[F.TX.BR] || '',
+   prod ? (prod.fields[F.P.NM] || '') : pNmTx(tx),
+   prod ? (prod.fields[F.P.SKU] || '') : '',
+   prod ? (prod.fields[F.P.BR] || '') : '',
+   qty,
+   price,
+   (qty * price).toFixed(2),
+   tf[F.TX.EMP] || ''
+  ];
+ });
+
+ exportToCSV(`customer_360_${cName.replace(/\s+/g, '_')}_${today()}.csv`, headers, rows);
+}
+
+function exportBranch360CSV() {
+ const branchName = currentB360Name || dashBranch || 'All';
+ const normName = (branchName === 'Beitar Illit' || branchName === 'Beitar') ? 'Beitar' : branchName;
+
+ const txForBranch = allTX.filter(tx => {
+  const br = tx.fields[F.TX.BR];
+  if (normName === 'Beitar') return br === 'Beitar' || br === 'Beitar Illit';
+  return br === normName;
+ });
+
+ const headers = ['Date & Time', 'Operation Type', 'Product Name', 'SKU', 'Qty Change', 'Price Paid ₪', 'Customer', 'Employee', 'Notes'];
+ const rows = txForBranch.map(tx => {
+  const tf = tx.fields;
+  const prod = resolveProdFromTx(tx);
+  const cust = resolveCustFromTx(tx);
+  return [
+   fmtDT(tf[F.TX.DT]),
+   tf[F.TX.TY] || '',
+   prod ? (prod.fields[F.P.NM] || '') : pNmTx(tx),
+   prod ? (prod.fields[F.P.SKU] || '') : '',
+   tf[F.TX.QTY] || 0,
+   getTxPrice(tx, prod),
+   cust ? (cust.fields[F.CU.NM] || '') : '',
+   tf[F.TX.EMP] || '',
+   tf[F.TX.NO] || ''
+  ];
+ });
+
+ exportToCSV(`branch_report_${normName}_${today()}.csv`, headers, rows);
+}
+
+function exportActiveReportToCSV() {
+ const dtStr = today();
+ const sales = getFilteredSales(dashDateFrom, dashDateTo, dashBranch);
+
+ if (activeReportTab === 'daily') {
+  const map = {};
+  sales.forEach(tx => {
+   const f = tx.fields;
+   const dt = (f[F.TX.DT] || '').split('T')[0] || 'Unknown';
+   const qty = Math.abs(f[F.TX.QTY] || 1);
+   const prod = resolveProdFromTx(tx);
+   const price = getTxPrice(tx, prod);
+   const cost = (prod && prod.fields[F.P.CP] != null) ? parseFloat(prod.fields[F.P.CP]) : 0;
+   const rev = qty * price;
+   if (!map[dt]) map[dt] = { date: dt, orders: 0, units: 0, rev: 0, cost: 0 };
+   map[dt].orders += 1;
+   map[dt].units += qty;
+   map[dt].rev += rev;
+   map[dt].cost += qty * cost;
+  });
+  const headers = ['Date', 'Transactions Count', 'Units Sold', 'Sales Revenue ₪', 'COGS ₪', 'Gross Profit ₪', 'Margin %'];
+  const rows = Object.values(map).sort((a, b) => b.date.localeCompare(a.date)).map(r => {
+   const profit = r.rev - r.cost;
+   const margin = r.rev > 0 ? ((profit / r.rev) * 100).toFixed(1) : '0.0';
+   return [fmtD(r.date), r.orders, r.units, r.rev.toFixed(2), r.cost.toFixed(2), profit.toFixed(2), `${margin}%`];
+  });
+  exportToCSV(`daily_sales_summary_${dtStr}.csv`, headers, rows);
+ } else if (activeReportTab === 'products') {
+  const map = {};
+  sales.forEach(tx => {
+   const f = tx.fields;
+   const qty = Math.abs(f[F.TX.QTY] || 1);
+   const prod = resolveProdFromTx(tx);
+   const price = getTxPrice(tx, prod);
+   const cost = (prod && prod.fields[F.P.CP] != null) ? parseFloat(prod.fields[F.P.CP]) : 0;
+   const rev = qty * price;
+   const pId = prod ? prod.id : (f[F.TX.PR] || [])[0];
+   const sku = prod ? (prod.fields[F.P.SKU] || '--') : (f[F.TX.SKUL] || ['--'])[0];
+   const name = prod ? (prod.fields[F.P.NM] || 'Unknown') : pNmTx(tx);
+   const brand = prod ? (prod.fields[F.P.BR] || '') : '';
+   const key = pId || sku || name;
+   if (!map[key]) map[key] = { sku, name, brand, units: 0, rev: 0, cost: 0 };
+   map[key].units += qty;
+   map[key].rev += rev;
+   map[key].cost += qty * cost;
+  });
+  const headers = ['SKU', 'Product Name', 'Brand', 'Units Sold', 'Revenue ₪', 'Cost ₪', 'Gross Profit ₪', 'Margin %'];
+  const rows = Object.values(map).sort((a, b) => b.units - a.units).map(r => {
+   const profit = r.rev - r.cost;
+   const margin = r.rev > 0 ? ((profit / r.rev) * 100).toFixed(1) : '0.0';
+   return [r.sku, r.name, r.brand, r.units, r.rev.toFixed(2), r.cost.toFixed(2), profit.toFixed(2), `${margin}%`];
+  });
+  exportToCSV(`product_performance_${dtStr}.csv`, headers, rows);
+ } else if (activeReportTab === 'customers') {
+  const map = {};
+  allCU.forEach(cu => {
+   map[cu.id] = { name: cu.fields[F.CU.NM] || 'Customer', phone: cu.fields[F.CU.PH] || '--', orders: 0, spend: 0, lastDt: '' };
+  });
+  allTX.forEach(tx => {
+   const f = tx.fields;
+   if (f[F.TX.TY] !== 'Sale') return;
+   const cIds = f[F.TX.CU] || [];
+   const cId = Array.isArray(cIds) ? cIds[0] : cIds;
+   if (!cId) return;
+   const qty = Math.abs(f[F.TX.QTY] || 1);
+   const prod = resolveProdFromTx(tx);
+   const rev = qty * getTxPrice(tx, prod);
+   if (!map[cId]) map[cId] = { name: 'Customer', phone: '--', orders: 0, spend: 0, lastDt: '' };
+   map[cId].orders += 1;
+   map[cId].spend += rev;
+   const dt = (f[F.TX.DT] || '').split('T')[0];
+   if (dt && (!map[cId].lastDt || dt > map[cId].lastDt)) map[cId].lastDt = dt;
+  });
+  const headers = ['Customer Name', 'Phone', 'Orders Count', 'Lifetime Spend ₪', 'Average Basket ₪', 'Last Order Date'];
+  const rows = Object.values(map).sort((a, b) => b.spend - a.spend).map(r => {
+   const avg = r.orders > 0 ? (r.spend / r.orders).toFixed(2) : '0.00';
+   return [r.name, r.phone, r.orders, r.spend.toFixed(2), avg, r.lastDt ? fmtD(r.lastDt) : '--'];
+  });
+  exportToCSV(`customer_rankings_${dtStr}.csv`, headers, rows);
+ } else if (activeReportTab === 'branches') {
+  const branches = ['Beit Shemesh', 'Jerusalem', 'Beitar Illit'];
+  const headers = ['Branch Name', 'Sales Revenue ₪', 'COGS ₪', 'Gross Profit ₪', 'Margin %', 'Units Sold', 'Current Stock Units', 'Stock Value (Cost) ₪', 'Stock Value (Retail) ₪'];
+  const rows = branches.map(brName => {
+   const normName = (brName === 'Beitar Illit' || brName === 'Beitar') ? 'Beitar' : brName;
+   let bSales = 0, bCOGS = 0, bUnits = 0;
+   sales.forEach(tx => {
+    const f = tx.fields;
+    const br = f[F.TX.BR];
+    const match = normName === 'Beitar' ? (br === 'Beitar' || br === 'Beitar Illit') : (br === normName);
+    if (!match) return;
+    const qty = Math.abs(f[F.TX.QTY] || 1);
+    const prod = resolveProdFromTx(tx);
+    const price = getTxPrice(tx, prod);
+    const cost = (prod && prod.fields[F.P.CP] != null) ? parseFloat(prod.fields[F.P.CP]) : 0;
+    bSales += qty * price;
+    bCOGS += qty * cost;
+    bUnits += qty;
+   });
+   const fld = normName === 'Beit Shemesh' ? F.P.BS : (normName === 'Jerusalem' ? F.P.J : F.P.B);
+   let unitsInStock = 0, valCost = 0, valRetail = 0;
+   allP.forEach(p => {
+    const st = p.fields[fld] ?? 0;
+    unitsInStock += st;
+    valCost += st * (p.fields[F.P.CP] || 0);
+    valRetail += st * (p.fields[F.P.SP] || 0);
+   });
+   const profit = bSales - bCOGS;
+   const margin = bSales > 0 ? ((profit / bSales) * 100).toFixed(1) : '0.0';
+   return [brName, bSales.toFixed(2), bCOGS.toFixed(2), profit.toFixed(2), `${margin}%`, bUnits, unitsInStock, valCost.toFixed(2), valRetail.toFixed(2)];
+  });
+  exportToCSV(`branch_breakdown_${dtStr}.csv`, headers, rows);
+ } else if (activeReportTab === 'employees') {
+  const map = {};
+  sales.forEach(tx => {
+   const f = tx.fields;
+   const emp = (f[F.TX.EMP] || 'General Staff').trim();
+   const qty = Math.abs(f[F.TX.QTY] || 1);
+   const prod = resolveProdFromTx(tx);
+   const rev = qty * getTxPrice(tx, prod);
+   if (!map[emp]) map[emp] = { name: emp, orders: 0, units: 0, sales: 0 };
+   map[emp].orders += 1;
+   map[emp].units += qty;
+   map[emp].sales += rev;
+  });
+  const headers = ['Employee / Salesperson', 'Transactions Count', 'Units Sold', 'Total Sales ₪', 'Average Ticket ₪'];
+  const rows = Object.values(map).sort((a, b) => b.sales - a.sales).map(r => {
+   const avg = r.orders > 0 ? (r.sales / r.orders).toFixed(2) : '0.00';
+   return [r.name, r.orders, r.units, r.sales.toFixed(2), avg];
+  });
+  exportToCSV(`employee_performance_${dtStr}.csv`, headers, rows);
+ } else if (activeReportTab === 'inventory') {
+  const headers = ['SKU', 'Product Name', 'Brand', 'Cost Price ₪', 'Selling Price ₪', 'Beitar Units', 'Beit Shemesh Units', 'Jerusalem Units', 'Total Units', 'Valuation at Cost ₪', 'Valuation at Retail ₪'];
+  const rows = allP.map(p => {
+   const f = p.fields;
+   const b = f[F.P.B] ?? 0, bs = f[F.P.BS] ?? 0, j = f[F.P.J] ?? 0, tot = b + bs + j;
+   const cp = f[F.P.CP] || 0;
+   const sp = f[F.P.SP] || 0;
+   return [
+    f[F.P.SKU] || '',
+    f[F.P.NM] || '',
+    f[F.P.BR] || '',
+    cp,
+    sp,
+    b, bs, j, tot,
+    (tot * cp).toFixed(2),
+    (tot * sp).toFixed(2)
+   ];
+  }).sort((a, b) => parseFloat(b[10]) - parseFloat(a[10]));
+  exportToCSV(`inventory_valuation_${dtStr}.csv`, headers, rows);
+ }
+}
+
 
 // ── RENDER PRODUCTS ────────────────────────────────────────────
 function popBrands(){const brands=[...new Set(allP.map(p=>p.fields[F.P.BR]).filter(Boolean))].sort();document.getElementById('p-br').innerHTML='<option value="">All Brands</option>'+brands.map(b=>`<option>${esc(b)}</option>`).join('');}
@@ -2302,7 +4461,7 @@ function updateTxDisc(){
  const disc=parseFloat(document.getElementById('tx-disc').value)||0;
  document.getElementById('tx-disc-preview').textContent=disc>0?'Actual price = List Price × '+(1-disc/100).toFixed(2):'';
 }
-function updateTxType(){const t=document.getElementById('tx-type').value;const isSale=t==='Sale';document.getElementById('tx-cust-row').style.display=isSale?'grid':'none';document.getElementById('tx-disc-row').style.display=isSale?'block':'none';if(isSale)updateTxDisc();document.getElementById('tx-qty-lbl').textContent=isSale?'Quantity Sold *':t==='Stock Received'?'Quantity Received *':'Quantity *';}
+function updateTxType(){const t=document.getElementById('tx-type').value;const isSale=t==='Sale';document.getElementById('tx-cust-row').style.display=isSale?'grid':'none';document.getElementById('tx-disc-row').style.display=isSale?'block':'none';if(isSale)updateTxDisc();}
 
 // ── CUSTOMER LOOKUP (no auto-creation) ────────────────────────
 // Priority: phone → email → exact name → partial name → not-found
