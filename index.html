@@ -18,10 +18,10 @@
  .nav-item:hover{color:#e2e8f0;background:rgba(255,255,255,.07);}
  .nav-item.active{color:#fff;background:#4f46e5;}
  /* Main area */
- #main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
- #topbar{background:#fff;border-bottom:1px solid #e2e8f0;padding:0 20px;height:58px;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-shrink:0;}
- #page-title{font-size:17px;font-weight:700;color:#0f172a;white-space:nowrap;}
- #content{flex:1;overflow-y:auto;padding:20px;}
+ #main{flex:1;display:flex;flex-direction:column;overflow:hidden;height:100vh;background:#f8fafc;}
+ #topbar{background:#fff;border-bottom:1px solid #e2e8f0;padding:10px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-shrink:0;height:auto;min-height:62px;box-sizing:border-box;position:relative;z-index:100;}
+ #page-title{font-size:19px;font-weight:700;color:#0f172a;white-space:nowrap;}
+ #content{flex:1;overflow-y:auto;padding:20px 24px;position:relative;background:#f8fafc;}
  .page{display:none;}.page.active{display:block;}
  /* Cards */
  .card{background:#fff;border-radius:12px;border:1px solid #e2e8f0;overflow:hidden;}
@@ -122,16 +122,38 @@
  /* Executive Dashboard & Mockup Styles */
  .nav-item.active{color:#831843!important;background:#ffd5e2!important;font-weight:700;}
  .nav-item.active svg{stroke:#831843;}
- .dash-kpi{background:#fff;border-radius:16px;padding:18px 20px;border:1px solid #eef2f6;box-shadow:0 1px 3px rgba(0,0,0,.03);transition:all .2s ease;}
- .dash-kpi:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.06);}
- .dash-kpi-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
- .dash-kpi-title{font-size:12.5px;font-weight:600;color:#64748b;}
- .dash-kpi-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;}
- .dash-kpi-val{font-size:26px;font-weight:800;color:#0f172a;line-height:1.1;margin:4px 0 8px;letter-spacing:-0.5px;}
- .dash-kpi-trend{font-size:12px;font-weight:700;display:inline-flex;align-items:center;gap:3px;}
+ .dash-kpi-row{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;margin-bottom:20px;}
+ @media(max-width:1200px){.dash-kpi-row{grid-template-columns:repeat(3,minmax(0,1fr));}}
+ @media(max-width:768px){.dash-kpi-row{grid-template-columns:repeat(2,minmax(0,1fr));}}
+ @media(max-width:480px){.dash-kpi-row{grid-template-columns:1fr;}}
+
+ .dash-charts-row{display:grid;grid-template-columns:1.8fr 1.1fr 1.1fr;gap:16px;margin-bottom:20px;}
+ @media(max-width:1100px){.dash-charts-row{grid-template-columns:1fr 1fr;}}
+ @media(max-width:768px){.dash-charts-row{grid-template-columns:1fr;}}
+
+ .dash-qa-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:20px;}
+ @media(max-width:1024px){.dash-qa-row{grid-template-columns:repeat(2,minmax(0,1fr));}}
+ @media(max-width:540px){.dash-qa-row{grid-template-columns:1fr;}}
+
+ .dash-tables-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:20px;}
+ @media(max-width:1100px){.dash-tables-row{grid-template-columns:1fr;}}
+
+ /* Branded Loading Overlay & Spinner */
+ .dash-loading-ov{position:absolute;inset:0;background:rgba(248,250,252,0.92);backdrop-filter:blur(3px);z-index:90;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;border-radius:12px;transition:opacity .25s ease;}
+ .dash-spinner{width:42px;height:42px;border:3.5px solid #fce7f3;border-top-color:#db2777;border-right-color:#f43f5e;border-radius:50%;animation:dashSpin .75s linear infinite;}
+ @keyframes dashSpin{to{transform:rotate(360deg);}}
+ .spin-anim{display:inline-block;animation:dashSpin .75s linear infinite;}
+
+ .dash-kpi{background:#fff;border-radius:14px;padding:14px 16px;border:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,.03);transition:all .2s ease;min-height:108px;display:flex;flex-direction:column;justify-content:space-between;}
+ .dash-kpi:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.06);}
+ .dash-kpi-hdr{display:flex;align-items:center;justify-content:space-between;gap:6px;}
+ .dash-kpi-title{font-size:12px;font-weight:600;color:#64748b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+ .dash-kpi-icon{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+ .dash-kpi-val{font-size:24px;font-weight:800;color:#0f172a;line-height:1.15;margin:4px 0 6px;letter-spacing:-0.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+ .dash-kpi-trend{font-size:11.5px;font-weight:700;display:inline-flex;align-items:center;gap:2px;}
  .dash-kpi-trend.up{color:#16a34a;}
  .dash-kpi-trend.down{color:#dc2626;}
- .dash-kpi-sub{font-size:12px;color:#94a3b8;margin-left:4px;}
+ .dash-kpi-sub{font-size:11px;color:#94a3b8;margin-left:3px;white-space:nowrap;}
  .qa-card{border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .2s ease;border:1px solid transparent;}
  .qa-card:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.06);}
  .qa-card-pink{background:#fff1f5;border-color:#ffe4ec;}
@@ -254,23 +276,28 @@
 
 <!-- ════ MAIN ════════════════════════════════════════════════ -->
 <div id="main">
- <div id="topbar" style="background:#fff;border-bottom:1px solid #e2e8f0;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;min-height:72px;">
-  <!-- Welcome & Subtitle -->
-  <div>
-   <h1 style="font-size:24px;font-weight:800;color:#0f172a;margin:0;letter-spacing:-0.5px;" id="welcome-heading">Welcome, Mosh!</h1>
-   <p style="font-size:13px;color:#64748b;margin:3px 0 0;" id="welcome-sub">Here's a summary of your business</p>
+ <div id="topbar">
+  <!-- Left: Titles -->
+  <div style="display:flex;align-items:center;gap:12px;min-width:180px;">
+   <div id="topbar-overview-hdr">
+    <h1 style="font-size:22px;font-weight:800;color:#0f172a;margin:0;letter-spacing:-0.4px;" id="welcome-heading">Welcome, Mosh!</h1>
+    <p style="font-size:12px;color:#64748b;margin:1px 0 0;" id="welcome-sub">Here's a summary of your business</p>
+   </div>
+   <div id="topbar-standard-hdr" style="display:none;">
+    <h1 style="font-size:20px;font-weight:700;color:#0f172a;margin:0;" id="page-title">Executive Dashboard</h1>
+   </div>
   </div>
 
-  <!-- Filters & User Profile -->
-  <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+  <!-- Right: Filters, Buttons & User Profile -->
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
    <!-- Date Range Preset Dropdown -->
-   <div style="position:relative;display:inline-block;">
-    <button class="btn btn-s" id="dash-date-btn" onclick="toggleDateDropdown()" style="padding:8px 14px;border-radius:10px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px;background:#f8fafc;">
-     <span style="font-size:15px;">📅</span>
+   <div id="topbar-date-wrap" style="position:relative;display:inline-block;">
+    <button class="btn btn-s" id="dash-date-btn" onclick="toggleDateDropdown()" style="padding:7px 12px;border-radius:10px;font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:6px;background:#f8fafc;border:1px solid #d1d5db;">
+     <span style="font-size:14px;">📅</span>
      <span id="dash-date-lbl">01/08/2026 &rarr; 31/08/2026</span>
-     <span style="font-size:10px;color:#64748b;">▼</span>
+     <span style="font-size:9px;color:#64748b;">▼</span>
     </button>
-    <div id="dash-date-menu" style="display:none;position:absolute;right:0;top:calc(100% + 6px);background:#fff;border:1px solid #e2e8f0;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.12);z-index:600;min-width:260px;padding:8px;">
+    <div id="dash-date-menu" style="display:none;position:absolute;right:0;top:calc(100% + 6px);background:#fff;border:1px solid #e2e8f0;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.12);z-index:600;min-width:250px;padding:8px;">
      <div style="font-size:11px;font-weight:700;color:#94a3b8;padding:6px 10px;text-transform:uppercase;">Quick Ranges</div>
      <div class="date-opt" onclick="setDashDatePreset('this_month')">📅 This Month (Current)</div>
      <div class="date-opt" onclick="setDashDatePreset('last_month')">📅 Last Month</div>
@@ -283,8 +310,8 @@
      <div style="border-top:1px solid #f1f5f9;margin:6px 0;padding-top:6px;">
       <div style="font-size:11px;font-weight:700;color:#94a3b8;padding:4px 10px;text-transform:uppercase;">Custom Range</div>
       <div style="padding:6px 10px;display:flex;flex-direction:column;gap:6px;">
-       <input type="date" id="dash-custom-fr" style="padding:6px 8px;border:1px solid #d1d5db;border-radius:6px;font-size:12px;" />
-       <input type="date" id="dash-custom-to" style="padding:6px 8px;border:1px solid #d1d5db;border-radius:6px;font-size:12px;" />
+       <input type="date" id="dash-custom-fr" style="padding:5px 8px;border:1px solid #d1d5db;border-radius:6px;font-size:12px;" />
+       <input type="date" id="dash-custom-to" style="padding:5px 8px;border:1px solid #d1d5db;border-radius:6px;font-size:12px;" />
        <button class="btn btn-p btn-xs" onclick="applyCustomDateRange()" style="width:100%;justify-content:center;margin-top:2px;">Apply Custom</button>
       </div>
      </div>
@@ -293,7 +320,7 @@
 
    <!-- Branch Selector -->
    <div style="display:inline-block;">
-    <select id="dash-branch-sel" onchange="onDashBranchChange(this.value)" style="padding:8px 14px;border:1px solid #d1d5db;border-radius:10px;font-size:13px;font-weight:600;background:#f8fafc;color:#1e293b;outline:none;cursor:pointer;">
+    <select id="dash-branch-sel" onchange="onDashBranchChange(this.value)" style="padding:7px 12px;border:1px solid #d1d5db;border-radius:10px;font-size:12.5px;font-weight:600;background:#f8fafc;color:#1e293b;outline:none;cursor:pointer;">
      <option value="">📍 All Branches</option>
      <option value="Beit Shemesh">📍 Beit Shemesh</option>
      <option value="Jerusalem">📍 Jerusalem</option>
@@ -302,30 +329,36 @@
    </div>
 
    <!-- Refresh Button -->
-   <button class="btn btn-s" id="refresh-btn" onclick="refreshAll()" title="Refresh All Data from Airtable" style="padding:8px 12px;border-radius:10px;">
+   <button class="btn btn-s" id="refresh-btn" onclick="refreshAll()" title="Refresh All Data from Airtable" style="padding:7px 11px;border-radius:10px;border:1px solid #d1d5db;background:#f8fafc;">
     <span id="r-ico">🔄</span><span id="last-upd" style="display:none;"></span>
    </button>
 
    <!-- Export to Excel Button -->
-   <button class="btn btn-ok" onclick="exportCurrentDashboardCSV()" title="Export Summary to Excel/CSV" style="padding:8px 14px;border-radius:10px;">
+   <button class="btn btn-ok" onclick="exportCurrentDashboardCSV()" title="Export Summary to Excel/CSV" style="padding:7px 13px;border-radius:10px;font-size:12.5px;font-weight:600;">
     📥 Excel
    </button>
 
    <!-- User Profile Badge matching mockup -->
-   <div style="display:flex;align-items:center;gap:10px;padding-left:8px;border-left:1px solid #e2e8f0;">
-    <div style="width:38px;height:38px;border-radius:50%;background:#db2777;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;flex-shrink:0;">M</div>
+   <div style="display:flex;align-items:center;gap:9px;padding-left:10px;border-left:1px solid #e2e8f0;">
+    <div style="width:36px;height:36px;border-radius:50%;background:#db2777;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;">M</div>
     <div>
-     <div style="font-weight:700;font-size:13px;color:#0f172a;line-height:1.2;">Mosh</div>
-     <div style="font-size:11px;color:#64748b;">Business Owner</div>
-    </div>
-    <div style="margin-left:4px;font-family:'Segoe Script',cursive,sans-serif;color:#ec4899;font-size:13px;white-space:nowrap;">
-     Beauty Drives Success &hearts;
+     <div style="font-weight:700;font-size:12.5px;color:#0f172a;line-height:1.2;">Mosh <span style="font-weight:400;font-size:11px;color:#64748b;">(Owner)</span></div>
+     <div style="font-family:'Segoe Script',cursive,sans-serif;color:#ec4899;font-size:11px;line-height:1.1;white-space:nowrap;">Beauty Drives Success &hearts;</div>
     </div>
    </div>
   </div>
  </div>
 
  <div id="content">
+
+  <!-- ── GLOBAL DATA LOADING OVERLAY ─────────────────────── -->
+  <div id="data-loading-overlay" class="dash-loading-ov">
+   <div class="dash-spinner"></div>
+   <div style="text-align:center;">
+    <div style="font-size:16px;font-weight:700;color:#0f172a;margin-bottom:4px;" id="loading-msg">Loading Boutique Inventory &amp; Sales...</div>
+    <div style="font-size:12.5px;color:#64748b;" id="loading-submsg">Fetching real-time data from Airtable</div>
+   </div>
+  </div>
 
   <!-- ── OVERVIEW / EXECUTIVE DASHBOARD ─────────────────── -->
   <div class="page active" id="page-overview">
@@ -338,7 +371,7 @@
    </div>
 
    <!-- ROW 1: 5 KPI CARDS MATCHING MOCKUP -->
-   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:20px;">
+   <div class="dash-kpi-row">
     <!-- 1. Total Sales -->
     <div class="dash-kpi">
      <div class="dash-kpi-hdr">
@@ -406,7 +439,7 @@
    </div>
 
    <!-- ROW 2: 3 VISUAL CHARTS MATCHING MOCKUP -->
-   <div style="display:grid;grid-template-columns:1.8fr 1.2fr 1.2fr;gap:16px;margin-bottom:20px;">
+   <div class="dash-charts-row">
     <!-- Chart 1: Sales Over Time -->
     <div class="card" style="padding:18px 20px;">
      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
@@ -449,7 +482,7 @@
    </div>
 
    <!-- ROW 3: 4 QUICK ACTION CARDS MATCHING MOCKUP -->
-   <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px;">
+   <div class="dash-qa-row">
     <!-- 1. Manual Sale -->
     <div class="qa-card qa-card-pink" onclick="openModal('m-tx')">
      <div class="qa-icon" style="background:#ffd5e2;color:#db2777;">🛒</div>
@@ -488,7 +521,7 @@
    </div>
 
    <!-- ROW 4: 3 SUMMARY TABLES MATCHING MOCKUP (WITH 1-CLICK DRILL DOWNS) -->
-   <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:20px;">
+   <div class="dash-tables-row">
     <!-- Top Selling Products -->
     <div class="card">
      <div class="card-hdr" style="padding:14px 18px;">
@@ -588,7 +621,7 @@
  <div class="card"><div style="overflow-x:auto;"><table><thead><tr>
  <th>SKU</th><th>Brand</th><th>Product Name</th><th>Shade</th>
  <th style="text-align:center;"> Beitar</th><th style="text-align:center;"> Beit Sh.</th><th style="text-align:center;"> Jerusalem</th>
- <th style="text-align:center;">Total</th><th style="text-align:right;">Price &#8362;</th><th>Status</th>
+ <th style="text-align:center;">Total</th><th style="text-align:right;">Price &#8362;</th><th>Status</th><th>Actions</th>
  </tr></thead><tbody id="prod-body"></tbody></table></div></div>
  </div>
 
@@ -1328,7 +1361,23 @@ function showPage(n){
  if(elPage) elPage.classList.add('active');
  const elNav = document.getElementById(`nav-${n}`);
  if(elNav) elNav.classList.add('active');
- document.getElementById('page-title').textContent=PT[n]||n;
+ const pt = document.getElementById('page-title');
+ if(pt) pt.textContent = PT[n] || n;
+ const ovHdr = document.getElementById('topbar-overview-hdr');
+ const stdHdr = document.getElementById('topbar-standard-hdr');
+ const dateWrap = document.getElementById('topbar-date-wrap');
+ if(ovHdr && stdHdr){
+  if(n === 'overview'){
+   ovHdr.style.display = 'block';
+   stdHdr.style.display = 'none';
+  } else {
+   ovHdr.style.display = 'none';
+   stdHdr.style.display = 'block';
+  }
+ }
+ if(dateWrap){
+  dateWrap.style.display = (n === 'overview' || n === 'reports') ? 'inline-block' : 'none';
+ }
  if(n==='overview') renderExecutiveDashboard();
  if(n==='reports') renderActiveReport();
 }
@@ -1391,14 +1440,49 @@ function pNmTx(tx){const f=tx.fields,skus=f[F.TX.SKUL];if(skus&&skus.length){con
 function cuHtml(tx){const cs=tx.fields[F.TX.CU];if(!cs||!cs.length)return`<span class="anon-tag"> Anonymous</span>`;const c=allCU.find(x=>x.id===cs[0]);return c?`<span class="cust-tag"> ${esc(c.fields[F.CU.NM]||'?')}</span>`:`<span class="cust-tag"> Customer</span>`;}
 function pNmPO(po){const f=po.fields,skus=f[F.PO.SKUL];if(skus&&skus.length)return skus[0];const lnk=f[F.PO.PR];if(lnk&&lnk.length){const p=allP.find(x=>x.id===lnk[0]);if(p)return`${p.fields[F.P.SKU]||''} — ${p.fields[F.P.NM]||''}`;}return'--';}
 
-// ── DATA LOAD ──────────────────────────────────────────────────
+// ── DATA LOAD & LOADING STATE ──────────────────────────────────
+function showLoading(show, msg = 'Loading Boutique Inventory & Sales...', sub = 'Fetching real-time data from Airtable') {
+ const ov = document.getElementById('data-loading-overlay');
+ const ico = document.getElementById('r-ico');
+ const btn = document.getElementById('refresh-btn');
+ if (ov) {
+  if (show) {
+   const mEl = document.getElementById('loading-msg');
+   const sEl = document.getElementById('loading-submsg');
+   if (mEl) mEl.textContent = msg;
+   if (sEl) sEl.textContent = sub;
+   ov.style.display = 'flex';
+   ov.style.opacity = '1';
+  } else {
+   ov.style.opacity = '0';
+   setTimeout(() => { if (ov) ov.style.display = 'none'; }, 260);
+  }
+ }
+ if (ico) {
+  if (show) ico.classList.add('spin-anim');
+  else ico.classList.remove('spin-anim');
+ }
+ if (btn) btn.disabled = !!show;
+}
+
 async function loadAll(){
- document.getElementById('last-upd').textContent='Loading...';
+ showLoading(true, 'Syncing Boutique Data...', 'Fetching products, sales, and inventory from Airtable');
+ const lu = document.getElementById('last-upd');
+ if (lu) lu.textContent = 'Loading...';
  try{
- await Promise.all([ldP(),ldTX(),ldPO(),ldAI(),ldCU(),ldSM()]);renderPendingBanner();setTimeout(retryPending,500);
- document.getElementById('last-upd').textContent=new Date().toLocaleTimeString('en-GB');
- renderOverview();
- }catch(e){toast('Error loading: '+e.message,'err');document.getElementById('last-upd').textContent='Error';}
+  await Promise.all([ldP(),ldTX(),ldPO(),ldAI(),ldCU(),ldSM()]);
+  renderPendingBanner();
+  setTimeout(retryPending, 500);
+  if (lu) lu.textContent = new Date().toLocaleTimeString('en-GB');
+  renderOverview();
+  const pgRep = document.getElementById('page-reports');
+  if (pgRep && pgRep.classList.contains('active')) renderActiveReport();
+  showLoading(false);
+ }catch(e){
+  showLoading(false);
+  toast('Error loading: ' + e.message, 'err');
+  if (lu) lu.textContent = 'Error';
+ }
 }
 async function ldP(){allP=await atGet(TBL.P,{'sort[0][field]':F.P.NM,'sort[0][direction]':'asc'});filtP=[...allP];renderProds();popBrands();}
 async function ldTX(){allTX=await atGet(TBL.TX,{'sort[0][field]':F.TX.DT,'sort[0][direction]':'desc'});filtTX=[...allTX];renderTX();}
@@ -1406,7 +1490,10 @@ async function ldPO(){allPO=await atGet(TBL.PO,{'sort[0][field]':F.PO.DT,'sort[0
 async function ldAI(){allAI=await atGet(TBL.AI,{'sort[0][field]':F.AI.DT,'sort[0][direction]':'desc'});renderApprov();updApprBadge();}
 async function ldCU(){allCU=await atGet(TBL.CU,{'sort[0][field]':F.CU.CR,'sort[0][direction]':'desc'});filtCU=[...allCU];renderCusts();}
 async function ldSM(){try{allSM=await atGet(TBL.SM);}catch(e){console.warn('Supplier Mappings load:',e);allSM=[];}renderSupplierMappings();}
-async function refreshAll(){const b=document.getElementById('refresh-btn');b.disabled=true;document.getElementById('r-ico').textContent='';await loadAll();document.getElementById('r-ico').textContent='';b.disabled=false;}
+async function refreshAll(){
+ await loadAll();
+ toast('Dashboard refreshed successfully!');
+}
 
 // ── EXECUTIVE DASHBOARD & ANALYTICS STATE ──────────────────────
 let dashDatePreset = 'aug2026';
@@ -2340,6 +2427,7 @@ function showReportsTab(tab) {
 }
 
 function switchReportTab(tab) {
+ if (tab === 'sales' || tab === 'profit') tab = 'daily';
  activeReportTab = tab;
  document.querySelectorAll('#page-reports .tab-btn').forEach(btn => btn.classList.remove('active'));
  const activeBtn = document.getElementById(`rtab-${tab}`);
@@ -3032,7 +3120,7 @@ function filterProds(){
 function renderProds(){
  document.getElementById('p-cnt').textContent=filtP.length;
  const sc=(v,m)=>{const isNeg=v<0;const lo=!isNeg&&m>0&&v<m;return`<td style="text-align:center;${isNeg?'color:#dc2626;font-weight:800;background:#fef2f2;':lo?'color:#ef4444;font-weight:700;':''}">${v}${m?`<span style="font-size:10px;color:${lo?'#ef4444':'#94a3b8'};">/min${m}</span>`:''}</td>`;};
- document.getElementById('prod-body').innerHTML=filtP.length?filtP.map(p=>{const f=p.fields,b=f[F.P.B]??0,bs=f[F.P.BS]??0,j=f[F.P.J]??0,mb=f[F.P.MB]??0,mbs=f[F.P.MBS]??0,mj=f[F.P.MJ]??0,lo=isLow(f);return`<tr${lo?' class="row-low"':''}><td class="mono" style="color:#4f46e5;">${esc(f[F.P.SKU]||'--')}</td><td style="font-size:13px;">${esc(f[F.P.BR]||'--')}</td><td style="font-weight:500;">${esc(f[F.P.NM]||'--')}</td><td style="font-size:13px;color:#64748b;">${esc(f[F.P.SH]||'--')}</td>${sc(b,mb)}${sc(bs,mbs)}${sc(j,mj)}<td style="text-align:center;font-weight:700;">${b+bs+j}</td><td style="text-align:right;">&#8362;${f[F.P.SP]??'--'}</td><td>${lo?'<span class="badge br">Low</span>':'<span class="badge bg">OK</span>'}</td><td><button class="btn btn-s btn-xs" onclick="openHistory('${p.id}','${esc(f[F.P.NM]||'')}')">📋 History</button></td></tr>`;}).join(''):`<tr><td colspan="10"><div class="empty"><div class="ei"></div>No products found</div></td></tr>`;
+ document.getElementById('prod-body').innerHTML=filtP.length?filtP.map(p=>{const f=p.fields,b=f[F.P.B]??0,bs=f[F.P.BS]??0,j=f[F.P.J]??0,mb=f[F.P.MB]??0,mbs=f[F.P.MBS]??0,mj=f[F.P.MJ]??0,lo=isLow(f);return`<tr${lo?' class="row-low"':''}><td class="mono" style="color:#4f46e5;">${esc(f[F.P.SKU]||'--')}</td><td style="font-size:13px;">${esc(f[F.P.BR]||'--')}</td><td style="font-weight:500;">${esc(f[F.P.NM]||'--')}</td><td style="font-size:13px;color:#64748b;">${esc(f[F.P.SH]||'--')}</td>${sc(b,mb)}${sc(bs,mbs)}${sc(j,mj)}<td style="text-align:center;font-weight:700;">${b+bs+j}</td><td style="text-align:right;">&#8362;${f[F.P.SP]??'--'}</td><td>${lo?'<span class="badge br">Low</span>':'<span class="badge bg">OK</span>'}</td><td><button class="btn btn-s btn-xs" onclick="openProduct360('${p.id}')" title="360° Analytics & Stock" style="margin-right:4px;">360°</button><button class="btn btn-s btn-xs" onclick="openHistory('${p.id}','${esc(f[F.P.NM]||'')}')">📋 History</button></td></tr>`;}).join(''):`<tr><td colspan="10"><div class="empty"><div class="ei"></div>No products found</div></td></tr>`;
 }
 
 // ── RENDER TRANSACTIONS ────────────────────────────────────────
@@ -3083,7 +3171,7 @@ function openRPO(id,pn,pid,onum,qty,br){document.getElementById('rpo-id').value=
 function filterCusts(){const q=document.getElementById('cu-q').value.toLowerCase();filtCU=q?allCU.filter(c=>{const f=c.fields;return[f[F.CU.NM],f[F.CU.PH],f[F.CU.EM]].some(v=>v&&String(v).toLowerCase().includes(q));}):([...allCU]);renderCusts();}
 function renderCusts(){
  document.getElementById('cu-cnt').textContent=filtCU.length;
- document.getElementById('cu-body').innerHTML=filtCU.length?filtCU.map(c=>{const f=c.fields;return`<tr><td style="font-weight:600;">${esc(f[F.CU.NM]||'--')}</td><td class="mono">${esc(f[F.CU.PH]||'--')}</td><td style="font-size:13px;color:#64748b;">${esc(f[F.CU.EM]||'--')}</td><td>${f[F.CU.TY]?`<span class="badge bi">${esc(f[F.CU.TY])}</span>`:'--'}</td><td style="font-weight:600;color:#4f46e5;">${f[F.CU.PT]??0}</td><td>${f[F.CU.SRC]?`<span class="badge bgr">${esc(f[F.CU.SRC])}</span>`:'--'}</td><td style="font-size:12px;color:#94a3b8;">${fmtDT(f[F.CU.CR])}</td></tr>`;}).join(''):`<tr><td colspan="7"><div class="empty"><div class="ei"></div>No customers found</div></td></tr>`;
+ document.getElementById('cu-body').innerHTML=filtCU.length?filtCU.map(c=>{const f=c.fields;return`<tr><td style="font-weight:600;"><span class="cl" onclick="openCustomer360('${c.id}')" title="View Customer 360° Profile">${esc(f[F.CU.NM]||'--')}</span></td><td class="mono">${esc(f[F.CU.PH]||'--')}</td><td style="font-size:13px;color:#64748b;">${esc(f[F.CU.EM]||'--')}</td><td>${f[F.CU.TY]?`<span class="badge bi">${esc(f[F.CU.TY])}</span>`:'--'}</td><td style="font-weight:600;color:#4f46e5;">${f[F.CU.PT]??0}</td><td>${f[F.CU.SRC]?`<span class="badge bgr">${esc(f[F.CU.SRC])}</span>`:'--'}</td><td style="font-size:12px;color:#94a3b8;">${fmtDT(f[F.CU.CR])}</td></tr>`;}).join(''):`<tr><td colspan="7"><div class="empty"><div class="ei"></div>No customers found</div></td></tr>`;
 }
 
 // ── RENDER APPROVALS ───────────────────────────────────────────
