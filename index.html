@@ -168,6 +168,46 @@
  .date-opt:hover{background:#f1f5f9;color:#0f172a;}
  .bar-col{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;cursor:pointer;transition:transform .15s;}
  .bar-col:hover{transform:scaleY(1.02);}
+ 
+  /* Executive Alerts & Notifications Styling */
+  .dash-alerts-grid{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:20px;transition:all .2s ease;}
+  .dash-alert-card{flex:1 1 340px;background:#ffffff;border-radius:14px;padding:12px 18px;align-items:center;justify-content:space-between;gap:16px;box-shadow:0 2px 8px rgba(15,23,42,0.04);transition:all .2s cubic-bezier(0.4,0,0.2,1);border:1px solid transparent;}
+  .dash-alert-card:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(15,23,42,0.08);}
+  .dash-alert-left{display:flex;align-items:center;gap:12px;min-width:0;}
+  .dash-alert-icon-box{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .dash-alert-content{min-width:0;}
+  .dash-alert-title{font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px;line-height:1.25;}
+  .dash-alert-chip{font-size:11px;font-weight:800;padding:2px 7px;border-radius:9999px;letter-spacing:0.02em;white-space:nowrap;}
+  .dash-alert-desc{font-size:11.5px;margin-top:3px;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .dash-alert-actions{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+  .dash-alert-btn{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;border:none;cursor:pointer;transition:all 0.15s ease;white-space:nowrap;}
+  .dash-alert-close{background:transparent;border:none;color:#94a3b8;font-size:14px;cursor:pointer;padding:4px 6px;border-radius:6px;line-height:1;display:flex;align-items:center;justify-content:center;transition:all 0.15s ease;}
+  .dash-alert-close:hover{color:#0f172a;background:rgba(0,0,0,0.06);}
+
+  .dash-alert-neg{background:linear-gradient(135deg,#fff5f6 0%,#ffffff 100%);border-color:#fecdd3;border-left:4px solid #e11d48;}
+  .neg-icon{background:#ffe4e6;color:#e11d48;}
+  .neg-text{color:#9f1239;}
+  .neg-chip{background:#e11d48;color:#ffffff;}
+  .neg-sub{color:#be123c;}
+  .neg-btn{background:linear-gradient(135deg,#e11d48 0%,#be123c 100%);color:#ffffff;box-shadow:0 2px 6px rgba(225,29,72,0.25);}
+  .neg-btn:hover{background:linear-gradient(135deg,#be123c 0%,#9f1239 100%);box-shadow:0 4px 10px rgba(225,29,72,0.35);}
+
+  .dash-alert-low{background:linear-gradient(135deg,#fffdf5 0%,#ffffff 100%);border-color:#fde68a;border-left:4px solid #f59e0b;}
+  .low-icon{background:#fef3c7;color:#d97706;}
+  .low-text{color:#92400e;}
+  .low-chip{background:#f59e0b;color:#ffffff;}
+  .low-sub{color:#b45309;}
+  .low-btn{background:linear-gradient(135deg,#f59e0b 0%,#d97706 100%);color:#ffffff;box-shadow:0 2px 6px rgba(245,158,11,0.25);}
+  .low-btn:hover{background:linear-gradient(135deg,#d97706 0%,#b45309 100%);box-shadow:0 4px 10px rgba(245,158,11,0.35);}
+
+  .dash-alert-pend{background:linear-gradient(135deg,#faf5ff 0%,#ffffff 100%);border-color:#e9d5ff;border-left:4px solid #a855f7;}
+  .pend-icon{background:#f3e8ff;color:#9333ea;}
+  .pend-text{color:#6b21a8;}
+  .pend-chip{background:#9333ea;color:#ffffff;}
+  .pend-sub{color:#7e22ce;}
+  .pend-btn{background:linear-gradient(135deg,#9333ea 0%,#7e22ce 100%);color:#ffffff;box-shadow:0 2px 6px rgba(147,51,234,0.25);}
+  .pend-btn:hover{background:linear-gradient(135deg,#7e22ce 0%,#6b21a8 100%);box-shadow:0 4px 10px rgba(147,51,234,0.35);}
+
  </style>
 </head>
 <body>
@@ -367,12 +407,82 @@
 
   <!-- ── OVERVIEW / EXECUTIVE DASHBOARD ─────────────────── -->
   <div class="page active" id="page-overview">
-   <div id="pend-banner" style="display:none;background:#fefce8;border:1px solid #fbbf24;border-radius:10px;padding:11px 16px;margin-bottom:10px;align-items:center;gap:10px;font-size:13.5px;color:#92400e;"> ⏳ <strong><span id="pend-cnt">0</span> sale records waiting</strong> — products not yet in catalogue. <span id="pend-skus" style="font-family:monospace;font-size:12px;"></span> Add these products to Airtable and they'll import automatically on next refresh.</div>
-   <div id="neg-banner" style="display:none;background:#fee2e2;border:1px solid #ef4444;border-radius:10px;padding:11px 16px;margin-bottom:10px;align-items:center;gap:10px;font-size:13.5px;color:#991b1b;">
-    &#9888; <strong><span id="neg-cnt">0</span> products</strong> have <strong>negative stock</strong> &mdash; inventory gap detected! <span class="cl" onclick="showPage('products')" style="color:#991b1b;text-decoration:underline;">View Products &rarr;</span>
-   </div>
-   <div id="low-banner" style="display:none;background:#fef3c7;border:1px solid #f59e0b;border-radius:10px;padding:11px 16px;margin-bottom:16px;align-items:center;gap:10px;font-size:13.5px;color:#92400e;">
-    <strong><span id="low-cnt">0</span> products</strong> below minimum stock. <span class="cl" onclick="showPage('products')">View Products &rarr;</span>
+   <!-- ── EXECUTIVE NOTIFICATIONS & ALERTS WRAPPER ─────────────────── -->
+   <div id="overview-alerts-wrap" class="dash-alerts-grid" style="display:none;">
+    <!-- Negative Stock Alert Card -->
+    <div id="neg-banner" class="dash-alert-card dash-alert-neg" style="display:none;">
+     <div class="dash-alert-left">
+      <div class="dash-alert-icon-box neg-icon">
+       <svg style="width:19px;height:19px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </div>
+      <div class="dash-alert-content">
+       <div class="dash-alert-title neg-text">
+        <span class="dash-alert-chip neg-chip"><span id="neg-cnt">0</span> Alert</span>
+        <span>Negative Stock Detected</span>
+       </div>
+       <div class="dash-alert-desc neg-sub">
+        Physical inventory deficit detected &bull; Stock audit recommended
+       </div>
+      </div>
+     </div>
+     <div class="dash-alert-actions">
+      <button class="dash-alert-btn neg-btn" onclick="showPage('products')">
+       <span>Review Products</span>
+       <svg style="width:13px;height:13px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <button class="dash-alert-close" onclick="dismissAlert('neg-banner')" title="Dismiss alert">✕</button>
+     </div>
+    </div>
+
+    <!-- Low Stock Alert Card -->
+    <div id="low-banner" class="dash-alert-card dash-alert-low" style="display:none;">
+     <div class="dash-alert-left">
+      <div class="dash-alert-icon-box low-icon">
+       <svg style="width:19px;height:19px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+      </div>
+      <div class="dash-alert-content">
+       <div class="dash-alert-title low-text">
+        <span class="dash-alert-chip low-chip"><span id="low-cnt">0</span> Items</span>
+        <span>Below Minimum Buffer</span>
+       </div>
+       <div class="dash-alert-desc low-sub">
+        Stock reached safety threshold &bull; Restocking suggested
+       </div>
+      </div>
+     </div>
+     <div class="dash-alert-actions">
+      <button class="dash-alert-btn low-btn" onclick="showPage('products')">
+       <span>Restock List</span>
+       <svg style="width:13px;height:13px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <button class="dash-alert-close" onclick="dismissAlert('low-banner')" title="Dismiss alert">✕</button>
+     </div>
+    </div>
+
+    <!-- Pending POS Queue Card -->
+    <div id="pend-banner" class="dash-alert-card dash-alert-pend" style="display:none;">
+     <div class="dash-alert-left">
+      <div class="dash-alert-icon-box pend-icon">
+       <svg style="width:19px;height:19px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+      <div class="dash-alert-content">
+       <div class="dash-alert-title pend-text">
+        <span class="dash-alert-chip pend-chip"><span id="pend-cnt">0</span> Pending</span>
+        <span>Uncatalogued POS Sales Waiting</span>
+       </div>
+       <div class="dash-alert-desc pend-sub">
+        <span id="pend-skus" style="font-family:monospace;font-weight:600;"></span> &bull; Add SKUs to Airtable to sync
+       </div>
+      </div>
+     </div>
+     <div class="dash-alert-actions">
+      <button class="dash-alert-btn pend-btn" onclick="openModal('m-sm')">
+       <span>Mappings</span>
+       <svg style="width:13px;height:13px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <button class="dash-alert-close" onclick="dismissAlert('pend-banner')" title="Dismiss alert">✕</button>
+     </div>
+    </div>
    </div>
 
    <!-- ROW 1: 5 KPI CARDS MATCHING MOCKUP -->
@@ -1720,14 +1830,23 @@ function renderExecutiveDashboard() {
  });
  const banner = document.getElementById('low-banner');
  if (banner) {
-  if (low.length) { banner.style.display = 'flex'; document.getElementById('low-cnt').textContent = low.length; }
-  else { banner.style.display = 'none'; }
+  if (low.length && !banner.dataset.dismissed) {
+    banner.style.display = 'flex';
+    document.getElementById('low-cnt').textContent = low.length;
+  } else {
+    banner.style.display = 'none';
+  }
  }
  const negBanner = document.getElementById('neg-banner');
  if (negBanner) {
-  if (neg.length) { negBanner.style.display = 'flex'; document.getElementById('neg-cnt').textContent = neg.length; }
-  else { negBanner.style.display = 'none'; }
+  if (neg.length && !negBanner.dataset.dismissed) {
+    negBanner.style.display = 'flex';
+    document.getElementById('neg-cnt').textContent = neg.length;
+  } else {
+    negBanner.style.display = 'none';
+  }
  }
+ syncOverviewAlertsWrap();
 
  // Render Visual Charts
  renderSalesOverTimeChart(sales);
@@ -3922,11 +4041,26 @@ function renderPendingBanner(){
  const q=loadPending();
  const banner=document.getElementById('pend-banner');
  if(!banner)return;
- if(!q.length){banner.style.display='none';return;}
- banner.style.display='flex';
- document.getElementById('pend-cnt').textContent=q.length;
- const skus=[...new Set(q.map(r=>r.sku))];
- document.getElementById('pend-skus').textContent='SKUs: '+skus.join(', ');
+ if(!q.length || banner.dataset.dismissed){banner.style.display='none';}
+ else {
+   banner.style.display='flex';
+   document.getElementById('pend-cnt').textContent=q.length;
+   const skus=[...new Set(q.map(r=>r.sku))];
+   document.getElementById('pend-skus').textContent='SKUs: '+skus.join(', ');
+ }
+ syncOverviewAlertsWrap();
+}
+function dismissAlert(id){
+ const el=document.getElementById(id);
+ if(el){el.dataset.dismissed='true';el.style.display='none';}
+ syncOverviewAlertsWrap();
+}
+function syncOverviewAlertsWrap(){
+ const wrap=document.getElementById('overview-alerts-wrap');
+ if(!wrap)return;
+ const cards=wrap.querySelectorAll('.dash-alert-card');
+ const anyVis=Array.from(cards).some(c=>c.style.display==='flex');
+ wrap.style.display=anyVis?'flex':'none';
 }
 async function retryPending(){
  const q=loadPending();if(!q.length)return;
