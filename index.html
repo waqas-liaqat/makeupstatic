@@ -16,7 +16,7 @@
  .nav-sec{font-size:10px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.1em;padding:14px 16px 4px;}
  .nav-item{display:flex;align-items:center;gap:10px;padding:9px 14px;border-radius:8px;margin:1px 8px;color:#94a3b8;cursor:pointer;font-size:13.5px;font-weight:500;transition:all .15s;}
  .nav-item:hover{color:#e2e8f0;background:rgba(255,255,255,.07);}
- .nav-item.active{color:#fff;background:#4f46e5;}
+ .nav-item.active{color:#831843;background:#ffd5e2;font-weight:700;}
  /* Main area */
  #main{flex:1;display:flex;flex-direction:column;overflow:hidden;height:100vh;background:#f8fafc;}
  #topbar{background:#fff;border-bottom:1px solid #e2e8f0;padding:10px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-shrink:0;height:auto;min-height:62px;box-sizing:border-box;position:relative;z-index:100;}
@@ -24,10 +24,10 @@
  #content{flex:1;overflow-y:auto;padding:20px 24px;position:relative;background:#f8fafc;}
  .page{display:none;}.page.active{display:block;}
  /* Cards */
- .card{background:#fff;border-radius:12px;border:1px solid #e2e8f0;overflow:hidden;}
+ .card{background:#fff;border-radius:14px;border:1px solid #e2e8f0;overflow:hidden;box-shadow:0 1px 4px rgba(15,23,42,0.03);}
  .card-hdr{padding:14px 18px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between;}
  .card-hdr h3{font-size:14px;font-weight:700;color:#0f172a;margin:0;}
- .cl{font-size:12px;color:#4f46e5;cursor:pointer;}.cl:hover{text-decoration:underline;}
+ .cl{font-size:12px;color:#db2777;cursor:pointer;font-weight:600;}.cl:hover{text-decoration:underline;color:#be185d;}
  .kpi{background:#fff;border-radius:12px;padding:18px 20px;border:1px solid #e2e8f0;}
  .kpi-lbl{font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
  .kpi-val{font-size:30px;font-weight:800;color:#0f172a;line-height:1;}
@@ -36,26 +36,26 @@
  table{border-collapse:collapse;width:100%;}
  th{background:#f8fafc;padding:9px 12px;text-align:left;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #e2e8f0;white-space:nowrap;}
  td{padding:10px 12px;font-size:13.5px;color:#1e293b;border-bottom:1px solid #f1f5f9;vertical-align:middle;}
- tr:last-child td{border-bottom:none;}tbody tr:hover td{background:#f8fafc;}
+ tr:last-child td{border-bottom:none;}tbody tr:hover td{background:#fff1f5;}
  .row-low td:first-child{border-left:3px solid #f97316;padding-left:9px;}
  /* Badges */
  .badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:9999px;font-size:11.5px;font-weight:600;white-space:nowrap;}
  .bb{background:#dbeafe;color:#1e40af;}.bg{background:#dcfce7;color:#15803d;}.br{background:#fee2e2;color:#991b1b;}
  .by{background:#fef3c7;color:#92400e;}.bp{background:#ede9fe;color:#6d28d9;}.bt{background:#ccfbf1;color:#0f766e;}
- .bo{background:#ffedd5;color:#9a3412;}.bgr{background:#f1f5f9;color:#475569;}.bi{background:#e0e7ff;color:#3730a3;}
+ .bo{background:#ffedd5;color:#9a3412;}.bgr{background:#f1f5f9;color:#475569;}.bi{background:#fce7f3;color:#9d174d;}
  /* Buttons */
  button{cursor:pointer;}
  .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;border:none;transition:all .15s;white-space:nowrap;}
  .btn:disabled{opacity:.55;cursor:not-allowed;}
- .btn-p{background:#4f46e5;color:#fff;}.btn-p:hover:not(:disabled){background:#4338ca;}
- .btn-s{background:#fff;color:#374151;border:1px solid #d1d5db;}.btn-s:hover:not(:disabled){background:#f9fafb;}
+ .btn-p{background:linear-gradient(135deg,#db2777 0%,#e11d48 100%);color:#fff;box-shadow:0 2px 6px rgba(219,39,119,0.22);}.btn-p:hover:not(:disabled){background:linear-gradient(135deg,#be185d 0%,#be123c 100%);box-shadow:0 4px 12px rgba(219,39,119,0.32);}
+ .btn-s{background:#fff;color:#374151;border:1px solid #d1d5db;transition:all .15s;}.btn-s:hover:not(:disabled){background:#fff1f5;color:#db2777;border-color:#fbcfe8;}
  .btn-ok{background:#10b981;color:#fff;}.btn-ok:hover:not(:disabled){background:#059669;}
  .btn-d{background:#ef4444;color:#fff;}.btn-d:hover:not(:disabled){background:#dc2626;}
  .btn-sm{padding:5px 10px;font-size:12px;}.btn-xs{padding:3px 8px;font-size:11px;border-radius:6px;}
  /* Forms */
  .fld{margin-bottom:14px;}.fld label{display:block;font-size:12.5px;font-weight:600;color:#374151;margin-bottom:5px;}
  .fld input,.fld select,.fld textarea{width:100%;padding:8px 11px;border:1px solid #d1d5db;border-radius:8px;font-size:13.5px;color:#0f172a;background:#fff;outline:none;transition:border-color .15s;}
- .fld input:focus,.fld select:focus,.fld textarea:focus{border-color:#4f46e5;box-shadow:0 0 0 3px rgba(79,70,229,.1);}
+ .fld input:focus,.fld select:focus,.fld textarea:focus{border-color:#db2777;box-shadow:0 0 0 3px rgba(219,39,119,.15);}
  .fld textarea{resize:vertical;min-height:60px;}
  .g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
  .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
@@ -63,7 +63,7 @@
  /* Modals */
  .modal-ov{display:none;position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:200;align-items:center;justify-content:center;padding:16px;}
  .modal-ov.open{display:flex;}
- .modal{background:#fff;border-radius:16px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 25px 60px rgba(0,0,0,.3);}
+ .modal{background:#fff;border-radius:18px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 25px 60px rgba(15,23,42,0.28);}
  .m-sm{max-width:440px;}.m-md{max-width:540px;}.m-lg{max-width:680px;}.m-xl{max-width:820px;}.m-2xl{max-width:1120px;}
  .m-hdr{padding:20px 24px 16px;border-bottom:1px solid #f1f5f9;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
  .m-hdr h2{font-size:16px;font-weight:700;color:#0f172a;margin:0;}
@@ -73,26 +73,26 @@
  /* Autocomplete */
  .ac-wrap{position:relative;}
  .ac-dd{display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid #e2e8f0;border-radius:10px;box-shadow:0 12px 32px rgba(0,0,0,.12);z-index:500;max-height:220px;overflow-y:auto;}
- .ac-item{padding:9px 14px;cursor:pointer;font-size:13px;border-bottom:1px solid #f8fafc;}.ac-item:last-child{border-bottom:none;}.ac-item:hover{background:#f0f9ff;}
- .ac-sku{font-weight:700;color:#4f46e5;font-size:12px;}.ac-nm{color:#0f172a;font-weight:500;}.ac-sub{color:#94a3b8;font-size:11.5px;margin-top:2px;}
+ .ac-item{padding:9px 14px;cursor:pointer;font-size:13px;border-bottom:1px solid #f8fafc;}.ac-item:last-child{border-bottom:none;}.ac-item:hover{background:#fff1f5;}
+ .ac-sku{font-weight:700;color:#db2777;font-size:12px;}.ac-nm{color:#0f172a;font-weight:500;}.ac-sub{color:#94a3b8;font-size:11.5px;margin-top:2px;}
  /* Dropzone */
  .dz{border:2px dashed #cbd5e1;border-radius:12px;padding:28px 20px;text-align:center;cursor:pointer;transition:all .15s;}
- .dz:hover,.dz.dg{border-color:#4f46e5;background:#eef2ff;}
+ .dz:hover,.dz.dg{border-color:#db2777;background:#fff1f5;}
  /* Steps */
  .step-wrap{display:flex;align-items:flex-start;gap:0;margin-bottom:20px;}
  .step-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin:0 auto;}
- .s-done{background:#10b981;color:#fff;}.s-act{background:#4f46e5;color:#fff;}.s-pend{background:#e2e8f0;color:#94a3b8;}
+ .s-done{background:#10b981;color:#fff;}.s-act{background:linear-gradient(135deg,#db2777,#e11d48);color:#fff;}.s-pend{background:#e2e8f0;color:#94a3b8;}
  .step-line{flex:1;height:2px;background:#e2e8f0;margin-top:14px;}.step-line.done{background:#10b981;}
  .step-lbl{font-size:11px;font-weight:600;color:#64748b;text-align:center;margin-top:4px;}
  /* Filters */
  .fbar{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:12px 16px;margin-bottom:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
  .fbar input,.fbar select{padding:7px 11px;border:1px solid #d1d5db;border-radius:8px;font-size:13px;color:#0f172a;outline:none;}
- .fbar input:focus,.fbar select:focus{border-color:#4f46e5;}
+ .fbar input:focus,.fbar select:focus{border-color:#db2777;box-shadow:0 0 0 3px rgba(219,39,119,.12);}
  .fsrch{flex:1;min-width:200px;}
  /* Tabs */
  .tab-bar{background:#f1f5f9;border-radius:10px;padding:3px;display:inline-flex;margin-bottom:14px;}
  .tab-btn{padding:7px 16px;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;color:#64748b;border:none;background:transparent;transition:all .15s;}
- .tab-btn.active{background:#fff;color:#4f46e5;box-shadow:0 1px 4px rgba(0,0,0,.1);font-weight:600;}
+ .tab-btn.active{background:#fff;color:#db2777;box-shadow:0 1px 4px rgba(219,39,119,.18);font-weight:700;}
  /* Toast */
  #toast-c{position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;}
  .toast{padding:12px 18px;border-radius:10px;font-size:13.5px;font-weight:500;color:#fff;box-shadow:0 8px 24px rgba(0,0,0,.18);max-width:380px;animation:tIn .3s ease;display:flex;align-items:center;gap:8px;}
@@ -100,7 +100,7 @@
  .t-ok{background:#10b981;}.t-err{background:#ef4444;}.t-info{background:#3b82f6;}.t-warn{background:#f59e0b;}
  /* Spinner */
  .spin{width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:sp .65s linear infinite;display:inline-block;flex-shrink:0;}
- .spin-d{width:20px;height:20px;border:2px solid #e2e8f0;border-top-color:#4f46e5;border-radius:50%;animation:sp .65s linear infinite;display:inline-block;}
+ .spin-d{width:20px;height:20px;border:2px solid #fce7f3;border-top-color:#db2777;border-radius:50%;animation:sp .65s linear infinite;display:inline-block;}
  @keyframes sp{to{transform:rotate(360deg);}}
  /* Pager */
  .pager{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;border-top:1px solid #f1f5f9;}
@@ -113,7 +113,7 @@
  .a-w{background:#fef3c7;border:1px solid #fcd34d;border-radius:8px;padding:10px 14px;font-size:13px;color:#92400e;}
  .a-ok{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:10px 14px;font-size:13px;color:#15803d;}
  .a-err{background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:10px 14px;font-size:13px;color:#991b1b;}
- .cust-tag{display:inline-flex;align-items:center;gap:4px;background:#e0e7ff;color:#3730a3;border-radius:6px;padding:2px 8px;font-size:12px;font-weight:600;}
+ .cust-tag{display:inline-flex;align-items:center;gap:4px;background:#fce7f3;color:#9d174d;border-radius:6px;padding:2px 8px;font-size:12px;font-weight:600;}
  .anon-tag{display:inline-flex;align-items:center;gap:4px;background:#f1f5f9;color:#64748b;border-radius:6px;padding:2px 8px;font-size:12px;}
  .conf-tag{display:inline-flex;align-items:center;gap:4px;background:#fef3c7;color:#92400e;border-radius:6px;padding:2px 8px;font-size:12px;font-weight:600;}
  .img-prev{max-width:100%;max-height:200px;border-radius:8px;border:1px solid #e2e8f0;display:block;margin:0 auto 12px;}
@@ -264,6 +264,11 @@
     <svg style="width:17px;height:17px;flex-shrink:0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
     <span>Settings / Mappings</span>
    </div>
+   <a href="user_manual.html" target="_blank" class="nav-item" style="text-decoration:none;color:#94a3b8;" title="Open Makeup Boutique Operating Manual & Guide">
+    <svg style="width:17px;height:17px;flex-shrink:0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+    <span>User Manual & Guide</span>
+    <span style="font-size:9.5px;font-weight:700;background:rgba(219,39,119,.2);color:#f472b6;padding:1px 6px;border-radius:4px;margin-left:auto;">v5.2</span>
+   </a>
   </div>
  </nav>
 
@@ -806,13 +811,13 @@
  <div id="ocr-s1">
  <!-- Type selector -->
  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
- <div id="ocr-type-sale" onclick="setOcrType('sale')" style="border:2px solid #4f46e5;background:#eef2ff;border-radius:12px;padding:16px;cursor:pointer;text-align:center;">
- <div style="font-size:28px;margin-bottom:6px;"></div>
- <div style="font-weight:700;color:#4f46e5;font-size:13.5px;">Sale Invoice</div>
- <div style="font-size:12px;color:#6d28d9;margin-top:3px;">Cash sale outside POS<br>Deducts from inventory</div>
+ <div id="ocr-type-sale" onclick="setOcrType('sale')" style="border:2px solid #db2777;background:#fff1f5;border-radius:12px;padding:16px;cursor:pointer;text-align:center;">
+ <div style="font-size:28px;margin-bottom:6px;">🧾</div>
+ <div style="font-weight:700;color:#db2777;font-size:13.5px;">Sale Invoice</div>
+ <div style="font-size:12px;color:#9d174d;margin-top:3px;">Cash sale outside POS<br>Deducts from inventory</div>
  </div>
  <div id="ocr-type-stock" onclick="setOcrType('stock')" style="border:2px solid #e2e8f0;background:#f8fafc;border-radius:12px;padding:16px;cursor:pointer;text-align:center;">
- <div style="font-size:28px;margin-bottom:6px;"></div>
+ <div style="font-size:28px;margin-bottom:6px;">📦</div>
  <div style="font-weight:700;color:#374151;font-size:13.5px;">Supplier Invoice</div>
  <div style="font-size:12px;color:#64748b;margin-top:3px;">New inventory arriving<br>Adds to stock</div>
  </div>
@@ -913,7 +918,7 @@
  <div style="display:flex;align-items:center;gap:8px;">
  <input type="number" id="tx-disc" value="10" min="0" max="100" step="1" style="width:80px;padding:8px 11px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;" onchange="updateTxDisc()"/>
  <span style="font-size:13px;color:#64748b;">% discount (default 10%)</span>
- <span id="tx-disc-preview" style="font-size:12.5px;color:#4f46e5;font-weight:600;"></span>
+ <span id="tx-disc-preview" style="font-size:12.5px;color:#db2777;font-weight:600;"></span>
  </div></div></div>
  <div id="tx-cust-row" style="display:none;">
  <div class="g3">
@@ -2303,7 +2308,7 @@ function openCustomer360(customerId) {
   return `
    <tr>
     <td style="white-space:nowrap;font-size:12.5px;">${fmtDT(tf[F.TX.DT])}</td>
-    <td style="font-weight:600;color:#4f46e5;font-size:12.5px;">${esc(tf[F.TX.REF] || '--')}</td>
+    <td style="font-weight:600;color:#db2777;font-size:12.5px;">${esc(tf[F.TX.REF] || '--')}</td>
     <td>${brB(tf[F.TX.BR])}</td>
     <td style="font-size:13px;max-width:180px;">${esc(pName)}</td>
     <td style="text-align:center;font-weight:700;">${Math.abs(tf[F.TX.QTY] || 1)}</td>
@@ -2382,7 +2387,7 @@ function openBranch360(branchName) {
   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Units Sold</div><div class="dash-kpi-val" style="font-size:22px;">${bUnits}</div><div class="dash-kpi-sub">Total products sold</div></div>
   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Stock In Branch</div><div class="dash-kpi-val" style="font-size:22px;">${branchStockUnits}</div><div class="dash-kpi-sub">Units in shelf</div></div>
   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Stock Value (Cost)</div><div class="dash-kpi-val" style="font-size:22px;">₪ ${Math.round(branchValCost).toLocaleString()}</div><div class="dash-kpi-sub">Wholesale valuation</div></div>
-  <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Stock Value (Retail)</div><div class="dash-kpi-val" style="font-size:22px;color:#4f46e5;">₪ ${Math.round(branchValRetail).toLocaleString()}</div><div class="dash-kpi-sub">Retail shelf value</div></div>
+  <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Stock Value (Retail)</div><div class="dash-kpi-val" style="font-size:22px;color:#db2777;">₪ ${Math.round(branchValRetail).toLocaleString()}</div><div class="dash-kpi-sub">Retail shelf value</div></div>
  `;
 
  const topProds = Object.values(prodMap).sort((a, b) => b.units - a.units).slice(0, 8);
@@ -2531,7 +2536,7 @@ function renderActiveReport() {
         const margin = r.rev > 0 ? ((profit / r.rev) * 100).toFixed(1) : '0.0';
         return `
          <tr>
-          <td class="mono" style="color:#4f46e5;font-weight:700;">${esc(r.sku)}</td>
+          <td class="mono" style="color:#db2777;font-weight:700;">${esc(r.sku)}</td>
           <td style="font-weight:600;font-size:13px;">${esc(r.name)}</td>
           <td style="font-size:12.5px;color:#64748b;">${esc(r.brand)}</td>
           <td style="text-align:center;font-weight:700;">${r.units}</td>
@@ -2674,7 +2679,7 @@ function renderActiveReport() {
          <td style="text-align:center;font-weight:600;">${b.unitsSold}</td>
          <td style="text-align:center;font-weight:700;">${b.unitsInStock}</td>
          <td style="text-align:right;">₪ ${Math.round(b.valCost).toLocaleString()}</td>
-         <td style="text-align:right;font-weight:600;color:#4f46e5;">₪ ${Math.round(b.valRetail).toLocaleString()}</td>
+         <td style="text-align:right;font-weight:600;color:#db2777;">₪ ${Math.round(b.valRetail).toLocaleString()}</td>
          <td style="text-align:center;"><button class="btn btn-s btn-xs" onclick="openBranch360('${b.name}')">🔍 360°</button></td>
         </tr>
        `).join('')}
@@ -2768,7 +2773,7 @@ function renderActiveReport() {
       <tbody>
        ${rows.map(r => `
         <tr>
-         <td class="mono" style="color:#4f46e5;font-weight:700;">${esc(r.sku)}</td>
+         <td class="mono" style="color:#db2777;font-weight:700;">${esc(r.sku)}</td>
          <td style="font-weight:600;font-size:13px;">${esc(r.name)}</td>
          <td style="font-size:12.5px;color:#64748b;">${esc(r.brand)}</td>
          <td style="text-align:right;">₪ ${r.cp}</td>
@@ -3120,7 +3125,7 @@ function filterProds(){
 function renderProds(){
  document.getElementById('p-cnt').textContent=filtP.length;
  const sc=(v,m)=>{const isNeg=v<0;const lo=!isNeg&&m>0&&v<m;return`<td style="text-align:center;${isNeg?'color:#dc2626;font-weight:800;background:#fef2f2;':lo?'color:#ef4444;font-weight:700;':''}">${v}${m?`<span style="font-size:10px;color:${lo?'#ef4444':'#94a3b8'};">/min${m}</span>`:''}</td>`;};
- document.getElementById('prod-body').innerHTML=filtP.length?filtP.map(p=>{const f=p.fields,b=f[F.P.B]??0,bs=f[F.P.BS]??0,j=f[F.P.J]??0,mb=f[F.P.MB]??0,mbs=f[F.P.MBS]??0,mj=f[F.P.MJ]??0,lo=isLow(f);return`<tr${lo?' class="row-low"':''}><td class="mono" style="color:#4f46e5;">${esc(f[F.P.SKU]||'--')}</td><td style="font-size:13px;">${esc(f[F.P.BR]||'--')}</td><td style="font-weight:500;">${esc(f[F.P.NM]||'--')}</td><td style="font-size:13px;color:#64748b;">${esc(f[F.P.SH]||'--')}</td>${sc(b,mb)}${sc(bs,mbs)}${sc(j,mj)}<td style="text-align:center;font-weight:700;">${b+bs+j}</td><td style="text-align:right;">&#8362;${f[F.P.SP]??'--'}</td><td>${lo?'<span class="badge br">Low</span>':'<span class="badge bg">OK</span>'}</td><td><button class="btn btn-s btn-xs" onclick="openProduct360('${p.id}')" title="360° Analytics & Stock" style="margin-right:4px;">360°</button><button class="btn btn-s btn-xs" onclick="openHistory('${p.id}','${esc(f[F.P.NM]||'')}')">📋 History</button></td></tr>`;}).join(''):`<tr><td colspan="10"><div class="empty"><div class="ei"></div>No products found</div></td></tr>`;
+ document.getElementById('prod-body').innerHTML=filtP.length?filtP.map(p=>{const f=p.fields,b=f[F.P.B]??0,bs=f[F.P.BS]??0,j=f[F.P.J]??0,mb=f[F.P.MB]??0,mbs=f[F.P.MBS]??0,mj=f[F.P.MJ]??0,lo=isLow(f);return`<tr${lo?' class="row-low"':''}><td class="mono" style="color:#db2777;font-weight:700;">${esc(f[F.P.SKU]||'--')}</td><td style="font-size:13px;">${esc(f[F.P.BR]||'--')}</td><td style="font-weight:500;">${esc(f[F.P.NM]||'--')}</td><td style="font-size:13px;color:#64748b;">${esc(f[F.P.SH]||'--')}</td>${sc(b,mb)}${sc(bs,mbs)}${sc(j,mj)}<td style="text-align:center;font-weight:700;">${b+bs+j}</td><td style="text-align:right;">&#8362;${f[F.P.SP]??'--'}</td><td>${lo?'<span class="badge br">Low</span>':'<span class="badge bg">OK</span>'}</td><td><button class="btn btn-s btn-xs" onclick="openProduct360('${p.id}')" title="360° Analytics & Stock" style="margin-right:4px;">360°</button><button class="btn btn-s btn-xs" onclick="openHistory('${p.id}','${esc(f[F.P.NM]||'')}')">📋 History</button></td></tr>`;}).join(''):`<tr><td colspan="10"><div class="empty"><div class="ei"></div>No products found</div></td></tr>`;
 }
 
 // ── RENDER TRANSACTIONS ────────────────────────────────────────
@@ -3162,7 +3167,7 @@ function filPOs(st,btn){document.querySelectorAll('.tab-btn').forEach(b=>b.class
 function renderPOs(){
  const tb=document.getElementById('po-body');
  if(!filtPO.length){tb.innerHTML=`<tr><td colspan="9"><div class="empty"><div class="ei"></div>No purchase orders</div></td></tr>`;return;}
- tb.innerHTML=filtPO.map(r=>{const f=r.fields,pId=(f[F.PO.PR]||[])[0]||'';return`<tr><td class="mono" style="font-weight:700;color:#4f46e5;">${esc(f[F.PO.NUM]||'--')}</td><td style="font-size:13px;">${esc(f[F.PO.SUP]||'--')}</td><td style="font-size:13px;">${esc(pNmPO(r))}</td><td style="font-size:13px;">${fmtD(f[F.PO.DT])}</td><td style="text-align:center;font-weight:600;">${f[F.PO.QTY]||0}</td><td style="text-align:right;">&#8362;${f[F.PO.COST]||0}</td><td>${brB(f[F.PO.DEST])}</td><td>${stB(f[F.PO.STAT])}</td><td>${f[F.PO.STAT]==='Ordered'?`<button class="btn btn-ok btn-xs" onclick="openRPO('${r.id}','${esc(pNmPO(r))}','${pId}','${esc(f[F.PO.NUM]||'')}',${f[F.PO.QTY]||1},'${esc(f[F.PO.DEST]||'')}')"> Receive</button>`:''}${f[F.PO.STAT]==='Draft'?`<button class="btn btn-s btn-xs" onclick="markOrd('${r.id}')">Mark Ordered</button>`:''}${f[F.PO.STAT]==='Received'?`<span style="font-size:12px;color:#94a3b8;">Received ${fmtD(f[F.PO.RDATE])}</span>`:''}</td></tr>`;}).join('');
+ tb.innerHTML=filtPO.map(r=>{const f=r.fields,pId=(f[F.PO.PR]||[])[0]||'';return`<tr><td class="mono" style="font-weight:700;color:#db2777;">${esc(f[F.PO.NUM]||'--')}</td><td style="font-size:13px;">${esc(f[F.PO.SUP]||'--')}</td><td style="font-size:13px;">${esc(pNmPO(r))}</td><td style="font-size:13px;">${fmtD(f[F.PO.DT])}</td><td style="text-align:center;font-weight:600;">${f[F.PO.QTY]||0}</td><td style="text-align:right;">&#8362;${f[F.PO.COST]||0}</td><td>${brB(f[F.PO.DEST])}</td><td>${stB(f[F.PO.STAT])}</td><td>${f[F.PO.STAT]==='Ordered'?`<button class="btn btn-ok btn-xs" onclick="openRPO('${r.id}','${esc(pNmPO(r))}','${pId}','${esc(f[F.PO.NUM]||'')}',${f[F.PO.QTY]||1},'${esc(f[F.PO.DEST]||'')}')"> Receive</button>`:''}${f[F.PO.STAT]==='Draft'?`<button class="btn btn-s btn-xs" onclick="markOrd('${r.id}')">Mark Ordered</button>`:''}${f[F.PO.STAT]==='Received'?`<span style="font-size:12px;color:#94a3b8;">Received ${fmtD(f[F.PO.RDATE])}</span>`:''}</td></tr>`;}).join('');
 }
 async function markOrd(id){try{await atPatch(TBL.PO,id,{[F.PO.STAT]:'Ordered'});toast('PO marked Ordered');await ldPO();}catch(e){toast(e.message,'err');}}
 function openRPO(id,pn,pid,onum,qty,br){document.getElementById('rpo-id').value=id;document.getElementById('rpo-pid').value=pid;document.getElementById('rpo-br').value=br;document.getElementById('rpo-onum').value=onum;document.getElementById('rpo-info').innerHTML=`<strong>${esc(pn)}</strong><br><span style="font-size:12px;">Order: ${esc(onum)} · Qty: ${qty} · Branch: ${esc(br)}</span>`;document.getElementById('rpo-qty').value=qty;openModal('m-rpo');}
@@ -3171,7 +3176,7 @@ function openRPO(id,pn,pid,onum,qty,br){document.getElementById('rpo-id').value=
 function filterCusts(){const q=document.getElementById('cu-q').value.toLowerCase();filtCU=q?allCU.filter(c=>{const f=c.fields;return[f[F.CU.NM],f[F.CU.PH],f[F.CU.EM]].some(v=>v&&String(v).toLowerCase().includes(q));}):([...allCU]);renderCusts();}
 function renderCusts(){
  document.getElementById('cu-cnt').textContent=filtCU.length;
- document.getElementById('cu-body').innerHTML=filtCU.length?filtCU.map(c=>{const f=c.fields;return`<tr><td style="font-weight:600;"><span class="cl" onclick="openCustomer360('${c.id}')" title="View Customer 360° Profile">${esc(f[F.CU.NM]||'--')}</span></td><td class="mono">${esc(f[F.CU.PH]||'--')}</td><td style="font-size:13px;color:#64748b;">${esc(f[F.CU.EM]||'--')}</td><td>${f[F.CU.TY]?`<span class="badge bi">${esc(f[F.CU.TY])}</span>`:'--'}</td><td style="font-weight:600;color:#4f46e5;">${f[F.CU.PT]??0}</td><td>${f[F.CU.SRC]?`<span class="badge bgr">${esc(f[F.CU.SRC])}</span>`:'--'}</td><td style="font-size:12px;color:#94a3b8;">${fmtDT(f[F.CU.CR])}</td></tr>`;}).join(''):`<tr><td colspan="7"><div class="empty"><div class="ei"></div>No customers found</div></td></tr>`;
+ document.getElementById('cu-body').innerHTML=filtCU.length?filtCU.map(c=>{const f=c.fields;return`<tr><td style="font-weight:600;"><span class="cl" onclick="openCustomer360('${c.id}')" title="View Customer 360° Profile">${esc(f[F.CU.NM]||'--')}</span></td><td class="mono">${esc(f[F.CU.PH]||'--')}</td><td style="font-size:13px;color:#64748b;">${esc(f[F.CU.EM]||'--')}</td><td>${f[F.CU.TY]?`<span class="badge bi">${esc(f[F.CU.TY])}</span>`:'--'}</td><td style="font-weight:600;color:#db2777;">${f[F.CU.PT]??0}</td><td>${f[F.CU.SRC]?`<span class="badge bgr">${esc(f[F.CU.SRC])}</span>`:'--'}</td><td style="font-size:12px;color:#94a3b8;">${fmtDT(f[F.CU.CR])}</td></tr>`;}).join(''):`<tr><td colspan="7"><div class="empty"><div class="ei"></div>No customers found</div></td></tr>`;
 }
 
 // ── RENDER APPROVALS ───────────────────────────────────────────
@@ -3296,7 +3301,7 @@ async function buildPreview(){
  if(conflicts.length){warnHtml+=`<div><strong> ${conflicts.length} duplicate name conflict(s) — transactions import without customer link:</strong><br>${conflicts.slice(0,4).map(s=>`· ${esc(s)}`).join('<br>')}<br><em>Multiple customers with this name exist in Airtable. Please keep only one or use phone/email to differentiate.</em></div>`;}
  if(warnHtml){confBox.style.display='block';confBox.innerHTML=warnHtml;}
  const stBdg={matched:'<span class="cust-tag"> Matched</span>',notfound:'<span style="display:inline-flex;align-items:center;gap:4px;background:#fef2f2;color:#991b1b;border-radius:6px;padding:2px 8px;font-size:12px;font-weight:600;"> Not in Airtable</span>',conflict:'<span class="conf-tag"> Conflict</span>',anon:'<span class="anon-tag"> Anonymous</span>'};
- document.getElementById('pos-prev').innerHTML=posPreview.map(r=>{const cl=!r.prod?'opacity:.55':'';return`<tr style="${cl}"><td class="mono" style="font-size:12px;">${esc(r.inv)}</td><td class="mono" style="color:#4f46e5;">${esc(r.sku)}</td><td style="font-size:12.5px;">${r.prod?esc(r.prod.fields[F.P.NM]||''):'<span style="color:#ef4444;"> Not found</span>'}</td><td style="text-align:center;font-weight:700;">${r.qty}</td><td style="text-align:right;font-size:12.5px;">₪${r.price||'--'}</td><td style="font-size:12px;white-space:nowrap;">${fmtDT(r.dateStr+'T'+r.timeStr)}</td><td>${stBdg[r.cSt]||''}${r.cTag?' '+esc(r.cTag):''}</td><td class="mono" style="font-size:12px;">${esc(r.cph||'--')}</td></tr>`;}).join('');
+ document.getElementById('pos-prev').innerHTML=posPreview.map(r=>{const cl=!r.prod?'opacity:.55':'';return`<tr style="${cl}"><td class="mono" style="font-size:12px;">${esc(r.inv)}</td><td class="mono" style="color:#db2777;font-weight:700;">${esc(r.sku)}</td><td style="font-size:12.5px;">${r.prod?esc(r.prod.fields[F.P.NM]||''):'<span style="color:#ef4444;"> Not found</span>'}</td><td style="text-align:center;font-weight:700;">${r.qty}</td><td style="text-align:right;font-size:12.5px;">₪${r.price||'--'}</td><td style="font-size:12px;white-space:nowrap;">${fmtDT(r.dateStr+'T'+r.timeStr)}</td><td>${stBdg[r.cSt]||''}${r.cTag?' '+esc(r.cTag):''}</td><td class="mono" style="font-size:12px;">${esc(r.cph||'--')}</td></tr>`;}).join('');
  posSetStep(4);
 }
 
@@ -3351,8 +3356,8 @@ function resetPOS(){posStep=1;posF1=null;posF2=null;posF2Skip=false;posRows=[];p
 function setOcrType(t){
  ocrType=t;
  const sEl=document.getElementById('ocr-type-sale'),stEl=document.getElementById('ocr-type-stock');
- if(t==='sale'){sEl.style.borderColor='#4f46e5';sEl.style.background='#eef2ff';stEl.style.borderColor='#e2e8f0';stEl.style.background='#f8fafc';}
- else{stEl.style.borderColor='#4f46e5';stEl.style.background='#eef2ff';sEl.style.borderColor='#e2e8f0';sEl.style.background='#f8fafc';}
+ if(t==='sale'){sEl.style.borderColor='#db2777';sEl.style.background='#fff1f5';stEl.style.borderColor='#e2e8f0';stEl.style.background='#f8fafc';}
+ else{stEl.style.borderColor='#db2777';stEl.style.background='#fff1f5';sEl.style.borderColor='#e2e8f0';sEl.style.background='#f8fafc';}
  const s3CRow=document.getElementById('ocr-s3-cust-row');if(s3CRow)s3CRow.style.display=t==='sale'?'block':'none';
 }
 
@@ -4006,7 +4011,7 @@ function renderSupplierMappings(){
   const desc=r.fields[F.SM.DESC]||'—';
   const bc=r.fields[F.SM.BC]||'—';
   const prodText=prod
-   ?`<strong>${esc(prod.fields[F.P.NM]||'')}</strong> <span style="font-size:11.5px;color:#4f46e5;font-family:monospace;">(${esc(prod.fields[F.P.SKU]||'')})</span>`
+   ?`<strong>${esc(prod.fields[F.P.NM]||'')}</strong> <span style="font-size:11.5px;color:#db2777;font-family:monospace;font-weight:600;">(${esc(prod.fields[F.P.SKU]||'')})</span>`
    :`<span style="color:#ef4444;font-size:12px;">Product not found (ID: ${pId||'none'})</span>`;
   return`<tr>
    <td><span class="badge bgr">${esc(sup)}</span></td>
@@ -4243,7 +4248,7 @@ function renderOcrItems(isSale){
   } else if(isAutoMatch){
    matchCell=`<span class="badge by" style="margin-right:5px;background:#fef9c3;color:#92400e;border:1px solid #fbbf24;">⚠ ${esc(prod.fields[F.P.NM]||'')}</span><br><button onclick="confirmOcrItem(${i})" style="font-size:11.5px;padding:3px 10px;border:none;border-radius:6px;background:#10b981;color:#fff;cursor:pointer;font-weight:600;margin-top:3px;">Confirm &amp; Remember</button> <button onclick="linkOcrItem(${i})" style="font-size:11px;padding:3px 8px;border:1px solid #d1d5db;border-radius:6px;background:#f8fafc;cursor:pointer;color:#475569;margin-top:3px;">Change</button> <button onclick="unlinkOcrItem(${i})" style="font-size:11px;padding:3px 8px;border:1px solid #fca5a5;border-radius:6px;background:#fff7f7;cursor:pointer;color:#ef4444;margin-top:3px;" title="Reject this suggestion and revert to Not found">Unlink</button>`;
   } else {
-   matchCell=`<span class="badge br" style="margin-right:5px;">✗ Not found</span><br><button onclick="linkOcrItem(${i})" style="font-size:11.5px;padding:3px 10px;border:none;border-radius:6px;background:#4f46e5;color:#fff;cursor:pointer;font-weight:600;margin-top:3px;">Link Product</button>`;
+   matchCell=`<span class="badge br" style="margin-right:5px;">✗ Not found</span><br><button onclick="linkOcrItem(${i})" style="font-size:11.5px;padding:3px 10px;border:none;border-radius:6px;background:linear-gradient(135deg,#db2777,#e11d48);color:#fff;cursor:pointer;font-weight:600;margin-top:3px;box-shadow:0 2px 5px rgba(219,39,119,.25);">Link Product</button>`;
   }
   if(needsReview){
    matchCell=`<span class="badge" style="background:#fff7ed;color:#c2410c;border:1px solid #fdba74;margin-right:5px;margin-bottom:3px;display:inline-block;">Review Required</span><br>`+matchCell;
@@ -4352,7 +4357,7 @@ function linkOcrItem(i){
  const res=document.getElementById('link-results');
  function renderLink(q){
   const hits=allP.filter(p=>[p.fields[F.P.SKU],p.fields[F.P.NM],p.fields[F.P.SH]].some(v=>v&&String(v).toLowerCase().includes(q.toLowerCase()))).slice(0,20);
-  res.innerHTML=hits.length?hits.map(p=>`<div onclick="confirmOcrLink(${i},'${p.id}')" style="padding:10px 12px;cursor:pointer;border-bottom:1px solid #f1f5f9;" onmouseover="this.style.background='#f0f9ff'" onmouseout="this.style.background=''"><div style="font-weight:600;font-size:13px;">${esc(p.fields[F.P.NM]||'')}</div><div style="font-size:11.5px;color:#4f46e5;">${esc(p.fields[F.P.SKU]||'')}</div></div>`).join(''):"<div style='padding:12px;color:#94a3b8;font-size:13px;'>No products found — type to search</div>";
+  res.innerHTML=hits.length?hits.map(p=>`<div onclick="confirmOcrLink(${i},'${p.id}')" style="padding:10px 12px;cursor:pointer;border-bottom:1px solid #f1f5f9;" onmouseover="this.style.background='#fff1f5'" onmouseout="this.style.background=''"><div style="font-weight:600;font-size:13px;">${esc(p.fields[F.P.NM]||'')}</div><div style="font-size:11.5px;color:#db2777;font-weight:600;">${esc(p.fields[F.P.SKU]||'')}</div></div>`).join(''):"<div style='padding:12px;color:#94a3b8;font-size:13px;'>No products found — type to search</div>";
  }
  renderLink('');
  srch.oninput=()=>renderLink(srch.value);
