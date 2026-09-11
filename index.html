@@ -433,6 +433,20 @@
   <div class="fld"><label>Supplier / From</label><input type="text" id="ocr-sup" placeholder="Supplier or seller name"/></div>
   <div class="fld"><label>Invoice Date</label><input type="date" id="ocr-inv-dt"/></div>
  </div>
+ <!-- Receipt Discount & Totals row for Sale Invoices in Step 3 -->
+ <div id="ocr-s3-sale-disc-row" style="display:none;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:10px 14px;margin-bottom:12px;">
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+   <div style="display:flex;align-items:center;gap:10px;">
+    <span style="font-weight:700;font-size:13px;color:#166534;">🏷️ Receipt Discount:</span>
+    <div style="display:flex;align-items:center;gap:4px;">
+     <input type="number" id="ocr-sale-disc-pct" min="0" max="100" step="0.5" value="0" style="width:65px;padding:4px 8px;border:1px solid #86efac;border-radius:6px;font-size:13px;font-weight:700;text-align:right;" oninput="applySaleDiscountFromUI()"/>
+     <span style="font-size:13px;font-weight:600;color:#166534;">%</span>
+    </div>
+    <span id="ocr-sale-disc-note" style="font-size:12px;color:#15803d;"></span>
+   </div>
+   <div id="ocr-sale-totals-summary" style="font-size:13px;font-weight:700;color:#166534;"></div>
+  </div>
+ </div>
  <!-- Customer & Employee row for Sale Invoices in Step 3 -->
  <div id="ocr-s3-cust-row" style="display:none;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px 14px;margin-bottom:12px;">
   <div style="font-weight:700;font-size:12.5px;color:#374151;margin-bottom:8px;display:flex;align-items:center;gap:8px;">
@@ -1221,7 +1235,24 @@ On Israeli cash register receipts (קופה/qupa), each product row is structure
 
 Extract the standalone catalog number on its own line as "sku". Do NOT include it in "description".
 Extract any barcode digits (7-14 digits) if printed on the row as "barcode" (leave "" if absent).
-Look for cashier / salesperson name ("עובד/ת:", "קופאי/ת:", "מוכר/ת:", "נציג/ה:") and extract into "employee" (empty string if absent).
+
+CASHIER / EMPLOYEE vs CUSTOMER RULES (CRITICAL):
+- Look for cashier / salesperson ("מוכר/ת:", "מוכר:", "קופאי/ת:", "קופאי:", "עובד/ת:", "עובד:", "נציג/ה:") and extract the person's name (e.g. "רבקי רבינוביץ") into "employee" on EVERY item.
+- NEVER put the cashier/salesperson name into "customer_name"!
+- Retail cash register receipts are almost always anonymous walk-in sales.
+- "customer_name" MUST be "" (empty string) unless the receipt explicitly displays a customer label such as "לקוח/ה:", "לכבוד:", or "שם לקוח:".
+
+RECEIPT DISCOUNT & NET PAID PRICE RULES (CRITICAL):
+- Check for any receipt-level discount line (e.g. "הנחה: הנחת 10% לחברי מועדון -61.40", "% הנחה", "הנחה").
+- Extract:
+  * "receipt_discount_pct": number (e.g. 10, or 0 if none) on all items.
+  * "receipt_discount_amount": number (e.g. 61.40, or 0 if none) on all items.
+  * "receipt_total": number (e.g. 552.60 from "לתשלום:" / "סה\"כ לתשלום:") on all items.
+- If a receipt-wide discount exists (e.g. 10%):
+  * "list_price": original shelf / list price before discount (e.g. 144.00, 99.00, 159.00, 79.00, 133.00).
+  * "discount_pct": receipt discount percentage (e.g. 10).
+  * "unit_price": actual net price paid after discount: list_price * (1 - discount_pct/100) (e.g. 144 -> 129.60, 99 -> 89.10, 159 -> 143.10, 79 -> 71.10, 133 -> 119.70). Round to 2 decimals.
+  * "line_total": qty * unit_price.
 
 For each product line return:
 {
@@ -1230,11 +1261,16 @@ For each product line return:
   "description": "product name in original language, no SKU numbers",
   "shade": "shade or color code if printed, empty string otherwise",
   "qty": integer quantity,
-  "unit_price": unit price as number,
-  "line_total": line total as number,
+  "list_price": original shelf/list unit price as number,
+  "discount_pct": discount percentage as number (e.g. 10 or 0),
+  "unit_price": actual net price paid per unit as number (after receipt/item discount),
+  "line_total": line total as number (qty * unit_price),
+  "receipt_discount_pct": discount % for receipt (e.g. 10 or 0),
+  "receipt_discount_amount": discount amount for receipt (e.g. 61.40 or 0),
+  "receipt_total": final total to pay after discount (e.g. 552.60),
   "employee": "employee or cashier name if shown, empty string otherwise",
   "supplier": "store or seller name from document header",
-  "customer_name": "customer name if shown, empty string otherwise",
+  "customer_name": "customer name ONLY if explicitly labeled with customer header, otherwise empty string",
   "customer_phone": "customer phone if shown, empty string otherwise",
   "customer_email": "customer email if shown, empty string otherwise",
   "is_product": true for product lines, false for VAT/tax/discounts/totals/subtotals/shipping
@@ -1335,27 +1371,37 @@ ${prompt}
 CRITICAL EXTRACTION RULES:
 1. SUPPLIER & DATE (MANDATORY):
    - Extract the supplier/company name from the invoice header (e.g. at the top of the invoice) into the "supplier" property of EVERY item.
-   - Extract the invoice date from the invoice header/metadata (e.g. "04/02/2026", "27/07/2025") into the "invoice_date" property of EVERY item.
+   - Extract the invoice date from the invoice header/metadata (e.g. "04/02/2026", "27/07/2025", "09/09/2026") into the "invoice_date" property of EVERY item.
 
 2. PRODUCT ROWS & FREE GIFTS / TESTERS:
    - Extract every single product line (including free tester / bonus / gift rows with price 0.00).
    - If a product is a gift, tester, or bonus ("בונוס", "מתנה", "טסטר", or price 0.00): set unit_price = 0.00, line_total = 0.00, is_gift = true.
    - For quantities: numbers with .00 (e.g. 10.00, 2.00, 5.00, 1.00) are integer quantities 10, 2, 5, 1 (NOT 20, NOT 100).
+   - Exclude summary lines like "סה\"כ פריטים", "הנחה:", "לתשלום:", "מע\"מ" from product items, or mark them with is_product: false.
 
 3. BARCODE EXTRACTION (HIGH PRIORITY):
    - Check the barcode column ("בר קוד", "ברקוד", "Barcode", "EAN", "UPC", "קוד בינלאומי").
    - ALSO inspect the row for any 7 to 14 digit number (EAN-13, UPC, etc., e.g. 5901905031346, 4043993458034). If found, extract ALL digits into "barcode".
    - If NO barcode appears on the row, return "" (empty string). DO NOT invent a barcode and DO NOT put the item code/SKU into the barcode field.
 
-4. PRICES & DISCOUNTS (COST PRICE vs CONSUMER PRICE):
-   - Extract catalog / list / consumer price ("מחיר מחירון", "מחיר לצרכן", "מחירון") into "list_price" as number (or null if absent).
-   - Extract discount percent ("% הנחה", "הנחה") into "discount_pct" as number (e.g. 50, 40, 10; or 0 if none).
-   - Extract net purchase / cost price per unit ("מחיר נטו", "מחיר לאחר הנחה", "מחיר", "מחיר יח'") into "unit_price".
-   - If unit_price is missing but list_price and discount_pct exist: calculate unit_price = list_price * (1 - discount_pct/100).
-   - If unit_price is missing but line_total and qty exist: calculate unit_price = line_total / qty.
+4. PRICES, RECEIPT DISCOUNTS, AND NET ACTUAL PRICE:
+   - Extract catalog / list / shelf price ("מחיר מחירון", "מחיר לצרכן", "מחיר", "מחירון") into "list_price" as number.
+   - RECEIPT-WIDE DISCOUNT (e.g. "הנחה: הנחת 10% לחברי מועדון -61.40", "% הנחה", "הנחת מועדון"):
+     * Extract "receipt_discount_pct": number (e.g. 10, or 0 if none) on all items.
+     * Extract "receipt_discount_amount": number (e.g. 61.40, or 0 if none) on all items.
+     * Extract "receipt_total": number (e.g. 552.60 from "לתשלום:" or "סה\"כ לתשלום:") on all items.
+     * If a receipt-wide discount exists (e.g. 10%), apply it to each item:
+       - Set "discount_pct" = receipt_discount_pct (e.g. 10).
+       - Set "unit_price" = list_price * (1 - discount_pct/100) (e.g. 144 -> 129.60, 99 -> 89.10, 159 -> 143.10, 79 -> 71.10, 133 -> 119.70). Round to 2 decimal places.
+       - Set "line_total" = qty * unit_price.
+   - For supplier invoices with item discounts: extract "discount_pct", and set "unit_price" to the net unit cost after discount.
 
-5. EMPLOYEE / SALESPERSON (FOR SALES RECEIPTS):
-   - Look for employee / cashier / salesperson ("עובד", "עובדת", "קופאי", "קופאית", "מוכר", "מוכרת", "נציג/ה") and extract into "employee".
+5. EMPLOYEE / CASHIER vs CUSTOMER (CRITICAL):
+   - "מוכר/ת", "מוכר", "קופאי/ת", "קופאי", "עובד/ת", "עובד", "נציג/ה" means CASHIER / SALESPERSON.
+     Extract this name (e.g. "רבקי רבינוביץ") into "employee" property on EVERY item.
+   - NEVER put the cashier/seller/employee name into "customer_name"!
+   - Retail cash register receipts are almost always anonymous walk-in sales.
+   - "customer_name" MUST be "" (empty string) unless there is an explicit customer label like "לקוח/ה:", "לכבוד:", "שם לקוח:".
 
 6. FORMAT:
    - Numbers must be pure numbers without thousands commas (write 1188.00, never 1,188.00).
@@ -1487,11 +1533,38 @@ CRITICAL EXTRACTION RULES:
   if(skippedLines.length){const sm=document.getElementById('ocr-skip-msg');if(sm){sm.style.display='block';sm.textContent=` ${skippedLines.length} non-product line(s) excluded (VAT, discounts, totals).`;}}
   if(!ocrItems.length)throw new Error('No items found in invoice');
 
+  // Detect receipt-wide discount
+  let receiptDiscPct = 0;
+  for(const it of ocrItems){
+    if(it.receipt_discount_pct > 0){ receiptDiscPct = parseFloat(it.receipt_discount_pct); break; }
+    if(isSale && it.discount_pct > 0){ receiptDiscPct = parseFloat(it.discount_pct); break; }
+  }
+  if(!receiptDiscPct){
+    for(const line of skippedLines){
+      const txt = (String(line.description||'') + ' ' + String(line.sku||''));
+      const m = txt.match(/(\d+(?:\.\d+)?)\s*%/);
+      if(m){ receiptDiscPct = parseFloat(m[1]); break; }
+    }
+  }
+
   // Unit price fallback calculation & numeric sanitize
   ocrItems.forEach(item => {
+    if(item.list_price == null || isNaN(item.list_price)){
+      item.list_price = item.unit_price != null ? Number(item.unit_price) : (item.line_total != null ? Number(item.line_total) : null);
+    }
+    if(receiptDiscPct > 0 && isSale && (item.discount_pct == null || item.discount_pct === 0)){
+      item.discount_pct = receiptDiscPct;
+    }
     if((item.unit_price === null || item.unit_price === undefined || isNaN(item.unit_price)) && item.qty && item.line_total != null) {
       item.unit_price = Math.round((Number(item.line_total) / Number(item.qty)) * 100) / 100;
     }
+    // If sale with receipt discount and unit_price was not discounted, apply discount to unit_price
+    if(isSale && receiptDiscPct > 0 && item.list_price > 0 && (item.unit_price == null || item.unit_price === item.list_price)){
+      item.unit_price = Math.round(item.list_price * (1 - receiptDiscPct/100) * 100) / 100;
+    }
+    const q = parseInt(item.qty) || 1;
+    const p = parseFloat(item.unit_price) || 0;
+    item.line_total = Math.round(q * p * 100) / 100;
   });
 
   // Set supplier name and invoice date from first item
@@ -1513,16 +1586,41 @@ CRITICAL EXTRACTION RULES:
   const reviewCount=ocrItems.filter(x=>x.needs_review).length;
 
   if(isSale){
-   const nm=ocrItems[0].customer_name||'';const ph=ocrItems[0].customer_phone||'';const em=ocrItems[0].customer_email||'';
-   const emp=ocrItems[0].employee||'';
+   let nm=(ocrItems[0].customer_name||'').trim();
+   const ph=(ocrItems[0].customer_phone||'').trim();
+   const em=(ocrItems[0].customer_email||'').trim();
+   let emp=(ocrItems[0].employee||'').trim();
+   if(!emp){
+     for(const it of ocrItems){ if(it.employee){ emp = String(it.employee).trim(); break; } }
+   }
+   // Defensive check: If customer equals employee or contains cashier terms, clear customer!
+   if(emp && nm && (nm.toLowerCase() === emp.toLowerCase() || nm.includes(emp) || emp.includes(nm))){
+     nm = '';
+   }
+   if(/מוכר|קופאי|עובד|cashier|seller/i.test(nm)){
+     if(!emp) emp = nm;
+     nm = '';
+   }
+   ocrItems.forEach(it => { it.customer_name = nm; it.employee = emp; });
+
    if(document.getElementById('ocr-cust-name')) document.getElementById('ocr-cust-name').value=nm;
    if(document.getElementById('ocr-cust-phone')) document.getElementById('ocr-cust-phone').value=ph;
    if(document.getElementById('ocr-cust-email')) document.getElementById('ocr-cust-email').value=em;
    if(document.getElementById('ocr-emp')) document.getElementById('ocr-emp').value=emp;
    const s3CRow=document.getElementById('ocr-s3-cust-row');if(s3CRow)s3CRow.style.display='block';
    updOcrCustBadge();
+
+   // Show and configure Receipt Discount row
+   const s3DiscRow=document.getElementById('ocr-s3-sale-disc-row');
+   const discInput=document.getElementById('ocr-sale-disc-pct');
+   if(s3DiscRow){
+     s3DiscRow.style.display='block';
+     if(discInput) discInput.value=receiptDiscPct||0;
+     updateSaleSummaryDisplay();
+   }
   } else {
    const s3CRow=document.getElementById('ocr-s3-cust-row');if(s3CRow)s3CRow.style.display='none';
+   const s3DiscRow=document.getElementById('ocr-s3-sale-disc-row');if(s3DiscRow)s3DiscRow.style.display='none';
   }
   document.getElementById('ocr-s2').style.display='none';document.getElementById('ocr-s3').style.display='block';
   document.getElementById('ocr-import-btn').style.display='inline-flex';
@@ -1537,7 +1635,7 @@ CRITICAL EXTRACTION RULES:
 
   // Update table header based on invoice type
   document.getElementById('ocr-thead-row').innerHTML=isSale
-   ?'<th>Barcode</th><th>Description</th><th>Shade</th><th style="text-align:center;">Qty</th><th style="text-align:right;">Price &#8362;</th><th style="text-align:right;">Total &#8362;</th><th>Match</th><th></th>'
+   ?'<th>Barcode</th><th>Description</th><th>Shade</th><th style="text-align:center;">Qty</th><th style="text-align:right;">List &#8362;</th><th style="text-align:right;">Actual Paid &#8362;</th><th style="text-align:right;">Total &#8362;</th><th>Match</th><th></th>'
    :'<th>Barcode</th><th>Description</th><th>Shade</th><th style="text-align:center;">Qty</th><th style="text-align:right;">List &#8362;</th><th style="text-align:right;">Disc %</th><th style="text-align:right;">Cost Price &#8362;</th><th style="text-align:right;">Line Total &#8362;</th><th style="text-align:center;">Valid</th><th>Match</th><th></th>';
 
   renderOcrItems(isSale);
@@ -1596,10 +1694,25 @@ async function saveSupplierMapping(supplier, descKey, bc, productId){
    [F.SM.PR]: [productId]
   };
   if(bc) flds[F.SM.BC] = String(bc).trim();
-  const rec = await atPost(TBL.SM, flds);
-  if(rec){
-   allSM.push(rec);
-   renderSupplierMappings();
+
+  // If mapping already exists in allSM, patch in Airtable instead of duplicate
+  const norm = s => String(s||'').toLowerCase().replace(/[^\p{L}\p{N}]+/gu,' ').trim();
+  const nd = norm(descKey);
+  const existing = (allSM||[]).find(r => {
+    const d = norm(r.fields[F.SM.DESC]||'');
+    const b = String(r.fields[F.SM.BC]||'').trim();
+    return (nd && d && d === nd) || (bc && b && b === bc);
+  });
+  if(existing){
+    await atPatch(TBL.SM, existing.id, flds);
+    Object.assign(existing.fields, flds);
+    renderSupplierMappings();
+  } else {
+    const rec = await atPost(TBL.SM, flds);
+    if(rec){
+     allSM.push(rec);
+     renderSupplierMappings();
+    }
   }
  }catch(e){
   console.warn('Airtable SM save:', e);
@@ -1663,14 +1776,16 @@ async function deleteSupplierMapping(recId){
 }
 
 function findOcrMatch(item){
- // 0. Session-linked (user just linked this session)
- if(item._linkedProd)return item._linkedProd;
+ // 0. Session unlinked by user: do not auto-match
+ if(item._unlinked) return null;
+ // 0a. Session-linked (user explicitly linked this session)
+ if(item._linkedProd) return item._linkedProd;
  const desc=String(item.description||'').toLowerCase().trim();
  const barcode=String(item.barcode||'').trim();
 
- // 0a. Check Airtable Supplier Mappings (Cloud-synced permanent memory)
+ // 0b. Check Airtable Supplier Mappings (Cloud-synced permanent memory)
  if(allSM && allSM.length){
-  if(barcode.length>=6){
+  if(barcode.length>=3){
    const m=allSM.find(r=>String(r.fields[F.SM.BC]||'').trim()===barcode);
    if(m&&m.fields[F.SM.PR]&&m.fields[F.SM.PR].length){
     const ap=allP.find(x=>x.id===m.fields[F.SM.PR][0]);
@@ -1678,9 +1793,11 @@ function findOcrMatch(item){
    }
   }
   if(desc.length>=2){
+   const norm = s => String(s||'').toLowerCase().replace(/[^\p{L}\p{N}]+/gu,' ').trim();
+   const nd = norm(desc);
    const m=allSM.find(r=>{
-    const d=String(r.fields[F.SM.DESC]||'').toLowerCase().trim();
-    return d&&(d===desc||(desc.length>=4&&d.length>=4&&(desc.includes(d)||d.includes(desc))));
+    const d=norm(r.fields[F.SM.DESC]||'');
+    return d&&(d===nd||(d.length>=4&&nd.length>=4&&(nd.includes(d)||d.includes(nd))));
    });
    if(m&&m.fields[F.SM.PR]&&m.fields[F.SM.PR].length){
     const ap=allP.find(x=>x.id===m.fields[F.SM.PR][0]);
@@ -1689,65 +1806,93 @@ function findOcrMatch(item){
   }
  }
 
- // 0b. Persistent alias (user confirmed in a previous session) — by description
+ // 0c. Persistent alias (user confirmed in a previous session) — by description
  const aliasMap=loadAliasMap();
  if(desc&&aliasMap[desc]){const ap=allP.find(x=>x.id===aliasMap[desc]);if(ap)return Object.assign({},ap,{_fromAlias:true});}
- // 0c. Barcode alias memory
+ // 0d. Barcode alias memory
  const barcodeMap=loadBarcodeMap();
  if(barcode&&barcodeMap[barcode]){const bp=allP.find(x=>x.id===barcodeMap[barcode]);if(bp)return Object.assign({},bp,{_fromAlias:true});}
  // 1. Exact barcode match against Airtable Barcode field
- if(barcode.length>=6){
+ if(barcode.length>=3){
   let p=allP.find(x=>String(x.fields[F.P.BC]||'').trim()===barcode);
   if(p)return p;
  }
  const sku=String(item.sku||'').toLowerCase().trim();
- // 2. Exact SKU match
- let p=allP.find(x=>String(x.fields[F.P.SKU]||'').toLowerCase()===sku);
- if(p)return p;
- // 3. Partial SKU match — invoice SKU contains or starts with product SKU
- if(sku.length>=6){
-  p=allP.find(x=>{const s=String(x.fields[F.P.SKU]||'').toLowerCase();return s.length>=6&&(sku.includes(s)||s.includes(sku));});
+ // 2. Exact SKU match - CRITICAL: sku must be non-empty!
+ if(sku && sku.length>=2){
+  let p=allP.find(x=>{
+    const ps=String(x.fields[F.P.SKU]||'').toLowerCase().trim();
+    return ps && ps===sku;
+  });
   if(p)return p;
+  // 3. Partial SKU match — invoice SKU contains or starts with product SKU
+  if(sku.length>=6){
+   p=allP.find(x=>{
+     const s=String(x.fields[F.P.SKU]||'').toLowerCase().trim();
+     return s.length>=6&&(sku.includes(s)||s.includes(sku));
+   });
+   if(p)return p;
+  }
  }
- // 4. Intelligent Shade & Hebrew Token Overlap Matching
- if(desc.length>=2){
-  const rawShade=String(item.shade||'').trim();
-  const numbersInDesc=(desc.match(/\b\d{1,4}\b/g)||[]);
-  const trailingNum=desc.match(/[^\d](\d{1,4})$/);
-  if(trailingNum)numbersInDesc.push(trailingNum[1]);
-  const candidateShades=[...new Set([rawShade,...numbersInDesc])].filter(Boolean);
+  // 4. Intelligent Shade & Hebrew Token Overlap Matching
+  if(desc.length>=2){
+   const rawShade=String(item.shade||'').trim();
+   const numbersInDesc=(desc.match(/\b\d{1,4}\b/g)||[]);
+   const trailingNum=desc.match(/[^\d](\d{1,4})$/);
+   if(trailingNum)numbersInDesc.push(trailingNum[1]);
+   const candidateShades=[...new Set([rawShade,...numbersInDesc])].filter(Boolean);
 
-  const cleanDesc=desc.replace(/(גוון|מספר|מס'|shade|יח'|מוצר)/g,' ');
-  const descTokens=cleanDesc.split(/[\s\-_,./\\]+/).filter(w=>w.length>=2&&isNaN(w));
+   const extractVariants=s=>(String(s||'').match(/\b[A-Za-z]{0,2}\d{1,4}[A-Za-z]{0,2}\b/g)||[]).map(x=>x.toLowerCase());
+   const descVars=[...new Set([...extractVariants(desc),...candidateShades.map(x=>x.toLowerCase())])];
 
-  let bestProd=null,bestScore=0;
-  for(const prod of allP){
-   const pNm=String(prod.fields[F.P.NM]||'').toLowerCase();
-   const pSh=String(prod.fields[F.P.SH]||'').trim().toLowerCase();
-   const pBrand=String(prod.fields[F.P.BR]||'').toLowerCase();
-   const pTokens=(pNm+' '+pBrand).split(/[\s\-_,./\\]+/).filter(w=>w.length>=2&&isNaN(w));
+   const CATEGORIES=['סומק','ליפסטיק','שפתון','מברשת','ספוגית','מייקאפ','מייק אפ','אייליינר','פודרה','קרם','צללית','עפרון','מסקרה','גלוס','ברונזר','הייליטר','קונסילר'];
+   const descCats=CATEGORIES.filter(c=>desc.includes(c));
 
-   let score=0;
-   const shadeMatch=candidateShades.some(s=>s.toLowerCase()===pSh);
-   if(shadeMatch&&pSh.length>0)score+=40;
+   const cleanDesc=desc.replace(/(גוון|מספר|מס'|shade|יח'|מוצר)/g,' ');
+   const descTokens=cleanDesc.split(/[\s\-_,./\\]+/).filter(w=>w.length>=2&&isNaN(w));
 
-   for(const dt of descTokens){
-    if(pTokens.some(pt=>pt===dt||(pt.length>=3&&dt.length>=3&&(pt.includes(dt)||dt.includes(pt))))){
-     score+=20;
+   let bestProd=null,bestScore=0;
+   for(const prod of allP){
+    const pNm=String(prod.fields[F.P.NM]||'').toLowerCase();
+    const pSh=String(prod.fields[F.P.SH]||'').trim().toLowerCase();
+    const pBrand=String(prod.fields[F.P.BR]||'').toLowerCase();
+
+    // 1. Variant / Model conflict check (e.g. N01 vs N04, C16 vs C5, shade 20 vs 33)
+    const prodVars=[...new Set([...extractVariants(pNm),...(pSh?[pSh]:[])])];
+    if(descVars.length>0&&prodVars.length>0){
+      const variantMatches=descVars.some(v=>prodVars.includes(v));
+      if(!variantMatches) continue; // conflicting variant numbers!
+    }
+
+    // 2. Product Category conflict check (blush vs lipstick, brush vs sponge, etc.)
+    if(descCats.length>0){
+      const prodHasDescCat=descCats.some(c=>pNm.includes(c));
+      if(!prodHasDescCat) continue; // Category mismatch!
+    }
+
+    const pTokens=(pNm+' '+pBrand).split(/[\s\-_,./\\]+/).filter(w=>w.length>=2&&isNaN(w));
+
+    let score=0;
+    const shadeMatch=candidateShades.some(s=>s.toLowerCase()===pSh) || (pSh && desc.includes(pSh));
+    if(shadeMatch&&pSh.length>0)score+=40;
+
+    for(const dt of descTokens){
+     if(pTokens.some(pt=>pt===dt||(pt.length>=3&&dt.length>=3&&(pt.includes(dt)||dt.includes(pt))))){
+      score+=20;
+     }
+    }
+
+    if(pSh&&candidateShades.length>0&&!shadeMatch)score-=35;
+    if(pBrand&&desc.includes(pBrand))score+=10;
+
+    const minScore=candidateShades.length>0?50:35;
+    if(score>bestScore&&score>=minScore){
+     bestScore=score;
+     bestProd=prod;
     }
    }
-
-   if(pSh&&candidateShades.length>0&&!shadeMatch)score-=35;
-   if(pBrand&&desc.includes(pBrand))score+=10;
-
-   const minScore=candidateShades.length>0?50:35;
-   if(score>bestScore&&score>=minScore){
-    bestScore=score;
-    bestProd=prod;
-   }
+   if(bestProd)return bestProd;
   }
-  if(bestProd)return bestProd;
- }
  return null;
 }
 function recalcOcrRow(i){
@@ -1768,6 +1913,62 @@ function recalcOcrRow(i){
  }
  if(qty>0&&up!=null){
   item.line_total=Math.round(qty*up*100)/100;
+ }
+}
+
+function recalcSaleItem(i){
+ const item=ocrItems[i];
+ if(!item)return;
+ const discPct=parseFloat(document.getElementById('ocr-sale-disc-pct')?.value)||parseFloat(item.discount_pct)||0;
+ const lp=item.list_price!=null?parseFloat(item.list_price):(parseFloat(item.unit_price)||0);
+ item.list_price=lp;
+ if(discPct>0&&lp>0){
+  item.unit_price=Math.round(lp*(1-discPct/100)*100)/100;
+ } else if(item.unit_price==null){
+  item.unit_price=lp;
+ }
+ const qty=parseInt(item.qty)||1;
+ item.line_total=Math.round(qty*(parseFloat(item.unit_price)||0)*100)/100;
+}
+
+function applySaleDiscountFromUI(){
+ const discInput=document.getElementById('ocr-sale-disc-pct');
+ const discPct=parseFloat(discInput?.value)||0;
+ for(const item of ocrItems){
+  item.discount_pct=discPct;
+  const base=item.list_price!=null?parseFloat(item.list_price):(item.unit_price!=null?parseFloat(item.unit_price):0);
+  item.list_price=base;
+  item.unit_price=Math.round(base*(1-discPct/100)*100)/100;
+  const qty=parseInt(item.qty)||1;
+  item.line_total=Math.round(qty*item.unit_price*100)/100;
+ }
+ renderOcrItems(true);
+ updateSaleSummaryDisplay();
+}
+
+function updateSaleSummaryDisplay(){
+ const discInput=document.getElementById('ocr-sale-disc-pct');
+ const discPct=parseFloat(discInput?.value)||0;
+ let subtotal=0;
+ let totalPaid=0;
+ for(const item of ocrItems){
+  const qty=parseInt(item.qty)||1;
+  const base=item.list_price!=null?parseFloat(item.list_price):(item.unit_price!=null?parseFloat(item.unit_price):0);
+  const paid=item.unit_price!=null?parseFloat(item.unit_price):base;
+  subtotal+=qty*base;
+  totalPaid+=qty*paid;
+ }
+ subtotal=Math.round(subtotal*100)/100;
+ totalPaid=Math.round(totalPaid*100)/100;
+ const discAmount=Math.round((subtotal-totalPaid)*100)/100;
+
+ const summaryEl=document.getElementById('ocr-sale-totals-summary');
+ if(summaryEl){
+  summaryEl.innerHTML=`Subtotal: &#8362;${subtotal.toFixed(2)} &nbsp;|&nbsp; Discount: <span style="color:#dc2626;">-&#8362;${discAmount.toFixed(2)} (${discPct}%)</span> &nbsp;|&nbsp; Total to Pay: <span style="font-size:15px;color:#15803d;">&#8362;${totalPaid.toFixed(2)}</span>`;
+ }
+ const noteEl=document.getElementById('ocr-sale-disc-note');
+ if(noteEl){
+  noteEl.textContent=discPct>0?`(-₪${discAmount.toFixed(2)} saved across items)`:'';
  }
 }
 
@@ -1795,17 +1996,19 @@ function renderOcrItems(isSale){
 
   if(isSale){
    const qty=parseInt(item.qty)||1;
-   const pr=parseFloat(item.unit_price)||0;
+   const lp=item.list_price!=null?parseFloat(item.list_price):(parseFloat(item.unit_price)||0);
+   const pr=item.unit_price!=null?parseFloat(item.unit_price):lp;
    const total=Math.round(qty*pr*100)/100;
    return`<tr style="${rowBg}">
     <td><input type="text" value="${esc(item.barcode||'')}" placeholder="Barcode" style="width:105px;padding:4px 7px;border:1px solid #d1d5db;border-radius:6px;font-size:12px;" onchange="ocrItems[${i}].barcode=this.value"/></td>
     <td><input type="text" value="${esc(item.description||'')}" placeholder="Description" style="width:190px;padding:4px 7px;border:1px solid #d1d5db;border-radius:6px;font-size:12px;" onchange="ocrItems[${i}].description=this.value"/></td>
     <td><input type="text" value="${esc(item.shade||'')}" placeholder="Shade" style="width:55px;padding:4px 7px;border:1px solid #d1d5db;border-radius:6px;font-size:12px;" onchange="ocrItems[${i}].shade=this.value"/></td>
-    <td style="text-align:center;"><input type="number" value="${item.qty??''}" min="1" style="width:50px;padding:4px 7px;border:1px solid ${needsReview&&item.qty==null?'#f97316':'#d1d5db'};border-radius:6px;font-size:12px;text-align:center;" onchange="ocrItems[${i}].qty=parseInt(this.value)||1;ocrItems[${i}].needs_review=false;renderOcrItems(true)"/></td>
-    <td style="text-align:right;"><input type="number" value="${item.unit_price??''}" step="0.01" style="width:75px;padding:4px 7px;border:1px solid ${needsReview&&item.unit_price==null?'#f97316':'#d1d5db'};border-radius:6px;font-size:12px;text-align:right;" onchange="ocrItems[${i}].unit_price=parseFloat(this.value)||0;ocrItems[${i}].needs_review=false;renderOcrItems(true)"/></td>
-    <td style="text-align:right;font-size:12.5px;color:#475569;font-weight:600;">&#8362;${total}</td>
+    <td style="text-align:center;"><input type="number" value="${item.qty??''}" min="1" style="width:50px;padding:4px 7px;border:1px solid ${needsReview&&item.qty==null?'#f97316':'#d1d5db'};border-radius:6px;font-size:12px;text-align:center;" onchange="ocrItems[${i}].qty=parseInt(this.value)||1;ocrItems[${i}].needs_review=false;recalcSaleItem(${i});renderOcrItems(true);updateSaleSummaryDisplay()"/></td>
+    <td style="text-align:right;"><input type="number" value="${lp!=null?lp:''}" step="0.01" placeholder="List ₪" style="width:70px;padding:4px 7px;border:1px solid #d1d5db;border-radius:6px;font-size:12px;text-align:right;" onchange="ocrItems[${i}].list_price=parseFloat(this.value)||0;recalcSaleItem(${i});renderOcrItems(true);updateSaleSummaryDisplay()"/></td>
+    <td style="text-align:right;"><input type="number" value="${pr!=null?pr:''}" step="0.01" placeholder="Paid ₪" style="width:75px;padding:4px 7px;border:1px solid ${needsReview&&item.unit_price==null?'#f97316':'#d1d5db'};border-radius:6px;font-size:12px;text-align:right;font-weight:600;color:#15803d;" onchange="ocrItems[${i}].unit_price=parseFloat(this.value)||0;ocrItems[${i}].needs_review=false;renderOcrItems(true);updateSaleSummaryDisplay()"/></td>
+    <td style="text-align:right;font-size:12.5px;color:#475569;font-weight:700;">&#8362;${total}</td>
     <td style="white-space:nowrap;min-width:180px;">${matchCell}</td>
-    <td><button onclick="ocrItems.splice(${i},1);renderOcrItems(true)" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:16px;">✕</button></td>
+    <td><button onclick="ocrItems.splice(${i},1);renderOcrItems(true);updateSaleSummaryDisplay()" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:16px;">✕</button></td>
    </tr>`;
   } else {
    const qty=item.qty;
@@ -1858,21 +2061,23 @@ function confirmOcrItem(i){
  const bc=String(item.barcode||'').trim();
  const sup=String(item.supplier||document.getElementById('ocr-sup').value||'').trim();
  saveSupplierMapping(sup, descKey, bc, prod.id);
- ocrItems[i]._linkedProd=prod;
- ocrItems[i]._fromAlias=true;
+ item._linkedProd=prod;
+ item._fromAlias=true;
+ delete item._unlinked;
  renderOcrItems(ocrType==='sale');
  toast(`✓ Confirmed & remembered: "${descKey}" → ${prod.fields[F.P.NM]||''}`);
 }
 
-// Remove identification — clears session link, forgets alias, reverts row to "Not found"
+// Remove identification — clears session link, forgets alias, marks unlinked
 function unlinkOcrItem(i){
  const item=ocrItems[i];
  const descKey=String(item.description||item.sku||'').toLowerCase().trim();
  if(descKey)removeAlias(descKey);
  const bc=String(item.barcode||'').trim();
  if(bc)removeBarcode(bc);
- delete ocrItems[i]._linkedProd;
- delete ocrItems[i]._fromAlias;
+ delete item._linkedProd;
+ delete item._fromAlias;
+ item._unlinked=true;
  renderOcrItems(ocrType==='sale');
  toast('Identification removed — row reset to "Not found"','info');
 }
@@ -1890,19 +2095,26 @@ function linkOcrItem(i){
  const res=document.getElementById('link-results');
  function renderLink(q){
   const hits=allP.filter(p=>[p.fields[F.P.SKU],p.fields[F.P.NM],p.fields[F.P.SH]].some(v=>v&&String(v).toLowerCase().includes(q.toLowerCase()))).slice(0,20);
-  res.innerHTML=hits.length?hits.map(p=>`<div onclick="confirmOcrLink(${i},'${p.id}','${esc(descKey).replace(/'/g,String.fromCharCode(39))}')" style="padding:10px 12px;cursor:pointer;border-bottom:1px solid #f1f5f9;" onmouseover="this.style.background='#f0f9ff'" onmouseout="this.style.background=''"><div style="font-weight:600;font-size:13px;">${esc(p.fields[F.P.NM]||'')}</div><div style="font-size:11.5px;color:#4f46e5;">${esc(p.fields[F.P.SKU]||'')}</div></div>`).join(''):"<div style='padding:12px;color:#94a3b8;font-size:13px;'>No products found — type to search</div>";
+  res.innerHTML=hits.length?hits.map(p=>`<div onclick="confirmOcrLink(${i},'${p.id}')" style="padding:10px 12px;cursor:pointer;border-bottom:1px solid #f1f5f9;" onmouseover="this.style.background='#f0f9ff'" onmouseout="this.style.background=''"><div style="font-weight:600;font-size:13px;">${esc(p.fields[F.P.NM]||'')}</div><div style="font-size:11.5px;color:#4f46e5;">${esc(p.fields[F.P.SKU]||'')}</div></div>`).join(''):"<div style='padding:12px;color:#94a3b8;font-size:13px;'>No products found — type to search</div>";
  }
  renderLink('');
  srch.oninput=()=>renderLink(srch.value);
  modal.addEventListener('click',e=>{if(e.target===modal)modal.remove();});
  setTimeout(()=>srch.focus(),50);
 }
-function confirmOcrLink(i,productId,descKey){
- const bc=String(ocrItems[i]?.barcode||'').trim();
- const sup=String(ocrItems[i]?.supplier||document.getElementById('ocr-sup').value||'').trim();
+function confirmOcrLink(i,productId){
+ const item=ocrItems[i];
+ if(!item)return;
+ const descKey=String(item.description||item.sku||'').trim();
+ const bc=String(item.barcode||'').trim();
+ const sup=String(item.supplier||document.getElementById('ocr-sup')?.value||'').trim();
  saveSupplierMapping(sup, descKey, bc, productId);
  const p=allP.find(x=>x.id===productId);
- if(p){ocrItems[i]._linkedProd=p;ocrItems[i]._fromAlias=true;}
+ if(p){
+  item._linkedProd=p;
+  item._fromAlias=true;
+  delete item._unlinked;
+ }
  document.getElementById('ocr-link-modal')?.remove();
  renderOcrItems(ocrType==='sale');
  toast(`✓ Linked & remembered: "${descKey}" → ${p?.fields[F.P.NM]||''}`);
@@ -1974,10 +2186,13 @@ async function ocrImport(){
    const noteParts=[`${sup||'Sale'}: ${item.description||item.sku} · OCR Invoice`];
    if(item.barcode) noteParts.push(`Barcode: ${item.barcode}`);
    if(item.shade) noteParts.push(`Shade: ${item.shade}`);
+   if(item.list_price!=null && item.unit_price!=null && Number(item.list_price)!==Number(item.unit_price)){
+    noteParts.push(`List: ₪${item.list_price} (Paid: ₪${item.unit_price})`);
+   }
    const flds={[F.TX.NM]:`${ref}-${uid()}`,[F.TX.DT]:dtISO(dt),[F.TX.BR]:branch,[F.TX.QTY]:-qty,[F.TX.TY]:'Sale',[F.TX.SRC]:'Manual',[F.TX.REF]:ref,[F.TX.NO]:noteParts.join(' · ')};
    if(pr.prod){flds[F.TX.PR]=[pr.prod.id];stockOps.push({productId:pr.prod.id,branch,qtyChange:-qty});}
    if(cId)flds[F.TX.CU]=[cId];
-   if(item.unit_price)flds[F.TX.ASP]=item.unit_price;
+   if(item.unit_price!=null)flds[F.TX.ASP]=item.unit_price;
    if(emp&&F.TX.EMP)flds[F.TX.EMP]=emp;
    txFields.push(flds);
   }

@@ -72,27 +72,37 @@ ${prompt}
 CRITICAL EXTRACTION RULES:
 1. SUPPLIER & DATE (MANDATORY):
    - Extract the supplier/company name from the invoice header (e.g. at the top of the invoice) into the "supplier" property of EVERY item.
-   - Extract the invoice date from the invoice header/metadata (e.g. "04/02/2026", "27/07/2025") into the "invoice_date" property of EVERY item.
+   - Extract the invoice date from the invoice header/metadata (e.g. "04/02/2026", "27/07/2025", "09/09/2026") into the "invoice_date" property of EVERY item.
 
 2. PRODUCT ROWS & FREE GIFTS / TESTERS:
    - Extract every single product line (including free tester / bonus / gift rows with price 0.00).
    - If a product is a gift, tester, or bonus ("בונוס", "מתנה", "טסטר", or price 0.00): set unit_price = 0.00, line_total = 0.00, is_gift = true.
    - For quantities: numbers with .00 (e.g. 10.00, 2.00, 5.00, 1.00) are integer quantities 10, 2, 5, 1 (NOT 20, NOT 100).
+   - Exclude summary lines like "סה\"כ פריטים", "הנחה:", "לתשלום:", "מע\"מ" from product items, or mark them with is_product: false.
 
 3. BARCODE EXTRACTION (HIGH PRIORITY):
    - Check the barcode column ("בר קוד", "ברקוד", "Barcode", "EAN", "UPC", "קוד בינלאומי").
    - ALSO inspect the row for any 7 to 14 digit number (EAN-13, UPC, etc., e.g. 5901905031346, 4043993458034). If found, extract ALL digits into "barcode".
    - If NO barcode appears on the row, return "" (empty string). DO NOT invent a barcode and DO NOT put the item code/SKU into the barcode field.
 
-4. PRICES & DISCOUNTS (COST PRICE vs CONSUMER PRICE):
-   - Extract catalog / list / consumer price ("מחיר מחירון", "מחיר לצרכן", "מחירון") into "list_price" as number (or null if absent).
-   - Extract discount percent ("% הנחה", "הנחה") into "discount_pct" as number (e.g. 50, 40, 10; or 0 if none).
-   - Extract net purchase / cost price per unit ("מחיר נטו", "מחיר לאחר הנחה", "מחיר", "מחיר יח'") into "unit_price".
-   - If unit_price is missing but list_price and discount_pct exist: calculate unit_price = list_price * (1 - discount_pct/100).
-   - If unit_price is missing but line_total and qty exist: calculate unit_price = line_total / qty.
+4. PRICES, RECEIPT DISCOUNTS, AND NET ACTUAL PRICE:
+   - Extract catalog / list / shelf price ("מחיר מחירון", "מחיר לצרכן", "מחיר", "מחירון") into "list_price" as number.
+   - RECEIPT-WIDE DISCOUNT (e.g. "הנחה: הנחת 10% לחברי מועדון -61.40", "% הנחה", "הנחת מועדון"):
+     * Extract "receipt_discount_pct": number (e.g. 10, or 0 if none) on all items.
+     * Extract "receipt_discount_amount": number (e.g. 61.40, or 0 if none) on all items.
+     * Extract "receipt_total": number (e.g. 552.60 from "לתשלום:" or "סה\"כ לתשלום:") on all items.
+     * If a receipt-wide discount exists (e.g. 10%), apply it to each item:
+       - Set "discount_pct" = receipt_discount_pct (e.g. 10).
+       - Set "unit_price" = list_price * (1 - discount_pct/100) (e.g. 144 -> 129.60, 99 -> 89.10, 159 -> 143.10, 79 -> 71.10, 133 -> 119.70). Round to 2 decimal places.
+       - Set "line_total" = qty * unit_price.
+   - For supplier invoices with item discounts: extract "discount_pct", and set "unit_price" to the net unit cost after discount.
 
-5. EMPLOYEE / SALESPERSON (FOR SALES RECEIPTS):
-   - Look for employee / cashier / salesperson ("עובד", "עובדת", "קופאי", "קופאית", "מוכר", "מוכרת", "נציג/ה") and extract into "employee".
+5. EMPLOYEE / CASHIER vs CUSTOMER (CRITICAL):
+   - "מוכר/ת", "מוכר", "קופאי/ת", "קופאי", "עובד/ת", "עובד", "נציג/ה" means CASHIER / SALESPERSON.
+     Extract this name (e.g. "רבקי רבינוביץ") into "employee" property on EVERY item.
+   - NEVER put the cashier/seller/employee name into "customer_name"!
+   - Retail cash register receipts are almost always anonymous walk-in sales.
+   - "customer_name" MUST be "" (empty string) unless there is an explicit customer label like "לקוח/ה:", "לכבוד:", "שם לקוח:".
 
 6. FORMAT:
    - Numbers must be pure numbers without thousands commas (write 1188.00, never 1,188.00).
