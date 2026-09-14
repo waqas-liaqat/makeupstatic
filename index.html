@@ -805,21 +805,100 @@
  </div>
  </div>
 
- <!-- ── REPORTS & ANALYTICS ────────────────────────────── -->
+ <!-- ── REPORTS & ANALYTICS (EXECUTIVE MANAGEMENT SUITE) ────── -->
  <div class="page" id="page-reports">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px;">
-   <div class="tab-bar">
-    <button class="tab-btn active" id="rtab-daily" onclick="switchReportTab('daily')">📊 Daily Summary</button>
-    <button class="tab-btn" id="rtab-products" onclick="switchReportTab('products')">💄 Products Performance</button>
-    <button class="tab-btn" id="rtab-customers" onclick="switchReportTab('customers')">👥 Customer Ranking</button>
-    <button class="tab-btn" id="rtab-branches" onclick="switchReportTab('branches')">🏢 Branch Breakdown</button>
-    <button class="tab-btn" id="rtab-employees" onclick="switchReportTab('employees')">👩‍💼 Employees / Cashiers</button>
-    <button class="tab-btn" id="rtab-inventory" onclick="switchReportTab('inventory')">📦 Stock Valuation</button>
+  <!-- Universal 6-Way Filter Bar -->
+  <div class="card" style="padding:14px 18px;margin-bottom:16px;background:#ffffff;border:1px solid #e2e8f0;border-radius:14px;box-shadow:0 1px 4px rgba(15,23,42,0.03);">
+   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
+    <div style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:#0f172a;">
+     <span>🔍</span> Universal Filter &amp; Analytics Controls
+     <span id="rf-active-badge" class="badge bb" style="display:none;font-size:11px;">Filtered</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;">
+     <button class="btn btn-s btn-xs" onclick="resetReportFilters()" title="Reset all 6 filters to defaults">↺ Reset Filters</button>
+     <button class="btn btn-ok btn-xs" onclick="exportActiveReportToCSV()" title="Export current view to Excel with Hebrew UTF-8 BOM">📥 Export to Excel</button>
+    </div>
    </div>
-   <div style="display:flex;align-items:center;gap:10px;">
-    <button class="btn btn-ok" onclick="exportActiveReportToCSV()">📥 Export Report to Excel (CSV)</button>
+   <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));gap:10px;align-items:flex-end;">
+    <!-- 1. Date Preset -->
+    <div class="fld" style="margin:0;">
+     <label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">Date Preset</label>
+     <select id="rf-preset" onchange="onReportDatePresetChange()" style="padding:7px 8px;font-size:12.5px;border-radius:8px;border:1px solid #d1d5db;">
+      <option value="today">Today</option>
+      <option value="yesterday">Yesterday</option>
+      <option value="7d" selected>Last 7 Days</option>
+      <option value="30d">Last 30 Days</option>
+      <option value="month">This Month</option>
+      <option value="all">All Time</option>
+      <option value="custom">Custom Range...</option>
+     </select>
+    </div>
+    <!-- 2. Date From -->
+    <div class="fld" style="margin:0;">
+     <label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">From Date</label>
+     <input type="date" id="rf-from" onchange="onReportFilterChange()" style="padding:6px 8px;font-size:12px;border-radius:8px;border:1px solid #d1d5db;"/>
+    </div>
+    <!-- 3. Date To -->
+    <div class="fld" style="margin:0;">
+     <label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">To Date</label>
+     <input type="date" id="rf-to" onchange="onReportFilterChange()" style="padding:6px 8px;font-size:12px;border-radius:8px;border:1px solid #d1d5db;"/>
+    </div>
+    <!-- 4. Branch -->
+    <div class="fld" style="margin:0;">
+     <label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">Branch</label>
+     <select id="rf-branch" onchange="onReportFilterChange()" style="padding:7px 8px;font-size:12.5px;border-radius:8px;border:1px solid #d1d5db;">
+      <option value="">All Branches</option>
+      <option value="Beitar">Beitar</option>
+      <option value="Beit Shemesh">Beit Shemesh</option>
+      <option value="Jerusalem">Jerusalem</option>
+     </select>
+    </div>
+    <!-- 5. Brand -->
+    <div class="fld" style="margin:0;">
+     <label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">Brand</label>
+     <select id="rf-brand" onchange="onReportFilterChange()" style="padding:7px 8px;font-size:12.5px;border-radius:8px;border:1px solid #d1d5db;">
+      <option value="">All Brands</option>
+     </select>
+    </div>
+    <!-- 6. Product -->
+    <div class="fld" style="margin:0;">
+     <label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">Product</label>
+     <select id="rf-product" onchange="onReportFilterChange()" style="padding:7px 8px;font-size:12.5px;border-radius:8px;border:1px solid #d1d5db;">
+      <option value="">All Products</option>
+     </select>
+    </div>
+    <!-- 7. Customer -->
+    <div class="fld" style="margin:0;">
+     <label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">Customer</label>
+     <select id="rf-customer" onchange="onReportFilterChange()" style="padding:7px 8px;font-size:12.5px;border-radius:8px;border:1px solid #d1d5db;">
+      <option value="">All Customers</option>
+     </select>
+    </div>
+    <!-- 8. Salesperson / Employee -->
+    <div class="fld" style="margin:0;">
+     <label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">Salesperson</label>
+     <select id="rf-employee" onchange="onReportFilterChange()" style="padding:7px 8px;font-size:12.5px;border-radius:8px;border:1px solid #d1d5db;">
+      <option value="">All Staff</option>
+     </select>
+    </div>
    </div>
   </div>
+
+  <!-- 7 Dedicated Analytics Tabs -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px;">
+   <div class="tab-bar" style="flex-wrap:wrap;">
+    <button class="tab-btn active" id="rtab-sales" onclick="switchReportTab('sales')">📈 Sales</button>
+    <button class="tab-btn" id="rtab-profit" onclick="switchReportTab('profit')">💰 Profit &amp; P&amp;L</button>
+    <button class="tab-btn" id="rtab-products" onclick="switchReportTab('products')">💄 Products</button>
+    <button class="tab-btn" id="rtab-inventory" onclick="switchReportTab('inventory')">📦 Inventory</button>
+    <button class="tab-btn" id="rtab-customers" onclick="switchReportTab('customers')">👥 Customers</button>
+    <button class="tab-btn" id="rtab-branches" onclick="switchReportTab('branches')">🏢 Branches</button>
+    <button class="tab-btn" id="rtab-employees" onclick="switchReportTab('employees')">👩‍💼 Employees</button>
+    <button class="tab-btn" id="rtab-daily" onclick="switchReportTab('daily')">📅 Daily Summary</button>
+   </div>
+  </div>
+
+  <!-- Dynamic Content Container -->
   <div id="report-content-container">
    <!-- Rendered via renderActiveReport() -->
   </div>
@@ -1051,22 +1130,50 @@
  </div>
 </div>
 
-<!-- ── PRODUCT HISTORY MODAL ─────────────────────────────── -->
+<!-- ── PRODUCT HISTORY MODAL (WITH FINANCIAL & MOVEMENT DATA) ──── -->
 <div class="modal-ov" id="m-hist">
- <div class="modal m-lg">
+ <div class="modal m-2xl">
  <div class="m-hdr">
- <div><h2>📋 Product History</h2><p id="hist-title" style="color:#64748b;font-size:13px;margin:0;"></p></div>
- <button class="m-x" onclick="closeModal('m-hist')">×</button>
+  <div>
+   <div style="display:flex;align-items:center;gap:10px;">
+    <h2>📋 Complete Product Movement &amp; Financial History</h2>
+    <span id="hist-sku-badge" class="badge bb" style="font-family:monospace;font-size:12px;">SKU</span>
+   </div>
+   <p id="hist-title" style="color:#64748b;font-size:13px;margin-top:4px;"></p>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;">
+   <button class="btn btn-ok btn-sm" onclick="exportProductHistoryCSV()">📥 Export History (Excel)</button>
+   <button class="m-x" onclick="closeModal('m-hist')">×</button>
+  </div>
  </div>
  <div class="m-body" style="padding:0;">
- <div style="overflow-x:auto;">
- <table>
- <thead><tr><th>Date</th><th>Type</th><th>Branch</th><th style="text-align:center;">Qty</th><th>Source</th><th>Reference</th><th>Notes</th></tr></thead>
- <tbody id="hist-body"></tbody>
- </table>
+  <!-- Summary Pills -->
+  <div id="hist-summary-pills" style="padding:12px 20px;background:#f8fafc;border-bottom:1px solid #e2e8f0;display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;"></div>
+  <div style="overflow-x:auto;max-height:480px;">
+   <table>
+    <thead>
+     <tr>
+      <th>Date &amp; Time</th>
+      <th>Type</th>
+      <th>Branch</th>
+      <th style="text-align:center;">Quantity</th>
+      <th style="text-align:right;">List Price &#8362;</th>
+      <th style="text-align:right;">Actual Paid &#8362;</th>
+      <th style="text-align:right;">Cost Price &#8362;</th>
+      <th style="text-align:right;">Profit / Margin &#8362;</th>
+      <th>Customer</th>
+      <th>Employee</th>
+      <th>Reference</th>
+      <th>Notes</th>
+     </tr>
+    </thead>
+    <tbody id="hist-body"></tbody>
+   </table>
+  </div>
  </div>
+ <div class="m-foot">
+  <button class="btn btn-s" onclick="closeModal('m-hist')">Close</button>
  </div>
- <div class="m-foot"><button class="btn btn-s" onclick="closeModal('m-hist')">Close</button></div>
  </div>
 </div>
 
@@ -1199,27 +1306,91 @@
    </div>
   </div>
   <div class="m-body">
+   <!-- Inline Date Range & Branch Filter Bar for Product -->
+   <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:10px 14px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+    <div style="display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;color:#0f172a;">
+     <span>📅 Date Range for this Product:</span>
+     <select id="p360-date-preset" onchange="onP360PresetChange()" style="padding:5px 8px;font-size:12px;border:1px solid #d1d5db;border-radius:7px;outline:none;">
+      <option value="today">Today</option>
+      <option value="yesterday">Yesterday</option>
+      <option value="7d">Last 7 Days</option>
+      <option value="30d">Last 30 Days</option>
+      <option value="month">This Month</option>
+      <option value="all" selected>All Time</option>
+      <option value="custom">Custom Range...</option>
+     </select>
+     <input type="date" id="p360-date-from" onchange="applyP360DateFilter()" style="padding:4px 7px;font-size:11.5px;border:1px solid #d1d5db;border-radius:6px;"/>
+     <span>to</span>
+     <input type="date" id="p360-date-to" onchange="applyP360DateFilter()" style="padding:4px 7px;font-size:11.5px;border:1px solid #d1d5db;border-radius:6px;"/>
+    </div>
+    <div style="display:flex;align-items:center;gap:6px;font-size:12.5px;">
+     <span style="font-weight:600;color:#64748b;">Filter Branch:</span>
+     <select id="p360-branch-filter" onchange="applyP360DateFilter()" style="padding:5px 8px;font-size:12px;border:1px solid #d1d5db;border-radius:7px;">
+      <option value="">All Branches</option>
+      <option value="Beitar">Beitar</option>
+      <option value="Beit Shemesh">Beit Shemesh</option>
+      <option value="Jerusalem">Jerusalem</option>
+     </select>
+    </div>
+   </div>
+
    <!-- KPIs Grid -->
    <div id="p360-kpis" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px;margin-bottom:18px;">
     <!-- Rendered via JS -->
    </div>
 
-   <!-- Branch Stock Breakdown -->
+   <!-- Current Stock by Branch -->
    <div id="p360-stocks" style="margin-bottom:18px;">
     <!-- Rendered via JS -->
    </div>
 
-   <!-- Transaction History Table -->
+   <!-- Branch Sales Performance Table -->
+   <div class="card" style="margin-bottom:18px;">
+    <div class="card-hdr" style="background:#fcfcfd;">
+     <h3 style="font-size:13.5px;display:flex;align-items:center;gap:6px;">🏢 Performance by Branch in Selected Period</h3>
+     <span style="font-size:11.5px;color:#64748b;">Sales &amp; Gross Profit breakdown</span>
+    </div>
+    <div style="overflow-x:auto;">
+     <table>
+      <thead>
+       <tr>
+        <th>Branch Name</th>
+        <th style="text-align:center;">Units Sold</th>
+        <th style="text-align:right;">Sales Revenue &#8362;</th>
+        <th style="text-align:right;">COGS (Cost) &#8362;</th>
+        <th style="text-align:right;">Gross Profit &#8362;</th>
+        <th style="text-align:center;">Margin %</th>
+        <th style="text-align:center;">Stock on Hand</th>
+        <th style="text-align:right;">Stock Value (Cost)</th>
+       </tr>
+      </thead>
+      <tbody id="p360-branch-body"></tbody>
+     </table>
+    </div>
+   </div>
+
+   <!-- Complete Transaction History Table with Financials -->
    <div class="card">
     <div class="card-hdr">
-     <h3 style="font-size:14px;">Product Transaction History (Sales, Receipts, Transfers)</h3>
+     <h3 style="font-size:14px;">Full Movement &amp; Financial Ledger (Sales, Receipts, Transfers)</h3>
      <span id="p360-tx-count" style="font-size:12px;color:#64748b;">0 records</span>
     </div>
     <div style="overflow-x:auto;max-height:360px;">
      <table>
       <thead>
        <tr>
-        <th>Date &amp; Time</th><th>Type</th><th>Branch</th><th style="text-align:center;">Qty</th><th style="text-align:right;">Actual Paid Price</th><th>Customer</th><th>Employee</th><th>Reference</th><th>Notes</th>
+        <th>Date &amp; Time</th>
+        <th>Type</th>
+        <th>Branch</th>
+        <th style="text-align:center;">Qty</th>
+        <th style="text-align:right;">List Price &#8362;</th>
+        <th style="text-align:right;">Actual Paid &#8362;</th>
+        <th style="text-align:right;">Cost Price &#8362;</th>
+        <th style="text-align:right;">Line Profit &#8362;</th>
+        <th>Customer</th>
+        <th>Employee</th>
+        <th>Reference</th>
+        <th>Notes</th>
        </tr>
       </thead>
       <tbody id="p360-tx-body"></tbody>
@@ -1590,6 +1761,7 @@ async function loadAll(){
   setTimeout(retryPending, 500);
   if (lu) lu.textContent = new Date().toLocaleTimeString('en-GB');
   renderOverview();
+  populateReportFilterOptions();
   const pgRep = document.getElementById('page-reports');
   if (pgRep && pgRep.classList.contains('active')) renderActiveReport();
   showLoading(false);
@@ -1617,7 +1789,17 @@ let dashDateTo = '2026-08-31';
 let dashBranch = '';
 let dashOvertimeMetric = 'sales';
 let dashBrandMetric = 'revenue';
-let activeReportTab = 'daily';
+let activeReportTab = 'sales';
+let repDatePreset = 'all';
+let repDateFrom = '';
+let repDateTo = '';
+let repBranch = '';
+let repBrand = '';
+let repProduct = '';
+let repCustomer = '';
+let repEmployee = '';
+let repProfitVatMode = 'inc'; // 'inc' (including 17% VAT) or 'exc' (excluding 17% VAT)
+let repInvFilter = 'all'; // 'all', 'low', 'neg'
 let currentP360Id = null;
 let currentC360Id = null;
 let currentB360Name = null;
@@ -2240,12 +2422,81 @@ function renderLowInventoryAlerts(prods) {
 // ── ONE-CLICK 360° DRILL-DOWNS ─────────────────────────────────
 
 // 1. Product 360°
+let p360DateFrom = '';
+let p360DateTo = '';
+let p360Branch = '';
+
+function onP360PresetChange() {
+ const preset = document.getElementById('p360-date-preset')?.value || 'all';
+ const fEl = document.getElementById('p360-date-from');
+ const tEl = document.getElementById('p360-date-to');
+ const now = new Date();
+
+ if (preset === 'today') {
+  p360DateFrom = todayStr();
+  p360DateTo = todayStr();
+ } else if (preset === 'yesterday') {
+  const y = new Date(now.getTime() - 86400000);
+  p360DateFrom = y.toISOString().split('T')[0];
+  p360DateTo = p360DateFrom;
+ } else if (preset === '7d') {
+  const d = new Date(now.getTime() - 7 * 86400000);
+  p360DateFrom = d.toISOString().split('T')[0];
+  p360DateTo = todayStr();
+ } else if (preset === '30d') {
+  const d = new Date(now.getTime() - 30 * 86400000);
+  p360DateFrom = d.toISOString().split('T')[0];
+  p360DateTo = todayStr();
+ } else if (preset === 'month') {
+  p360DateFrom = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+  p360DateTo = todayStr();
+ } else if (preset === 'all') {
+  p360DateFrom = '';
+  p360DateTo = '';
+ }
+
+ if (fEl) fEl.value = p360DateFrom;
+ if (tEl) tEl.value = p360DateTo;
+ applyP360DateFilter();
+}
+
+function applyP360DateFilter() {
+ const fEl = document.getElementById('p360-date-from');
+ const tEl = document.getElementById('p360-date-to');
+ const bEl = document.getElementById('p360-branch-filter');
+ if (fEl) p360DateFrom = fEl.value;
+ if (tEl) p360DateTo = tEl.value;
+ if (bEl) p360Branch = bEl.value;
+ if (currentP360Id) renderProduct360Data(currentP360Id);
+}
+
 function openProduct360(productId) {
  let prod = allP.find(p => p.id === productId);
  if (!prod) prod = allP.find(p => p.fields[F.P.SKU] === productId);
  if (!prod) { toast('Product details not found in catalogue', 'warn'); return; }
 
  currentP360Id = prod.id;
+ p360DateFrom = '';
+ p360DateTo = '';
+ p360Branch = '';
+
+ const pPreset = document.getElementById('p360-date-preset');
+ if (pPreset) pPreset.value = 'all';
+ const fEl = document.getElementById('p360-date-from');
+ if (fEl) fEl.value = '';
+ const tEl = document.getElementById('p360-date-to');
+ if (tEl) tEl.value = '';
+ const bEl = document.getElementById('p360-branch-filter');
+ if (bEl) bEl.value = '';
+
+ renderProduct360Data(prod.id);
+ openModal('m-prod360');
+}
+
+function renderProduct360Data(productId) {
+ let prod = allP.find(p => p.id === productId);
+ if (!prod) return;
+
  const f = prod.fields;
  const pName = f[F.P.NM] || 'Unnamed Product';
  const sku = f[F.P.SKU] || '--';
@@ -2280,9 +2531,13 @@ function openProduct360(productId) {
  const salesForProd = txForProd.filter(tx => {
   if (tx.fields[F.TX.TY] !== 'Sale') return false;
   const dt = (tx.fields[F.TX.DT] || '').split('T')[0];
-  if (dashDateFrom && dt < dashDateFrom) return false;
-  if (dashDateTo && dt > dashDateTo) return false;
-  if (dashBranch && tx.fields[F.TX.BR] !== dashBranch) return false;
+  if (p360DateFrom && dt < p360DateFrom) return false;
+  if (p360DateTo && dt > p360DateTo) return false;
+  if (p360Branch) {
+   const br = tx.fields[F.TX.BR] || '';
+   const match = p360Branch === 'Beitar' ? (br === 'Beitar' || br === 'Beitar Illit') : (br === p360Branch);
+   if (!match) return false;
+  }
   return true;
  });
 
@@ -2299,7 +2554,7 @@ function openProduct360(productId) {
  const pAvgPaid = pUnitsSold > 0 ? (pRevenue / pUnitsSold).toFixed(2) : sp;
 
  document.getElementById('p360-kpis').innerHTML = `
-  <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Units Sold (Period)</div><div class="dash-kpi-val" style="font-size:22px;">${pUnitsSold}</div><div class="dash-kpi-sub">Total sales orders</div></div>
+  <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Units Sold (Period)</div><div class="dash-kpi-val" style="font-size:22px;">${pUnitsSold}</div><div class="dash-kpi-sub">${salesForProd.length} sales receipts</div></div>
   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Revenue (Period)</div><div class="dash-kpi-val" style="font-size:22px;color:#db2777;">₪ ${Math.round(pRevenue).toLocaleString()}</div><div class="dash-kpi-sub">Actual paid sum</div></div>
   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Gross Profit</div><div class="dash-kpi-val" style="font-size:22px;color:#16a34a;">₪ ${Math.round(pProfit).toLocaleString()}</div><div class="dash-kpi-sub">${pMargin}% Margin</div></div>
   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Avg. Paid Price</div><div class="dash-kpi-val" style="font-size:22px;">₪ ${pAvgPaid}</div><div class="dash-kpi-sub">List Price: ₪${sp}</div></div>
@@ -2319,29 +2574,124 @@ function openProduct360(productId) {
   </div>
  `;
 
+ // Branch Breakdown Table for this Product
+ const branchNames = [
+  { name: 'Beit Shemesh', stock: bs },
+  { name: 'Jerusalem', stock: j },
+  { name: 'Beitar Illit', stock: b }
+ ];
+
+ const branchRows = branchNames.map(brInfo => {
+  const norm = brInfo.name === 'Beitar Illit' ? 'Beitar' : brInfo.name;
+  let brUnits = 0, brRev = 0, brCOGS = 0;
+
+  salesForProd.forEach(tx => {
+   const br = tx.fields[F.TX.BR] || '';
+   const match = norm === 'Beitar' ? (br === 'Beitar' || br === 'Beitar Illit') : (br === norm);
+   if (match) {
+    const q = Math.abs(tx.fields[F.TX.QTY] || 1);
+    const pr = getTxPrice(tx, prod);
+    brUnits += q;
+    brRev += q * pr;
+    brCOGS += q * cp;
+   }
+  });
+
+  const brProfit = brRev - brCOGS;
+  const brMargin = brRev > 0 ? ((brProfit / brRev) * 100).toFixed(1) : '0.0';
+  const brValCost = brInfo.stock * cp;
+
+  return {
+   name: brInfo.name,
+   units: brUnits,
+   rev: brRev,
+   cogs: brCOGS,
+   profit: brProfit,
+   margin: brMargin,
+   stock: brInfo.stock,
+   valCost: brValCost
+  };
+ });
+
+ const branchTbody = document.getElementById('p360-branch-body');
+ if (branchTbody) {
+  branchTbody.innerHTML = branchRows.map(row => `
+   <tr>
+    <td style="font-weight:700;font-size:13.5px;color:#0f172a;">📍 ${row.name}</td>
+    <td style="text-align:center;font-weight:700;">${row.units}</td>
+    <td style="text-align:right;font-weight:700;color:#db2777;">₪ ${Math.round(row.rev).toLocaleString()}</td>
+    <td style="text-align:right;color:#64748b;">₪ ${Math.round(row.cogs).toLocaleString()}</td>
+    <td style="text-align:right;font-weight:700;color:#16a34a;">₪ ${Math.round(row.profit).toLocaleString()}</td>
+    <td style="text-align:center;"><span class="badge bg">${row.margin}%</span></td>
+    <td style="text-align:center;font-weight:700;color:#0f172a;">${row.stock}</td>
+    <td style="text-align:right;color:#64748b;">₪ ${Math.round(row.valCost).toLocaleString()}</td>
+   </tr>
+  `).join('') + `
+   <tr style="background:#f8fafc;font-weight:700;border-top:2px solid #e2e8f0;">
+    <td>Total / All Branches</td>
+    <td style="text-align:center;">${pUnitsSold}</td>
+    <td style="text-align:right;color:#db2777;">₪ ${Math.round(pRevenue).toLocaleString()}</td>
+    <td style="text-align:right;color:#64748b;">₪ ${Math.round(pCOGS).toLocaleString()}</td>
+    <td style="text-align:right;color:#16a34a;">₪ ${Math.round(pProfit).toLocaleString()}</td>
+    <td style="text-align:center;"><span class="badge bg">${pMargin}%</span></td>
+    <td style="text-align:center;">${totStock}</td>
+    <td style="text-align:right;">₪ ${Math.round(valAtCost).toLocaleString()}</td>
+   </tr>
+  `;
+ }
+
+ // Financial Movement Ledger
  document.getElementById('p360-tx-count').textContent = `${txForProd.length} records`;
  document.getElementById('p360-tx-body').innerHTML = txForProd.length ? txForProd.map(tx => {
   const tf = tx.fields;
+  const ty = tf[F.TX.TY] || '';
   const qty = tf[F.TX.QTY];
+  const absQty = Math.abs(qty || 1);
   const qs = qty != null ? (qty > 0 ? `+${qty}` : String(qty)) : '--';
   const qc = qty < 0 ? 'color:#ef4444;font-weight:700;' : (qty > 0 ? 'color:#10b981;font-weight:700;' : '');
-  const price = getTxPrice(tx, prod);
+  const paidPrice = getTxPrice(tx, prod);
+
+  let listCell = '--';
+  let paidCell = '--';
+  let costCell = '--';
+  let profitCell = '--';
+
+  if (ty === 'Sale') {
+   listCell = sp ? ('₪ ' + sp) : '--';
+   paidCell = paidPrice ? ('₪ ' + paidPrice.toFixed(2)) : '--';
+   costCell = cp ? ('₪ ' + cp) : '--';
+   const profit = absQty * (paidPrice - cp);
+   const mPct = paidPrice > 0 ? (((paidPrice - cp) / paidPrice) * 100).toFixed(0) : '0';
+   const color = profit >= 0 ? '#16a34a' : '#ef4444';
+   profitCell = '<strong style="color:'+color+';">₪ ' + profit.toFixed(2) + '</strong> <span style="font-size:10.5px;color:#64748b;">(' + mPct + '%)</span>';
+  } else if (ty === 'PO Receipt' || ty === 'Stock' || ty === 'Purchase') {
+   costCell = (tf[F.TX.COST] || cp) ? ('₪ ' + (tf[F.TX.COST] || cp)) : '--';
+   profitCell = '<span style="font-size:11px;color:#64748b;">Stock In</span>';
+  } else if (ty === 'Transfer') {
+   costCell = cp ? ('₪ ' + cp) : '--';
+   profitCell = '<span style="font-size:11px;color:#64748b;">Transfer</span>';
+  } else {
+   costCell = cp ? ('₪ ' + cp) : '--';
+   profitCell = '<span style="font-size:11px;color:#64748b;">Adjustment</span>';
+  }
+
   return `
    <tr>
     <td style="white-space:nowrap;font-size:12.5px;">${fmtDT(tf[F.TX.DT])}</td>
-    <td>${tyB(tf[F.TX.TY])}</td>
+    <td>${tyB(ty)}</td>
     <td>${brB(tf[F.TX.BR])}</td>
     <td style="text-align:center;font-size:14px;${qc}">${qs}</td>
-    <td style="text-align:right;font-weight:600;">₪ ${price ? price.toFixed(2) : '--'}</td>
+    <td style="text-align:right;color:#64748b;">${listCell}</td>
+    <td style="text-align:right;font-weight:700;color:#0f172a;">${paidCell}</td>
+    <td style="text-align:right;color:#64748b;">${costCell}</td>
+    <td style="text-align:right;">${profitCell}</td>
     <td>${cuHtml(tx)}</td>
     <td style="font-size:12px;color:#334155;">${esc(tf[F.TX.EMP] || '--')}</td>
     <td style="font-size:12px;color:#64748b;">${esc(tf[F.TX.REF] || '--')}</td>
     <td style="font-size:11.5px;color:#94a3b8;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${esc(tf[F.TX.NO]||'')}">${esc(tf[F.TX.NO] || '--')}</td>
    </tr>
   `;
- }).join('') : `<tr><td colspan="9"><div class="empty">No transaction history for this product</div></td></tr>`;
-
- openModal('m-prod360');
+ }).join('') : `<tr><td colspan="12"><div class="empty">No transaction history for this product</div></td></tr>`;
 }
 
 // 2. Customer 360°
@@ -2551,370 +2901,1458 @@ function showReportsTab(tab) {
 }
 
 function switchReportTab(tab) {
- if (tab === 'sales' || tab === 'profit') tab = 'daily';
+ if (!tab) tab = 'sales';
  activeReportTab = tab;
  document.querySelectorAll('#page-reports .tab-btn').forEach(btn => btn.classList.remove('active'));
- const activeBtn = document.getElementById(`rtab-${tab}`);
+ const activeBtn = document.getElementById('rtab-' + tab);
  if (activeBtn) activeBtn.classList.add('active');
  renderActiveReport();
+}
+
+function populateReportFilterOptions() {
+ // 1. Brands Dropdown
+ const brEl = document.getElementById('rf-brand');
+ if (brEl) {
+  const currentVal = brEl.value;
+  const brands = [...new Set(allP.map(p => p.fields[F.P.BR]).filter(Boolean))].sort((a, b) => a.localeCompare(b));
+  let h = '<option value="">All Brands (' + brands.length + ')</option>';
+  brands.forEach(b => {
+   h += '<option value="' + esc(b) + '"' + (currentVal === b ? ' selected' : '') + '>' + esc(b) + '</option>';
+  });
+  brEl.innerHTML = h;
+ }
+
+ // 2. Products Dropdown
+ const prEl = document.getElementById('rf-product');
+ if (prEl) {
+  const currentVal = prEl.value;
+  const prods = [...allP].sort((a, b) => {
+   const na = a.fields[F.P.NM] || '';
+   const nb = b.fields[F.P.NM] || '';
+   return na.localeCompare(nb);
+  });
+  let h = '<option value="">All Products (' + prods.length + ')</option>';
+  prods.forEach(p => {
+   const sku = p.fields[F.P.SKU] || '--';
+   const name = p.fields[F.P.NM] || 'Unnamed';
+   h += '<option value="' + p.id + '"' + (currentVal === p.id ? ' selected' : '') + '>' + esc(sku) + ' - ' + esc(name) + '</option>';
+  });
+  prEl.innerHTML = h;
+ }
+
+ // 3. Customers Dropdown
+ const cuEl = document.getElementById('rf-customer');
+ if (cuEl) {
+  const currentVal = cuEl.value;
+  const custs = [...allCU].sort((a, b) => {
+   const na = a.fields[F.CU.NM] || '';
+   const nb = b.fields[F.CU.NM] || '';
+   return na.localeCompare(nb);
+  });
+  let h = '<option value="">All Customers (' + custs.length + ')</option>';
+  custs.forEach(c => {
+   const name = c.fields[F.CU.NM] || 'Customer';
+   const phone = c.fields[F.CU.PH] || '--';
+   h += '<option value="' + c.id + '"' + (currentVal === c.id ? ' selected' : '') + '>' + esc(name) + ' (' + esc(phone) + ')</option>';
+  });
+  cuEl.innerHTML = h;
+ }
+
+ // 4. Employees Dropdown
+ const empEl = document.getElementById('rf-employee');
+ if (empEl) {
+  const currentVal = empEl.value;
+  const emps = [...new Set(allTX.map(t => (t.fields[F.TX.EMP] || '').trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b));
+  let h = '<option value="">All Staff / Cashiers (' + emps.length + ')</option>';
+  emps.forEach(e => {
+   h += '<option value="' + esc(e) + '"' + (currentVal === e ? ' selected' : '') + '>' + esc(e) + '</option>';
+  });
+  empEl.innerHTML = h;
+ }
+}
+
+function onReportDatePresetChange() {
+ const preset = document.getElementById('rf-preset')?.value || 'all';
+ repDatePreset = preset;
+ const fEl = document.getElementById('rf-from');
+ const tEl = document.getElementById('rf-to');
+ const now = new Date();
+
+ if (preset === 'today') {
+  repDateFrom = today();
+  repDateTo = today();
+ } else if (preset === 'yesterday') {
+  const y = new Date(now.getTime() - 86400000);
+  repDateFrom = y.toISOString().split('T')[0];
+  repDateTo = repDateFrom;
+ } else if (preset === '7d') {
+  const d = new Date(now.getTime() - 7 * 86400000);
+  repDateFrom = d.toISOString().split('T')[0];
+  repDateTo = today();
+ } else if (preset === '30d') {
+  const d = new Date(now.getTime() - 30 * 86400000);
+  repDateFrom = d.toISOString().split('T')[0];
+  repDateTo = today();
+ } else if (preset === 'month') {
+  repDateFrom = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+  repDateTo = today();
+ } else if (preset === 'aug2026') {
+  repDateFrom = '2026-08-01';
+  repDateTo = '2026-08-31';
+ } else if (preset === 'all') {
+  repDateFrom = '';
+  repDateTo = '';
+ }
+
+ if (fEl) fEl.value = repDateFrom;
+ if (tEl) tEl.value = repDateTo;
+ onReportFilterChange();
+}
+
+function onReportFilterChange() {
+ const fEl = document.getElementById('rf-from');
+ const tEl = document.getElementById('rf-to');
+ const bEl = document.getElementById('rf-branch');
+ const brEl = document.getElementById('rf-brand');
+ const pEl = document.getElementById('rf-product');
+ const cEl = document.getElementById('rf-customer');
+ const eEl = document.getElementById('rf-employee');
+
+ if (fEl) repDateFrom = fEl.value;
+ if (tEl) repDateTo = tEl.value;
+ if (bEl) repBranch = bEl.value;
+ if (brEl) repBrand = brEl.value;
+ if (pEl) repProduct = pEl.value;
+ if (cEl) repCustomer = cEl.value;
+ if (eEl) repEmployee = eEl.value;
+
+ // Update active filters badge
+ let activeCount = 0;
+ if (repDateFrom || repDateTo) activeCount++;
+ if (repBranch) activeCount++;
+ if (repBrand) activeCount++;
+ if (repProduct) activeCount++;
+ if (repCustomer) activeCount++;
+ if (repEmployee) activeCount++;
+
+ const badge = document.getElementById('rf-active-badge');
+ if (badge) {
+  if (activeCount > 0) {
+   badge.textContent = activeCount + (activeCount === 1 ? ' Filter Active' : ' Filters Active');
+   badge.style.display = 'inline-block';
+  } else {
+   badge.style.display = 'none';
+  }
+ }
+
+ renderActiveReport();
+}
+
+function resetReportFilters() {
+ repDatePreset = 'all';
+ repDateFrom = '';
+ repDateTo = '';
+ repBranch = '';
+ repBrand = '';
+ repProduct = '';
+ repCustomer = '';
+ repEmployee = '';
+
+ const pPreset = document.getElementById('rf-preset');
+ if (pPreset) pPreset.value = 'all';
+ const fEl = document.getElementById('rf-from');
+ if (fEl) fEl.value = '';
+ const tEl = document.getElementById('rf-to');
+ if (tEl) tEl.value = '';
+ const bEl = document.getElementById('rf-branch');
+ if (bEl) bEl.value = '';
+ const brEl = document.getElementById('rf-brand');
+ if (brEl) brEl.value = '';
+ const prEl = document.getElementById('rf-product');
+ if (prEl) prEl.value = '';
+ const cuEl = document.getElementById('rf-customer');
+ if (cuEl) cuEl.value = '';
+ const empEl = document.getElementById('rf-employee');
+ if (empEl) empEl.value = '';
+
+ const badge = document.getElementById('rf-active-badge');
+ if (badge) badge.style.display = 'none';
+
+ renderActiveReport();
+}
+
+function setProfitVatMode(mode) {
+ repProfitVatMode = mode;
+ renderActiveReport();
+}
+
+function setInvReportFilter(filter) {
+ repInvFilter = filter;
+ renderActiveReport();
+}
+
+function getFilteredReportSales() {
+ return allTX.filter(tx => {
+  const f = tx.fields;
+  if (f[F.TX.TY] !== 'Sale') return false;
+
+  // 1. Date Range
+  const dt = (f[F.TX.DT] || '').split('T')[0];
+  if (repDateFrom && dt < repDateFrom) return false;
+  if (repDateTo && dt > repDateTo) return false;
+
+  // 2. Branch
+  if (repBranch) {
+   const br = f[F.TX.BR] || '';
+   const match = repBranch === 'Beitar' ? (br === 'Beitar' || br === 'Beitar Illit') : (br === repBranch);
+   if (!match) return false;
+  }
+
+  // 3. Product or Brand
+  const prod = resolveProdFromTx(tx);
+  if (repBrand) {
+   const brand = prod ? (prod.fields[F.P.BR] || '') : '';
+   if (brand !== repBrand) return false;
+  }
+
+  if (repProduct) {
+   const pIds = f[F.TX.PR] || [];
+   const hasId = Array.isArray(pIds) ? pIds.includes(repProduct) : pIds === repProduct;
+   if (!hasId && (!prod || prod.id !== repProduct)) return false;
+  }
+
+  // 4. Customer
+  if (repCustomer) {
+   const cIds = f[F.TX.CU] || [];
+   const hasCId = Array.isArray(cIds) ? cIds.includes(repCustomer) : cIds === repCustomer;
+   if (!hasCId) return false;
+  }
+
+  // 5. Employee / Salesperson
+  if (repEmployee) {
+   const emp = (f[F.TX.EMP] || '').trim();
+   if (emp !== repEmployee) return false;
+  }
+
+  return true;
+ });
 }
 
 function renderActiveReport() {
  const container = document.getElementById('report-content-container');
  if (!container) return;
 
- const sales = getFilteredSales(dashDateFrom, dashDateTo, dashBranch);
+ // Ensure dropdowns are populated if empty
+ const brEl = document.getElementById('rf-brand');
+ if (brEl && brEl.options.length <= 1 && allP.length > 0) {
+  populateReportFilterOptions();
+ }
 
- if (activeReportTab === 'daily') {
-  // Daily Breakdown
-  const map = {};
-  sales.forEach(tx => {
-   const f = tx.fields;
-   const dt = (f[F.TX.DT] || '').split('T')[0] || 'Unknown';
-   const qty = Math.abs(f[F.TX.QTY] || 1);
-   const prod = resolveProdFromTx(tx);
-   const price = getTxPrice(tx, prod);
-   const cost = (prod && prod.fields[F.P.CP] != null) ? parseFloat(prod.fields[F.P.CP]) : 0;
-   const rev = qty * price;
+ const sales = getFilteredReportSales();
 
-   if (!map[dt]) map[dt] = { date: dt, orders: 0, units: 0, rev: 0, cost: 0 };
-   map[dt].orders += 1;
-   map[dt].units += qty;
-   map[dt].rev += rev;
-   map[dt].cost += qty * cost;
-  });
-
-  const rows = Object.values(map).sort((a, b) => b.date.localeCompare(a.date));
-  container.innerHTML = `
-   <div class="card">
-    <div class="card-hdr"><h3>Daily Sales &amp; Profit Summary (${rows.length} days)</h3></div>
-    <div style="overflow-x:auto;">
-     <table>
-      <thead>
-       <tr>
-        <th>Date</th><th style="text-align:center;">Transactions</th><th style="text-align:center;">Units Sold</th><th style="text-align:right;">Sales Revenue &#8362;</th><th style="text-align:right;">COGS &#8362;</th><th style="text-align:right;">Gross Profit &#8362;</th><th style="text-align:center;">Margin %</th>
-       </tr>
-      </thead>
-      <tbody>
-       ${rows.length ? rows.map(r => {
-        const profit = r.rev - r.cost;
-        const margin = r.rev > 0 ? ((profit / r.rev) * 100).toFixed(1) : '0.0';
-        return `
-         <tr>
-          <td style="font-weight:600;font-size:13px;">${fmtD(r.date)}</td>
-          <td style="text-align:center;">${r.orders}</td>
-          <td style="text-align:center;font-weight:700;">${r.units}</td>
-          <td style="text-align:right;font-weight:700;color:#0f172a;">₪ ${Math.round(r.rev).toLocaleString()}</td>
-          <td style="text-align:right;color:#64748b;">₪ ${Math.round(r.cost).toLocaleString()}</td>
-          <td style="text-align:right;font-weight:700;color:#16a34a;">₪ ${Math.round(profit).toLocaleString()}</td>
-          <td style="text-align:center;"><span class="badge bg">${margin}%</span></td>
-         </tr>
-        `;
-       }).join('') : `<tr><td colspan="7"><div class="empty">No sales records in selected date range</div></td></tr>`}
-      </tbody>
-     </table>
-    </div>
-   </div>
-  `;
+ if (activeReportTab === 'sales') {
+  renderSalesReport(container, sales);
+ } else if (activeReportTab === 'profit') {
+  renderProfitReport(container, sales);
  } else if (activeReportTab === 'products') {
-  // Products Performance
-  const map = {};
-  sales.forEach(tx => {
-   const f = tx.fields;
-   const qty = Math.abs(f[F.TX.QTY] || 1);
-   const prod = resolveProdFromTx(tx);
-   const price = getTxPrice(tx, prod);
-   const cost = (prod && prod.fields[F.P.CP] != null) ? parseFloat(prod.fields[F.P.CP]) : 0;
-   const rev = qty * price;
-   const pId = prod ? prod.id : (f[F.TX.PR] || [])[0];
-   const sku = prod ? (prod.fields[F.P.SKU] || '--') : (f[F.TX.SKUL] || ['--'])[0];
-   const name = prod ? (prod.fields[F.P.NM] || 'Unknown') : pNmTx(tx);
-   const brand = prod ? (prod.fields[F.P.BR] || '') : '';
-
-   const key = pId || sku || name;
-   if (!map[key]) map[key] = { pId, sku, name, brand, units: 0, rev: 0, cost: 0, prod };
-   map[key].units += qty;
-   map[key].rev += rev;
-   map[key].cost += qty * cost;
-  });
-
-  const rows = Object.values(map).sort((a, b) => b.units - a.units);
-  container.innerHTML = `
-   <div class="card">
-    <div class="card-hdr"><h3>Product Sales &amp; Margin Performance (${rows.length} products sold)</h3></div>
-    <div style="overflow-x:auto;">
-     <table>
-      <thead>
-       <tr>
-        <th>SKU</th><th>Product Name</th><th>Brand</th><th style="text-align:center;">Units Sold</th><th style="text-align:right;">Revenue &#8362;</th><th style="text-align:right;">Cost &#8362;</th><th style="text-align:right;">Gross Profit &#8362;</th><th style="text-align:center;">Margin %</th><th style="text-align:center;">Action</th>
-       </tr>
-      </thead>
-      <tbody>
-       ${rows.length ? rows.map(r => {
-        const profit = r.rev - r.cost;
-        const margin = r.rev > 0 ? ((profit / r.rev) * 100).toFixed(1) : '0.0';
-        return `
-         <tr>
-          <td class="mono" style="color:#db2777;font-weight:700;">${esc(r.sku)}</td>
-          <td style="font-weight:600;font-size:13px;">${esc(r.name)}</td>
-          <td style="font-size:12.5px;color:#64748b;">${esc(r.brand)}</td>
-          <td style="text-align:center;font-weight:700;">${r.units}</td>
-          <td style="text-align:right;font-weight:700;">₪ ${Math.round(r.rev).toLocaleString()}</td>
-          <td style="text-align:right;color:#64748b;">₪ ${Math.round(r.cost).toLocaleString()}</td>
-          <td style="text-align:right;font-weight:700;color:#16a34a;">₪ ${Math.round(profit).toLocaleString()}</td>
-          <td style="text-align:center;"><span class="badge bg">${margin}%</span></td>
-          <td style="text-align:center;"><button class="btn btn-s btn-xs" onclick="openProduct360('${r.pId || ''}')">🔍 360°</button></td>
-         </tr>
-        `;
-       }).join('') : `<tr><td colspan="9"><div class="empty">No product sales in this period</div></td></tr>`}
-      </tbody>
-     </table>
-    </div>
-   </div>
-  `;
- } else if (activeReportTab === 'customers') {
-  // Customer Analytics
-  const map = {};
-  allCU.forEach(cu => {
-   map[cu.id] = { cId: cu.id, name: cu.fields[F.CU.NM] || 'Customer', phone: cu.fields[F.CU.PH] || '--', orders: 0, spend: 0, lastDt: '' };
-  });
-
-  allTX.forEach(tx => {
-   const f = tx.fields;
-   if (f[F.TX.TY] !== 'Sale') return;
-   const cIds = f[F.TX.CU] || [];
-   const cId = Array.isArray(cIds) ? cIds[0] : cIds;
-   if (!cId) return;
-
-   const qty = Math.abs(f[F.TX.QTY] || 1);
-   const prod = resolveProdFromTx(tx);
-   const rev = qty * getTxPrice(tx, prod);
-
-   if (!map[cId]) map[cId] = { cId, name: 'Customer', phone: '--', orders: 0, spend: 0, lastDt: '' };
-   map[cId].orders += 1;
-   map[cId].spend += rev;
-   const dt = (f[F.TX.DT] || '').split('T')[0];
-   if (dt && (!map[cId].lastDt || dt > map[cId].lastDt)) map[cId].lastDt = dt;
-  });
-
-  const rows = Object.values(map).sort((a, b) => b.spend - a.spend);
-  container.innerHTML = `
-   <div class="card">
-    <div class="card-hdr"><h3>Customer Lifetime Spending &amp; Orders (${rows.length} customers)</h3></div>
-    <div style="overflow-x:auto;">
-     <table>
-      <thead>
-       <tr>
-        <th>Customer Name</th><th>Phone</th><th style="text-align:center;">Orders Count</th><th style="text-align:right;">Lifetime Spend &#8362;</th><th style="text-align:right;">Avg Basket &#8362;</th><th>Last Order</th><th style="text-align:center;">Action</th>
-       </tr>
-      </thead>
-      <tbody>
-       ${rows.map(r => {
-        const avg = r.orders > 0 ? (r.spend / r.orders).toFixed(2) : '0.00';
-        return `
-         <tr>
-          <td style="font-weight:600;font-size:13.5px;color:#0f172a;">${esc(r.name)}</td>
-          <td class="mono" style="font-size:12.5px;">${esc(r.phone)}</td>
-          <td style="text-align:center;font-weight:600;">${r.orders}</td>
-          <td style="text-align:right;font-weight:700;color:#db2777;">₪ ${Math.round(r.spend).toLocaleString()}</td>
-          <td style="text-align:right;color:#64748b;">₪ ${avg}</td>
-          <td style="font-size:12.5px;color:#64748b;">${r.lastDt ? fmtD(r.lastDt) : '--'}</td>
-          <td style="text-align:center;"><button class="btn btn-s btn-xs" onclick="openCustomer360('${r.cId}')">🔍 360°</button></td>
-         </tr>
-        `;
-       }).join('')}
-      </tbody>
-     </table>
-    </div>
-   </div>
-  `;
- } else if (activeReportTab === 'branches') {
-  // Branch Breakdown
-  const branches = ['Beit Shemesh', 'Jerusalem', 'Beitar Illit'];
-  const branchData = branches.map(brName => {
-   const normName = (brName === 'Beitar Illit' || brName === 'Beitar') ? 'Beitar' : brName;
-   let bSales = 0, bCOGS = 0, bUnits = 0, bOrders = 0;
-
-   sales.forEach(tx => {
-    const f = tx.fields;
-    const br = f[F.TX.BR];
-    const match = normName === 'Beitar' ? (br === 'Beitar' || br === 'Beitar Illit') : (br === normName);
-    if (!match) return;
-
-    const qty = Math.abs(f[F.TX.QTY] || 1);
-    const prod = resolveProdFromTx(tx);
-    const price = getTxPrice(tx, prod);
-    const cost = (prod && prod.fields[F.P.CP] != null) ? parseFloat(prod.fields[F.P.CP]) : 0;
-    bSales += qty * price;
-    bCOGS += qty * cost;
-    bUnits += qty;
-    bOrders += 1;
-   });
-
-   const fld = normName === 'Beit Shemesh' ? F.P.BS : (normName === 'Jerusalem' ? F.P.J : F.P.B);
-   let unitsInStock = 0, valCost = 0, valRetail = 0;
-   allP.forEach(p => {
-    const st = p.fields[fld] ?? 0;
-    unitsInStock += st;
-    valCost += st * (p.fields[F.P.CP] || 0);
-    valRetail += st * (p.fields[F.P.SP] || 0);
-   });
-
-   const profit = bSales - bCOGS;
-   const margin = bSales > 0 ? ((profit / bSales) * 100).toFixed(1) : '0.0';
-
-   return {
-    name: brName,
-    sales: bSales,
-    cogs: bCOGS,
-    profit,
-    margin,
-    unitsSold: bUnits,
-    orders: bOrders,
-    unitsInStock,
-    valCost,
-    valRetail
-   };
-  });
-
-  container.innerHTML = `
-   <div class="card">
-    <div class="card-hdr"><h3>Branch Performance &amp; Inventory Comparison</h3></div>
-    <div style="overflow-x:auto;">
-     <table>
-      <thead>
-       <tr>
-        <th>Branch Name</th><th style="text-align:right;">Sales Revenue &#8362;</th><th style="text-align:right;">COGS &#8362;</th><th style="text-align:right;">Gross Profit &#8362;</th><th style="text-align:center;">Margin %</th><th style="text-align:center;">Units Sold</th><th style="text-align:center;">Stock Units</th><th style="text-align:right;">Stock Value (Cost)</th><th style="text-align:right;">Stock Value (Retail)</th><th style="text-align:center;">Action</th>
-       </tr>
-      </thead>
-      <tbody>
-       ${branchData.map(b => `
-        <tr>
-         <td style="font-weight:700;font-size:14px;color:#0f172a;">📍 ${b.name}</td>
-         <td style="text-align:right;font-weight:700;color:#db2777;">₪ ${Math.round(b.sales).toLocaleString()}</td>
-         <td style="text-align:right;color:#64748b;">₪ ${Math.round(b.cogs).toLocaleString()}</td>
-         <td style="text-align:right;font-weight:700;color:#16a34a;">₪ ${Math.round(b.profit).toLocaleString()}</td>
-         <td style="text-align:center;"><span class="badge bg">${b.margin}%</span></td>
-         <td style="text-align:center;font-weight:600;">${b.unitsSold}</td>
-         <td style="text-align:center;font-weight:700;">${b.unitsInStock}</td>
-         <td style="text-align:right;">₪ ${Math.round(b.valCost).toLocaleString()}</td>
-         <td style="text-align:right;font-weight:600;color:#db2777;">₪ ${Math.round(b.valRetail).toLocaleString()}</td>
-         <td style="text-align:center;"><button class="btn btn-s btn-xs" onclick="openBranch360('${b.name}')">🔍 360°</button></td>
-        </tr>
-       `).join('')}
-      </tbody>
-     </table>
-    </div>
-   </div>
-  `;
- } else if (activeReportTab === 'employees') {
-  // Salesperson / Cashier report
-  const map = {};
-  sales.forEach(tx => {
-   const f = tx.fields;
-   const emp = (f[F.TX.EMP] || 'General Staff').trim();
-   const qty = Math.abs(f[F.TX.QTY] || 1);
-   const prod = resolveProdFromTx(tx);
-   const rev = qty * getTxPrice(tx, prod);
-
-   if (!map[emp]) map[emp] = { name: emp, orders: 0, units: 0, sales: 0 };
-   map[emp].orders += 1;
-   map[emp].units += qty;
-   map[emp].sales += rev;
-  });
-
-  const rows = Object.values(map).sort((a, b) => b.sales - a.sales);
-  container.innerHTML = `
-   <div class="card">
-    <div class="card-hdr"><h3>Sales Performance by Salesperson / Employee (${rows.length} staff members)</h3></div>
-    <div style="overflow-x:auto;">
-     <table>
-      <thead>
-       <tr>
-        <th>Employee / Salesperson</th><th style="text-align:center;">Transactions Count</th><th style="text-align:center;">Units Sold</th><th style="text-align:right;">Total Sales &#8362;</th><th style="text-align:right;">Average Ticket &#8362;</th>
-       </tr>
-      </thead>
-      <tbody>
-       ${rows.length ? rows.map(r => {
-        const avg = r.orders > 0 ? (r.sales / r.orders).toFixed(2) : '0.00';
-        return `
-         <tr>
-          <td style="font-weight:700;font-size:13.5px;color:#0f172a;">👤 ${esc(r.name)}</td>
-          <td style="text-align:center;font-weight:600;">${r.orders}</td>
-          <td style="text-align:center;">${r.units}</td>
-          <td style="text-align:right;font-weight:700;color:#db2777;">₪ ${Math.round(r.sales).toLocaleString()}</td>
-          <td style="text-align:right;color:#64748b;">₪ ${avg}</td>
-         </tr>
-        `;
-       }).join('') : `<tr><td colspan="5"><div class="empty">No employee records in this period</div></td></tr>`}
-      </tbody>
-     </table>
-    </div>
-   </div>
-  `;
+  renderProductsReport(container, sales);
  } else if (activeReportTab === 'inventory') {
-  // Stock Valuation Table
-  const rows = allP.map(p => {
-   const f = p.fields;
-   const b = f[F.P.B] ?? 0, bs = f[F.P.BS] ?? 0, j = f[F.P.J] ?? 0, tot = b + bs + j;
-   const cp = f[F.P.CP] || 0;
-   const sp = f[F.P.SP] || 0;
-   return {
-    pId: p.id,
-    sku: f[F.P.SKU] || '--',
-    name: f[F.P.NM] || '--',
-    brand: f[F.P.BR] || '--',
-    cp,
-    sp,
-    b, bs, j, tot,
-    valCost: tot * cp,
-    valRetail: tot * sp
-   };
-  }).sort((a, b) => b.valRetail - a.valRetail);
+  renderInventoryReport(container);
+ } else if (activeReportTab === 'customers') {
+  renderCustomersReport(container, sales);
+ } else if (activeReportTab === 'branches') {
+  renderBranchesReport(container, sales);
+ } else if (activeReportTab === 'employees') {
+  renderEmployeesReport(container, sales);
+ } else if (activeReportTab === 'daily') {
+  renderDailyReport(container, sales);
+ } else {
+  renderSalesReport(container, sales);
+ }
+}
 
-  const totUnits = rows.reduce((s, r) => s + r.tot, 0);
-  const totValCost = rows.reduce((s, r) => s + r.valCost, 0);
-  const totValRetail = rows.reduce((s, r) => s + r.valRetail, 0);
+// ─────────────────────────────────────────────────────────────
+// TAB 1: SALES REPORT (Gross, Discounts, Net, AOV, Trend Chart)
+// ─────────────────────────────────────────────────────────────
+function renderSalesReport(container, sales) {
+ let totUnits = 0, totGross = 0, totNet = 0;
+ const txMap = {};
+ const dailyTrend = {};
 
-  container.innerHTML = `
-   <div class="card">
-    <div class="card-hdr">
-     <h3>Total Inventory Valuation (All Products)</h3>
-     <span style="font-weight:700;color:#0f172a;">Total Units: ${totUnits.toLocaleString()} | Cost Value: ₪${Math.round(totValCost).toLocaleString()} | Retail Value: ₪${Math.round(totValRetail).toLocaleString()}</span>
+ sales.forEach(tx => {
+  const f = tx.fields;
+  const qty = Math.abs(f[F.TX.QTY] || 1);
+  const prod = resolveProdFromTx(tx);
+  const sp = (prod && prod.fields[F.P.SP] != null) ? parseFloat(prod.fields[F.P.SP]) : 0;
+  const paidPrice = getTxPrice(tx, prod);
+  const lineGross = qty * (sp || paidPrice);
+  const lineNet = qty * paidPrice;
+
+  totUnits += qty;
+  totGross += lineGross;
+  totNet += lineNet;
+
+  const ref = f[F.TX.REF] || f[F.TX.NM] || tx.id;
+  txMap[ref] = true;
+
+  const dt = (f[F.TX.DT] || '').split('T')[0] || 'Unknown';
+  if (!dailyTrend[dt]) dailyTrend[dt] = { date: dt, net: 0, units: 0, count: 0 };
+  dailyTrend[dt].net += lineNet;
+  dailyTrend[dt].units += qty;
+  dailyTrend[dt].count += 1;
+ });
+
+ const txCount = Object.keys(txMap).length;
+ const totDiscounts = Math.max(0, totGross - totNet);
+ const discPct = totGross > 0 ? ((totDiscounts / totGross) * 100).toFixed(1) : '0.0';
+ const aov = txCount > 0 ? (totNet / txCount) : 0;
+ const avgPaidPerUnit = totUnits > 0 ? (totNet / totUnits) : 0;
+
+ // Sorted daily trend for graph
+ const trendDays = Object.values(dailyTrend).sort((a, b) => a.date.localeCompare(b.date));
+ const maxDailyNet = trendDays.reduce((m, d) => Math.max(m, d.net), 10);
+
+ // SVG Trend Chart Generation
+ let svgChart = '';
+ if (trendDays.length > 1) {
+  const w = 840, h = 160, pL = 45, pR = 25, pT = 20, pB = 30;
+  const plotW = w - pL - pR;
+  const plotH = h - pT - pB;
+  const pts = trendDays.map((d, i) => {
+   const x = pL + (i / (trendDays.length - 1)) * plotW;
+   const y = pT + plotH - (d.net / maxDailyNet) * plotH;
+   return { x, y, ...d };
+  });
+
+  const pathD = pts.map((p, i) => (i === 0 ? 'M ' : 'L ') + p.x.toFixed(1) + ' ' + p.y.toFixed(1)).join(' ');
+  const areaD = pathD + ' L ' + pts[pts.length - 1].x.toFixed(1) + ' ' + (pT + plotH) + ' L ' + pts[0].x.toFixed(1) + ' ' + (pT + plotH) + ' Z';
+
+  svgChart = `
+   <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:16px;margin-bottom:18px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+     <div style="font-size:13.5px;font-weight:700;color:#0f172a;">📈 Sales Trend Over Time (Daily Net Sales)</div>
+     <div style="font-size:12px;color:#64748b;">${trendDays.length} Active Days · Peak: ₪ ${Math.round(maxDailyNet).toLocaleString()}</div>
     </div>
-    <div style="overflow-x:auto;">
-     <table>
-      <thead>
-       <tr>
-        <th>SKU</th><th>Product Name</th><th>Brand</th><th style="text-align:right;">Cost Price &#8362;</th><th style="text-align:right;">Retail Price &#8362;</th><th style="text-align:center;">Beitar</th><th style="text-align:center;">Beit Sh.</th><th style="text-align:center;">Jerusalem</th><th style="text-align:center;">Total Units</th><th style="text-align:right;">Total Cost Value &#8362;</th><th style="text-align:right;">Total Retail Value &#8362;</th><th style="text-align:center;">Action</th>
-       </tr>
-      </thead>
-      <tbody>
-       ${rows.map(r => `
-        <tr>
-         <td class="mono" style="color:#db2777;font-weight:700;">${esc(r.sku)}</td>
-         <td style="font-weight:600;font-size:13px;">${esc(r.name)}</td>
-         <td style="font-size:12.5px;color:#64748b;">${esc(r.brand)}</td>
-         <td style="text-align:right;">₪ ${r.cp}</td>
-         <td style="text-align:right;">₪ ${r.sp}</td>
-         <td style="text-align:center;">${r.b}</td>
-         <td style="text-align:center;">${r.bs}</td>
-         <td style="text-align:center;">${r.j}</td>
-         <td style="text-align:center;font-weight:700;">${r.tot}</td>
-         <td style="text-align:right;color:#64748b;">₪ ${Math.round(r.valCost).toLocaleString()}</td>
-         <td style="text-align:right;font-weight:700;color:#db2777;">₪ ${Math.round(r.valRetail).toLocaleString()}</td>
-         <td style="text-align:center;"><button class="btn btn-s btn-xs" onclick="openProduct360('${r.pId}')">🔍 360°</button></td>
-        </tr>
-       `).join('')}
-      </tbody>
-     </table>
+    <div style="width:100%;overflow-x:auto;">
+     <svg viewBox="0 0 ${w} ${h}" style="width:100%;height:160px;min-width:600px;display:block;">
+      <defs>
+       <linearGradient id="salesGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#db2777" stop-opacity="0.3"/>
+        <stop offset="100%" stop-color="#db2777" stop-opacity="0.0"/>
+       </linearGradient>
+      </defs>
+      <!-- Grid Lines -->
+      <line x1="${pL}" y1="${pT}" x2="${w - pR}" y2="${pT}" stroke="#f1f5f9" stroke-width="1"/>
+      <line x1="${pL}" y1="${pT + plotH / 2}" x2="${w - pR}" y2="${pT + plotH / 2}" stroke="#f1f5f9" stroke-width="1"/>
+      <line x1="${pL}" y1="${pT + plotH}" x2="${w - pR}" y2="${pT + plotH}" stroke="#e2e8f0" stroke-width="1"/>
+      <!-- Area Fill -->
+      <path d="${areaD}" fill="url(#salesGrad)"/>
+      <!-- Line -->
+      <path d="${pathD}" fill="none" stroke="#db2777" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <!-- Dots & Dates -->
+      ${pts.map((p, i) => `
+       <circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="4" fill="#ffffff" stroke="#db2777" stroke-width="2">
+        <title>${fmtD(p.date)}: ₪ ${Math.round(p.net).toLocaleString()} (${p.units} units)</title>
+       </circle>
+       ${(i === 0 || i === pts.length - 1 || i % Math.ceil(pts.length / 7) === 0) ? `
+        <text x="${p.x.toFixed(1)}" y="${h - 8}" font-size="10.5" fill="#94a3b8" text-anchor="middle">${fmtD(p.date)}</text>
+       ` : ''}
+      `).join('')}
+     </svg>
     </div>
    </div>
   `;
  }
+
+ container.innerHTML = `
+  <!-- Top 6 KPI Cards -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));gap:12px;margin-bottom:18px;">
+   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Gross Sales (List)</div><div class="dash-kpi-val" style="font-size:22px;color:#475569;">₪ ${Math.round(totGross).toLocaleString()}</div><div class="dash-kpi-sub">Pre-discount list price</div></div>
+   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Discounts Given</div><div class="dash-kpi-val" style="font-size:22px;color:#f59e0b;">₪ ${Math.round(totDiscounts).toLocaleString()}</div><div class="dash-kpi-sub">${discPct}% discount rate</div></div>
+   <div class="dash-kpi" style="padding:14px;background:#fdf2f8;border-color:#fbcfe8;"><div class="dash-kpi-title" style="color:#9d174d;">Actual Net Sales</div><div class="dash-kpi-val" style="font-size:24px;color:#db2777;">₪ ${Math.round(totNet).toLocaleString()}</div><div class="dash-kpi-sub" style="color:#be185d;">Actual paid revenue</div></div>
+   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Transactions</div><div class="dash-kpi-val" style="font-size:22px;color:#0f172a;">${txCount}</div><div class="dash-kpi-sub">${totUnits} units sold</div></div>
+   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Avg. Ticket (AOV)</div><div class="dash-kpi-val" style="font-size:22px;color:#0284c7;">₪ ${aov.toFixed(2)}</div><div class="dash-kpi-sub">Per receipt / order</div></div>
+   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Avg. Paid / Unit</div><div class="dash-kpi-val" style="font-size:22px;color:#16a34a;">₪ ${avgPaidPerUnit.toFixed(2)}</div><div class="dash-kpi-sub">Net per item line</div></div>
+  </div>
+
+  ${svgChart}
+
+  <!-- Transactions Ledger -->
+  <div class="card">
+   <div class="card-hdr" style="background:#fcfcfd;">
+    <div>
+     <h3 style="font-size:14px;">Sales Operations Ledger</h3>
+     <span style="font-size:12px;color:#64748b;">${sales.length} sale item records across selected filters</span>
+    </div>
+   </div>
+   <div style="overflow-x:auto;max-height:480px;">
+    <table>
+     <thead>
+      <tr>
+       <th>Date &amp; Time</th>
+       <th>Receipt Ref</th>
+       <th>Branch</th>
+       <th>Product Name</th>
+       <th>SKU / Brand</th>
+       <th style="text-align:center;">Qty</th>
+       <th style="text-align:right;">List Price &#8362;</th>
+       <th style="text-align:right;">Actual Paid &#8362;</th>
+       <th style="text-align:right;">Line Net Total &#8362;</th>
+       <th>Customer</th>
+       <th>Salesperson</th>
+       <th style="text-align:center;">Action</th>
+      </tr>
+     </thead>
+     <tbody>
+      ${sales.length ? sales.slice(0, 300).map(tx => {
+       const tf = tx.fields;
+       const qty = Math.abs(tf[F.TX.QTY] || 1);
+       const prod = resolveProdFromTx(tx);
+       const sp = (prod && prod.fields[F.P.SP] != null) ? parseFloat(prod.fields[F.P.SP]) : 0;
+       const paidPrice = getTxPrice(tx, prod);
+       const lineNet = qty * paidPrice;
+       const brand = prod ? (prod.fields[F.P.BR] || '') : '';
+       const sku = prod ? (prod.fields[F.P.SKU] || '--') : (tf[F.TX.SKUL] || ['--'])[0];
+
+       return `
+        <tr>
+         <td style="white-space:nowrap;font-size:12.5px;">${fmtDT(tf[F.TX.DT])}</td>
+         <td class="mono" style="font-size:12px;color:#64748b;">${esc(tf[F.TX.REF] || tf[F.TX.NM] || '--')}</td>
+         <td>${brB(tf[F.TX.BR])}</td>
+         <td style="font-weight:600;font-size:13px;max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${esc(prod ? prod.fields[F.P.NM] : pNmTx(tx))}">${esc(prod ? prod.fields[F.P.NM] : pNmTx(tx))}</td>
+         <td style="font-size:12px;"><span class="mono" style="color:#db2777;font-weight:700;">${esc(sku)}</span> <span style="color:#94a3b8;">· ${esc(brand)}</span></td>
+         <td style="text-align:center;font-weight:700;">${qty}</td>
+         <td style="text-align:right;color:#64748b;">₪ ${sp.toFixed(2)}</td>
+         <td style="text-align:right;font-weight:700;color:#0f172a;">₪ ${paidPrice.toFixed(2)}</td>
+         <td style="text-align:right;font-weight:700;color:#db2777;">₪ ${lineNet.toFixed(2)}</td>
+         <td>${cuHtml(tx)}</td>
+         <td style="font-size:12px;color:#334155;">${esc(tf[F.TX.EMP] || '--')}</td>
+         <td style="text-align:center;"><button class="btn btn-s btn-xs" onclick="openProduct360('${prod ? prod.id : ''}')">🔍 360°</button></td>
+        </tr>
+       `;
+      }).join('') : `<tr><td colspan="12"><div class="empty">No sales records matching current filters</div></td></tr>`}
+      ${sales.length > 300 ? `<tr><td colspan="12" style="text-align:center;font-size:12px;color:#64748b;padding:8px;">Showing first 300 records. Use "Export to Excel" to download the complete ledger.</td></tr>` : ''}
+     </tbody>
+    </table>
+   </div>
+  </div>
+ `;
 }
 
-// ── UNIVERSAL EXCEL / CSV EXPORT UTILITY ────────────────────────
+// ─────────────────────────────────────────────────────────────
+// TAB 2: PROFIT & P&L WATERFALL (With Israeli 17% VAT Options)
+// ─────────────────────────────────────────────────────────────
+function renderProfitReport(container, sales) {
+ let totUnits = 0, totGross = 0, totNet = 0, totCOGS = 0;
+ const brandMap = {};
+
+ sales.forEach(tx => {
+  const f = tx.fields;
+  const qty = Math.abs(f[F.TX.QTY] || 1);
+  const prod = resolveProdFromTx(tx);
+  const sp = (prod && prod.fields[F.P.SP] != null) ? parseFloat(prod.fields[F.P.SP]) : 0;
+  const paidPrice = getTxPrice(tx, prod);
+  const cp = (prod && prod.fields[F.P.CP] != null) ? parseFloat(prod.fields[F.P.CP]) : ((f[F.TX.COST] != null) ? parseFloat(f[F.TX.COST]) : 0);
+
+  const lineGross = qty * (sp || paidPrice);
+  const lineNet = qty * paidPrice;
+  const lineCOGS = qty * cp;
+
+  totUnits += qty;
+  totGross += lineGross;
+  totNet += lineNet;
+  totCOGS += lineCOGS;
+
+  const brand = (prod ? prod.fields[F.P.BR] : '') || 'Other / Unbranded';
+  if (!brandMap[brand]) brandMap[brand] = { brand, units: 0, gross: 0, net: 0, cogs: 0 };
+  brandMap[brand].units += qty;
+  brandMap[brand].gross += lineGross;
+  brandMap[brand].net += lineNet;
+  brandMap[brand].cogs += lineCOGS;
+ });
+
+ const totDiscounts = Math.max(0, totGross - totNet);
+ const discPct = totGross > 0 ? ((totDiscounts / totGross) * 100).toFixed(1) : '0.0';
+
+ // VAT Calculations (Israeli Standard VAT = 17%)
+ const isIncVAT = repProfitVatMode === 'inc';
+ const vatFactor = 1.17;
+ const vatAmount = isIncVAT ? (totNet - (totNet / vatFactor)) : (totNet * 0.17);
+ const netExVat = isIncVAT ? (totNet / vatFactor) : totNet;
+
+ const grossProfit = totNet - totCOGS;
+ const marginPct = totNet > 0 ? ((grossProfit / totNet) * 100).toFixed(1) : '0.0';
+
+ const brandRows = Object.values(brandMap).map(b => {
+  const profit = b.net - b.cogs;
+  const margin = b.net > 0 ? ((profit / b.net) * 100).toFixed(1) : '0.0';
+  const profitShare = grossProfit > 0 ? ((profit / grossProfit) * 100).toFixed(1) : '0.0';
+  return { ...b, profit, margin, profitShare };
+ }).sort((a, b) => b.profit - a.profit);
+
+ container.innerHTML = `
+  <!-- VAT Mode Toggle Header -->
+  <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:14px;padding:14px 18px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+   <div>
+    <div style="font-size:14px;font-weight:700;color:#0f172a;display:flex;align-items:center;gap:8px;">
+     <span>📊</span> Executive Profit &amp; Loss Waterfall (רווח והפסד)
+    </div>
+    <span style="font-size:12px;color:#64748b;">Standard Israeli VAT is 17%. Toggle view mode to analyze including or excluding VAT.</span>
+   </div>
+   <div style="display:flex;align-items:center;gap:6px;background:#f1f5f9;padding:4px;border-radius:10px;">
+    <button class="btn ${isIncVAT ? 'btn-p' : 'btn-s'} btn-xs" onclick="setProfitVatMode('inc')" style="padding:5px 12px;font-weight:700;">₪ Including VAT 17% (Consumer Gross)</button>
+    <button class="btn ${!isIncVAT ? 'btn-p' : 'btn-s'} btn-xs" onclick="setProfitVatMode('exc')" style="padding:5px 12px;font-weight:700;">₪ Excluding VAT (Business Net)</button>
+   </div>
+  </div>
+
+  <!-- Visual P&L Waterfall Card -->
+  <div class="card" style="margin-bottom:18px;padding:20px;background:#ffffff;border-radius:14px;box-shadow:0 1px 3px rgba(0,0,0,0.04);">
+   <div style="font-size:14px;font-weight:700;color:#0f172a;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;">
+    <span>🌊 Financial P&amp;L Waterfall Progression</span>
+    <span class="badge ${parseFloat(marginPct) >= 40 ? 'bg' : 'bw'}" style="font-size:13px;padding:4px 10px;">Gross Margin: ${marginPct}%</span>
+   </div>
+
+   <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(135px, 1fr));gap:12px;align-items:stretch;">
+    <!-- Step 1: Gross Sales -->
+    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px;text-align:center;">
+     <div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">1. Gross Sales (List)</div>
+     <div style="font-size:20px;font-weight:800;color:#334155;margin:6px 0;">₪ ${Math.round(totGross).toLocaleString()}</div>
+     <div style="font-size:11px;color:#94a3b8;">100% nominal value</div>
+    </div>
+
+    <!-- Arrow -->
+    <div style="display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:18px;">↓</div>
+
+    <!-- Step 2: Discounts -->
+    <div style="background:#fffbeb;border:1px solid #fef3c7;border-radius:10px;padding:14px;text-align:center;">
+     <div style="font-size:11px;font-weight:700;color:#d97706;text-transform:uppercase;">2. Total Discounts</div>
+     <div style="font-size:20px;font-weight:800;color:#b45309;margin:6px 0;">-₪ ${Math.round(totDiscounts).toLocaleString()}</div>
+     <div style="font-size:11px;color:#d97706;">-${discPct}% off list</div>
+    </div>
+
+    <!-- Arrow -->
+    <div style="display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:18px;">↓</div>
+
+    <!-- Step 3: Net Revenue -->
+    <div style="background:#fdf2f8;border:1px solid #fbcfe8;border-radius:10px;padding:14px;text-align:center;">
+     <div style="font-size:11px;font-weight:700;color:#be185d;text-transform:uppercase;">3. Net Sales (Paid)</div>
+     <div style="font-size:20px;font-weight:800;color:#db2777;margin:6px 0;">₪ ${Math.round(totNet).toLocaleString()}</div>
+     <div style="font-size:11px;color:#be185d;">${isIncVAT ? 'Incl. 17% VAT' : 'Actual received'}</div>
+    </div>
+
+    <!-- Arrow -->
+    <div style="display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:18px;">↓</div>
+
+    <!-- Step 4: COGS -->
+    <div style="background:#f1f5f9;border:1px solid #cbd5e1;border-radius:10px;padding:14px;text-align:center;">
+     <div style="font-size:11px;font-weight:700;color:#475569;text-transform:uppercase;">4. COGS (Cost of Goods)</div>
+     <div style="font-size:20px;font-weight:800;color:#475569;margin:6px 0;">-₪ ${Math.round(totCOGS).toLocaleString()}</div>
+     <div style="font-size:11px;color:#64748b;">${totNet > 0 ? ((totCOGS / totNet) * 100).toFixed(1) : 0}% of net sales</div>
+    </div>
+
+    <!-- Arrow -->
+    <div style="display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:18px;">=</div>
+
+    <!-- Step 5: Gross Profit -->
+    <div style="background:#f0fdf4;border:2px solid #86efac;border-radius:10px;padding:14px;text-align:center;box-shadow:0 2px 6px rgba(22,163,74,0.1);">
+     <div style="font-size:11px;font-weight:700;color:#15803d;text-transform:uppercase;">5. Gross Profit</div>
+     <div style="font-size:22px;font-weight:900;color:#16a34a;margin:6px 0;">₪ ${Math.round(grossProfit).toLocaleString()}</div>
+     <div style="font-size:12px;font-weight:700;color:#15803d;">${marginPct}% Margin</div>
+    </div>
+   </div>
+
+   <!-- VAT Breakdown Callout Banner -->
+   <div style="margin-top:14px;padding:10px 14px;background:#f8fafc;border-radius:8px;font-size:12.5px;color:#475569;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+    <span><strong>🇮🇱 Israeli 17% VAT Analysis:</strong> Net Base (Ex-VAT): <strong>₪ ${Math.round(netExVat).toLocaleString()}</strong> · VAT Amount (17%): <strong>₪ ${Math.round(vatAmount).toLocaleString()}</strong> · Total Gross (Inc-VAT): <strong>₪ ${Math.round(totNet).toLocaleString()}</strong></span>
+    <span class="badge bb">Tax Compliance</span>
+   </div>
+  </div>
+
+  <!-- Brand Profitability Contribution Breakdown -->
+  <div class="card">
+   <div class="card-hdr" style="background:#fcfcfd;">
+    <div>
+     <h3 style="font-size:14px;">Brand Profit Contribution &amp; Margin Analysis</h3>
+     <span style="font-size:12px;color:#64748b;">${brandRows.length} Brands contributing to gross margin</span>
+    </div>
+   </div>
+   <div style="overflow-x:auto;">
+    <table>
+     <thead>
+      <tr>
+       <th>Brand</th>
+       <th style="text-align:center;">Units Sold</th>
+       <th style="text-align:right;">Gross Sales &#8362;</th>
+       <th style="text-align:right;">Net Sales &#8362;</th>
+       <th style="text-align:right;">COGS (Cost) &#8362;</th>
+       <th style="text-align:right;">Gross Profit &#8362;</th>
+       <th style="text-align:center;">Gross Margin %</th>
+       <th style="text-align:center;">Profit Contribution %</th>
+      </tr>
+     </thead>
+     <tbody>
+      ${brandRows.map(b => `
+       <tr>
+        <td style="font-weight:700;font-size:13.5px;color:#0f172a;">${esc(b.brand)}</td>
+        <td style="text-align:center;font-weight:700;">${b.units}</td>
+        <td style="text-align:right;color:#64748b;">₪ ${Math.round(b.gross).toLocaleString()}</td>
+        <td style="text-align:right;font-weight:700;color:#db2777;">₪ ${Math.round(b.net).toLocaleString()}</td>
+        <td style="text-align:right;color:#64748b;">₪ ${Math.round(b.cogs).toLocaleString()}</td>
+        <td style="text-align:right;font-weight:800;color:#16a34a;">₪ ${Math.round(b.profit).toLocaleString()}</td>
+        <td style="text-align:center;"><span class="badge bg">${b.margin}%</span></td>
+        <td style="text-align:center;font-weight:700;color:#0284c7;">${b.profitShare}%</td>
+       </tr>
+      `).join('')}
+      <tr style="background:#f8fafc;font-weight:800;border-top:2px solid #cbd5e1;">
+       <td>Total / All Brands</td>
+       <td style="text-align:center;">${totUnits}</td>
+       <td style="text-align:right;color:#64748b;">₪ ${Math.round(totGross).toLocaleString()}</td>
+       <td style="text-align:right;color:#db2777;">₪ ${Math.round(totNet).toLocaleString()}</td>
+       <td style="text-align:right;color:#64748b;">₪ ${Math.round(totCOGS).toLocaleString()}</td>
+       <td style="text-align:right;color:#16a34a;">₪ ${Math.round(grossProfit).toLocaleString()}</td>
+       <td style="text-align:center;"><span class="badge bg">${marginPct}%</span></td>
+       <td style="text-align:center;">100.0%</td>
+      </tr>
+     </tbody>
+    </table>
+   </div>
+  </div>
+ `;
+}
+
+// ─────────────────────────────────────────────────────────────
+// TAB 3: PRODUCTS REPORT (Units, Revenue, Cost, Profit, Branch)
+// ─────────────────────────────────────────────────────────────
+function renderProductsReport(container, sales) {
+ const prodMap = {};
+
+ sales.forEach(tx => {
+  const f = tx.fields;
+  const qty = Math.abs(f[F.TX.QTY] || 1);
+  const prod = resolveProdFromTx(tx);
+  const sp = (prod && prod.fields[F.P.SP] != null) ? parseFloat(prod.fields[F.P.SP]) : 0;
+  const paidPrice = getTxPrice(tx, prod);
+  const cp = (prod && prod.fields[F.P.CP] != null) ? parseFloat(prod.fields[F.P.CP]) : ((f[F.TX.COST] != null) ? parseFloat(f[F.TX.COST]) : 0);
+
+  const pId = prod ? prod.id : (f[F.TX.PR] || [])[0];
+  const sku = prod ? (prod.fields[F.P.SKU] || '--') : (f[F.TX.SKUL] || ['--'])[0];
+  const name = prod ? (prod.fields[F.P.NM] || 'Unknown') : pNmTx(tx);
+  const brand = prod ? (prod.fields[F.P.BR] || '') : '';
+  const key = pId || sku || name;
+
+  if (!prodMap[key]) {
+   let bStock = 0, bsStock = 0, jStock = 0;
+   if (prod) {
+    bStock = prod.fields[F.P.B] ?? 0;
+    bsStock = prod.fields[F.P.BS] ?? 0;
+    jStock = prod.fields[F.P.J] ?? 0;
+   }
+   prodMap[key] = {
+    pId,
+    sku,
+    name,
+    brand,
+    units: 0,
+    rev: 0,
+    cost: 0,
+    sp,
+    cp,
+    totStock: bStock + bsStock + jStock
+   };
+  }
+
+  prodMap[key].units += qty;
+  prodMap[key].rev += qty * paidPrice;
+  prodMap[key].cost += qty * cp;
+ });
+
+ const rows = Object.values(prodMap).map(r => {
+  const profit = r.rev - r.cost;
+  const margin = r.rev > 0 ? ((profit / r.rev) * 100).toFixed(1) : '0.0';
+  const avgPaid = r.units > 0 ? (r.rev / r.units).toFixed(2) : r.sp.toFixed(2);
+  return { ...r, profit, margin, avgPaid };
+ }).sort((a, b) => b.units - a.units);
+
+ const totUnits = rows.reduce((s, r) => s + r.units, 0);
+ const totRev = rows.reduce((s, r) => s + r.rev, 0);
+ const totCost = rows.reduce((s, r) => s + r.cost, 0);
+ const totProfit = totRev - totCost;
+ const overallMargin = totRev > 0 ? ((totProfit / totRev) * 100).toFixed(1) : '0.0';
+
+ // Top 5 Brands Pills
+ const brandTotals = {};
+ rows.forEach(r => {
+  const b = r.brand || 'Unbranded';
+  if (!brandTotals[b]) brandTotals[b] = { brand: b, rev: 0, units: 0 };
+  brandTotals[b].rev += r.rev;
+  brandTotals[b].units += r.units;
+ });
+ const topBrands = Object.values(brandTotals).sort((a, b) => b.rev - a.rev).slice(0, 5);
+
+ container.innerHTML = `
+  <!-- KPIs -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));gap:12px;margin-bottom:18px;">
+   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Products Sold</div><div class="dash-kpi-val" style="font-size:22px;">${rows.length}</div><div class="dash-kpi-sub">Out of ${allP.length} catalogued</div></div>
+   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Units Sold</div><div class="dash-kpi-val" style="font-size:22px;color:#0f172a;">${totUnits}</div><div class="dash-kpi-sub">Total volume</div></div>
+   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Total Revenue</div><div class="dash-kpi-val" style="font-size:22px;color:#db2777;">₪ ${Math.round(totRev).toLocaleString()}</div><div class="dash-kpi-sub">Actual net price</div></div>
+   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Total COGS</div><div class="dash-kpi-val" style="font-size:22px;color:#64748b;">₪ ${Math.round(totCost).toLocaleString()}</div><div class="dash-kpi-sub">Cost of items sold</div></div>
+   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Total Gross Profit</div><div class="dash-kpi-val" style="font-size:22px;color:#16a34a;">₪ ${Math.round(totProfit).toLocaleString()}</div><div class="dash-kpi-sub">${overallMargin}% Margin</div></div>
+  </div>
+
+  <!-- Best-Selling Brands Bar -->
+  <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:12px 16px;margin-bottom:18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+   <span style="font-size:12.5px;font-weight:700;color:#0f172a;">🏆 Best-Selling Brands:</span>
+   ${topBrands.map((b, i) => `
+    <span class="badge bp" style="font-size:12px;padding:4px 10px;">#${i+1} ${esc(b.brand)}: ₪ ${Math.round(b.rev).toLocaleString()} (${b.units} pcs)</span>
+   `).join('')}
+  </div>
+
+  <!-- Products Table -->
+  <div class="card">
+   <div class="card-hdr" style="background:#fcfcfd;">
+    <div>
+     <h3 style="font-size:14px;">Product Sales, Margins &amp; Stock Ledger</h3>
+     <span style="font-size:12px;color:#64748b;">${rows.length} products sold during period</span>
+    </div>
+   </div>
+   <div style="overflow-x:auto;">
+    <table>
+     <thead>
+      <tr>
+       <th>SKU</th>
+       <th>Product Name</th>
+       <th>Brand</th>
+       <th style="text-align:center;">Units Sold</th>
+       <th style="text-align:right;">Avg. Paid &#8362;</th>
+       <th style="text-align:right;">Total Revenue &#8362;</th>
+       <th style="text-align:right;">Total COGS &#8362;</th>
+       <th style="text-align:right;">Gross Profit &#8362;</th>
+       <th style="text-align:center;">Margin %</th>
+       <th style="text-align:center;">Stock on Hand</th>
+       <th style="text-align:center;">Action</th>
+      </tr>
+     </thead>
+     <tbody>
+      ${rows.map(r => `
+       <tr>
+        <td class="mono" style="color:#db2777;font-weight:700;">${esc(r.sku)}</td>
+        <td style="font-weight:600;font-size:13px;max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${esc(r.name)}">${esc(r.name)}</td>
+        <td style="font-size:12.5px;color:#64748b;">${esc(r.brand)}</td>
+        <td style="text-align:center;font-weight:700;font-size:14px;">${r.units}</td>
+        <td style="text-align:right;color:#0f172a;">₪ ${r.avgPaid}</td>
+        <td style="text-align:right;font-weight:700;color:#db2777;">₪ ${Math.round(r.rev).toLocaleString()}</td>
+        <td style="text-align:right;color:#64748b;">₪ ${Math.round(r.cost).toLocaleString()}</td>
+        <td style="text-align:right;font-weight:800;color:#16a34a;">₪ ${Math.round(r.profit).toLocaleString()}</td>
+        <td style="text-align:center;"><span class="badge bg">${r.margin}%</span></td>
+        <td style="text-align:center;font-weight:700;color:${r.totStock <= 0 ? '#ef4444' : '#0f172a'};">${r.totStock}</td>
+        <td style="text-align:center;"><button class="btn btn-s btn-xs" onclick="openProduct360('${r.pId || ''}')">🔍 360°</button></td>
+       </tr>
+      `).join('')}
+      <tr style="background:#f8fafc;font-weight:800;border-top:2px solid #cbd5e1;">
+       <td colspan="3">Total / All Products</td>
+       <td style="text-align:center;">${totUnits}</td>
+       <td style="text-align:right;">--</td>
+       <td style="text-align:right;color:#db2777;">₪ ${Math.round(totRev).toLocaleString()}</td>
+       <td style="text-align:right;color:#64748b;">₪ ${Math.round(totCost).toLocaleString()}</td>
+       <td style="text-align:right;color:#16a34a;">₪ ${Math.round(totProfit).toLocaleString()}</td>
+       <td style="text-align:center;"><span class="badge bg">${overallMargin}%</span></td>
+       <td colspan="2"></td>
+      </tr>
+     </tbody>
+    </table>
+   </div>
+  </div>
+ `;
+}
+
+// ─────────────────────────────────────────────────────────────
+// TAB 4: INVENTORY REPORT (Wholesale vs Retail, Quick Filters)
+// ─────────────────────────────────────────────────────────────
+function renderInventoryReport(container) {
+ let prods = [...allP];
+
+ // Filter by brand if selected in Universal Filter
+ if (repBrand) prods = prods.filter(p => p.fields[F.P.BR] === repBrand);
+ if (repProduct) prods = prods.filter(p => p.id === repProduct);
+
+ // Calculate stock & counts
+ let lowCount = 0, negCount = 0;
+ const rows = prods.map(p => {
+  const f = p.fields;
+  const b = f[F.P.B] ?? 0, bs = f[F.P.BS] ?? 0, j = f[F.P.J] ?? 0, tot = b + bs + j;
+  const cp = f[F.P.CP] || 0;
+  const sp = f[F.P.SP] || 0;
+  const isLowStock = isLow(f);
+  const isNegative = b < 0 || bs < 0 || j < 0 || tot < 0;
+
+  if (isLowStock) lowCount++;
+  if (isNegative) negCount++;
+
+  return {
+   pId: p.id,
+   sku: f[F.P.SKU] || '--',
+   name: f[F.P.NM] || '--',
+   brand: f[F.P.BR] || '--',
+   cp,
+   sp,
+   b, bs, j, tot,
+   valCost: tot * cp,
+   valRetail: tot * sp,
+   isLowStock,
+   isNegative
+  };
+ });
+
+ // Apply Quick Filter (All / Low / Negative)
+ let filteredRows = rows;
+ if (repInvFilter === 'low') {
+  filteredRows = rows.filter(r => r.isLowStock);
+ } else if (repInvFilter === 'neg') {
+  filteredRows = rows.filter(r => r.isNegative);
+ }
+
+ const totUnits = filteredRows.reduce((s, r) => s + r.tot, 0);
+ const totValCost = filteredRows.reduce((s, r) => s + r.valCost, 0);
+ const totValRetail = filteredRows.reduce((s, r) => s + r.valRetail, 0);
+ const potentialProfit = totValRetail - totValCost;
+ const potentialMargin = totValRetail > 0 ? ((potentialProfit / totValRetail) * 100).toFixed(1) : '0.0';
+
+ container.innerHTML = `
+  <!-- Quick Filters Header -->
+  <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:14px;padding:14px 18px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+   <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+    <span style="font-size:13px;font-weight:700;color:#0f172a;">⚡ Quick Inventory Filters:</span>
+    <button class="btn ${repInvFilter === 'all' ? 'btn-p' : 'btn-s'} btn-xs" onclick="setInvReportFilter('all')" style="padding:5px 12px;font-weight:700;">All Items (${rows.length})</button>
+    <button class="btn ${repInvFilter === 'low' ? 'btn-p' : 'btn-s'} btn-xs" onclick="setInvReportFilter('low')" style="padding:5px 12px;font-weight:700;color:${repInvFilter === 'low' ? '#fff' : '#d97706'};">⚠️ Low Stock Alerts (${lowCount})</button>
+    <button class="btn ${repInvFilter === 'neg' ? 'btn-p' : 'btn-s'} btn-xs" onclick="setInvReportFilter('neg')" style="padding:5px 12px;font-weight:700;color:${repInvFilter === 'neg' ? '#fff' : '#ef4444'};">🚨 Negative Deficit (${negCount})</button>
+   </div>
+   <span style="font-size:12px;color:#64748b;">Showing ${filteredRows.length} inventory products</span>
+  </div>
+
+  <!-- Valuation KPIs -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));gap:12px;margin-bottom:18px;">
+   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Stock Units</div><div class="dash-kpi-val" style="font-size:22px;color:#0f172a;">${totUnits.toLocaleString()}</div><div class="dash-kpi-sub">Across 3 branches</div></div>
+   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Cost Value (Wholesale)</div><div class="dash-kpi-val" style="font-size:22px;color:#475569;">₪ ${Math.round(totValCost).toLocaleString()}</div><div class="dash-kpi-sub">Capital invested at cost</div></div>
+   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Retail Value (Consumer)</div><div class="dash-kpi-val" style="font-size:22px;color:#db2777;">₪ ${Math.round(totValRetail).toLocaleString()}</div><div class="dash-kpi-sub">Full catalogue value</div></div>
+   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Potential Profit</div><div class="dash-kpi-val" style="font-size:22px;color:#16a34a;">₪ ${Math.round(potentialProfit).toLocaleString()}</div><div class="dash-kpi-sub">${potentialMargin}% Potential Margin</div></div>
+  </div>
+
+  <!-- Inventory Table -->
+  <div class="card">
+   <div class="card-hdr" style="background:#fcfcfd;">
+    <div>
+     <h3 style="font-size:14px;">Stock Valuation &amp; Branch Distribution</h3>
+     <span style="font-size:12px;color:#64748b;">Wholesale cost vs. retail list price</span>
+    </div>
+   </div>
+   <div style="overflow-x:auto;max-height:480px;">
+    <table>
+     <thead>
+      <tr>
+       <th>SKU</th>
+       <th>Product Name</th>
+       <th>Brand</th>
+       <th style="text-align:right;">Cost &#8362;</th>
+       <th style="text-align:right;">Retail &#8362;</th>
+       <th style="text-align:center;">Beitar</th>
+       <th style="text-align:center;">Beit Shemesh</th>
+       <th style="text-align:center;">Jerusalem</th>
+       <th style="text-align:center;">Total Units</th>
+       <th style="text-align:right;">Valuation (Cost) &#8362;</th>
+       <th style="text-align:right;">Valuation (Retail) &#8362;</th>
+       <th style="text-align:center;">Status</th>
+       <th style="text-align:center;">Action</th>
+      </tr>
+     </thead>
+     <tbody>
+      ${filteredRows.length ? filteredRows.map(r => {
+       const isNeg = r.isNegative;
+       const isLw = r.isLowStock;
+       const statusBadge = isNeg ? '<span class="badge bd">Negative</span>' : (isLw ? '<span class="badge bw">Low Stock</span>' : '<span class="badge bg">In Stock</span>');
+
+       return `
+        <tr${isLw ? ' class="row-low"' : ''}>
+         <td class="mono" style="color:#db2777;font-weight:700;">${esc(r.sku)}</td>
+         <td style="font-weight:600;font-size:13px;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${esc(r.name)}">${esc(r.name)}</td>
+         <td style="font-size:12.5px;color:#64748b;">${esc(r.brand)}</td>
+         <td style="text-align:right;color:#64748b;">₪ ${r.cp}</td>
+         <td style="text-align:right;font-weight:600;">₪ ${r.sp}</td>
+         <td style="text-align:center;${r.b < 0 ? 'color:#ef4444;font-weight:700;' : ''}">${r.b}</td>
+         <td style="text-align:center;${r.bs < 0 ? 'color:#ef4444;font-weight:700;' : ''}">${r.bs}</td>
+         <td style="text-align:center;${r.j < 0 ? 'color:#ef4444;font-weight:700;' : ''}">${r.j}</td>
+         <td style="text-align:center;font-weight:800;font-size:14px;color:${isNeg ? '#ef4444' : '#0f172a'};">${r.tot}</td>
+         <td style="text-align:right;color:#64748b;">₪ ${Math.round(r.valCost).toLocaleString()}</td>
+         <td style="text-align:right;font-weight:700;color:#db2777;">₪ ${Math.round(r.valRetail).toLocaleString()}</td>
+         <td style="text-align:center;">${statusBadge}</td>
+         <td style="text-align:center;"><button class="btn btn-s btn-xs" onclick="openProduct360('${r.pId}')">🔍 360°</button></td>
+        </tr>
+       `;
+      }).join('') : `<tr><td colspan="13"><div class="empty">No inventory products match the selected quick filter</div></td></tr>`}
+     </tbody>
+    </table>
+   </div>
+  </div>
+ `;
+}
+
+// ─────────────────────────────────────────────────────────────
+// TAB 5: CUSTOMERS REPORT (Spend, Tickets, Top Brands/Items)
+// ─────────────────────────────────────────────────────────────
+function renderCustomersReport(container, sales) {
+ const custMap = {};
+
+ // Seed all customers from database
+ allCU.forEach(cu => {
+  custMap[cu.id] = {
+   cId: cu.id,
+   name: cu.fields[F.CU.NM] || 'Customer',
+   phone: cu.fields[F.CU.PH] || '--',
+   orders: 0,
+   spend: 0,
+   units: 0,
+   lastDt: '',
+   brands: {},
+   products: {}
+  };
+ });
+
+ sales.forEach(tx => {
+  const f = tx.fields;
+  const cIds = f[F.TX.CU] || [];
+  const cId = Array.isArray(cIds) ? cIds[0] : cIds;
+  if (!cId) return;
+
+  const qty = Math.abs(f[F.TX.QTY] || 1);
+  const prod = resolveProdFromTx(tx);
+  const paidPrice = getTxPrice(tx, prod);
+  const rev = qty * paidPrice;
+  const dt = (f[F.TX.DT] || '').split('T')[0];
+
+  if (!custMap[cId]) {
+   custMap[cId] = {
+    cId,
+    name: f[F.TX.NM] || 'Customer',
+    phone: '--',
+    orders: 0,
+    spend: 0,
+    units: 0,
+    lastDt: '',
+    brands: {},
+    products: {}
+   };
+  }
+
+  custMap[cId].orders += 1;
+  custMap[cId].spend += rev;
+  custMap[cId].units += qty;
+  if (dt && (!custMap[cId].lastDt || dt > custMap[cId].lastDt)) custMap[cId].lastDt = dt;
+
+  if (prod) {
+   const br = prod.fields[F.P.BR];
+   if (br) custMap[cId].brands[br] = (custMap[cId].brands[br] || 0) + qty;
+   const nm = prod.fields[F.P.NM];
+   if (nm) custMap[cId].products[nm] = (custMap[cId].products[nm] || 0) + qty;
+  }
+ });
+
+ const rows = Object.values(custMap)
+  .filter(c => c.spend > 0 || c.orders > 0)
+  .sort((a, b) => b.spend - a.spend);
+
+ const totIdentifiedSpend = rows.reduce((s, r) => s + r.spend, 0);
+ const avgCustSpend = rows.length > 0 ? (totIdentifiedSpend / rows.length) : 0;
+
+ container.innerHTML = `
+  <!-- Customer KPIs -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));gap:12px;margin-bottom:18px;">
+   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Active Customers</div><div class="dash-kpi-val" style="font-size:22px;">${rows.length}</div><div class="dash-kpi-sub">Out of ${allCU.length} registered</div></div>
+   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Identified Sales</div><div class="dash-kpi-val" style="font-size:22px;color:#db2777;">₪ ${Math.round(totIdentifiedSpend).toLocaleString()}</div><div class="dash-kpi-sub">Customer-linked receipts</div></div>
+   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Average Spend / Client</div><div class="dash-kpi-val" style="font-size:22px;color:#0284c7;">₪ ${Math.round(avgCustSpend).toLocaleString()}</div><div class="dash-kpi-sub">Lifetime in period</div></div>
+   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Total Orders</div><div class="dash-kpi-val" style="font-size:22px;color:#16a34a;">${rows.reduce((s, r) => s + r.orders, 0)}</div><div class="dash-kpi-sub">Purchases made</div></div>
+  </div>
+
+  <!-- Customer Rankings Table -->
+  <div class="card">
+   <div class="card-hdr" style="background:#fcfcfd;">
+    <div>
+     <h3 style="font-size:14px;">Customer Purchasing &amp; Preference Rankings</h3>
+     <span style="font-size:12px;color:#64748b;">${rows.length} active clients ordered</span>
+    </div>
+   </div>
+   <div style="overflow-x:auto;">
+    <table>
+     <thead>
+      <tr>
+       <th>Customer Name</th>
+       <th>Phone</th>
+       <th style="text-align:center;">Orders</th>
+       <th style="text-align:center;">Items Bought</th>
+       <th style="text-align:right;">Total Spend &#8362;</th>
+       <th style="text-align:right;">Avg. Ticket &#8362;</th>
+       <th>Last Purchase Date</th>
+       <th>Top Brands / Favorites</th>
+       <th style="text-align:center;">Action</th>
+      </tr>
+     </thead>
+     <tbody>
+      ${rows.length ? rows.map(r => {
+       const avg = r.orders > 0 ? (r.spend / r.orders).toFixed(2) : '0.00';
+       const topB = Object.entries(r.brands).sort((a, b) => b[1] - a[1]).slice(0, 2).map(x => x[0]).join(', ') || '--';
+
+       return `
+        <tr>
+         <td style="font-weight:700;font-size:13.5px;color:#0f172a;">👤 ${esc(r.name)}</td>
+         <td class="mono" style="font-size:12.5px;">${esc(r.phone)}</td>
+         <td style="text-align:center;font-weight:700;">${r.orders}</td>
+         <td style="text-align:center;">${r.units}</td>
+         <td style="text-align:right;font-weight:800;color:#db2777;">₪ ${Math.round(r.spend).toLocaleString()}</td>
+         <td style="text-align:right;color:#64748b;">₪ ${avg}</td>
+         <td style="font-size:12px;color:#64748b;white-space:nowrap;">${r.lastDt ? fmtD(r.lastDt) : '--'}</td>
+         <td style="font-size:12px;color:#0284c7;font-weight:600;">${esc(topB)}</td>
+         <td style="text-align:center;"><button class="btn btn-s btn-xs" onclick="openCustomer360('${r.cId}')">🔍 360°</button></td>
+        </tr>
+       `;
+      }).join('') : `<tr><td colspan="9"><div class="empty">No active customers found in selected period</div></td></tr>`}
+     </tbody>
+    </table>
+   </div>
+  </div>
+ `;
+}
+
+// ─────────────────────────────────────────────────────────────
+// TAB 6: BRANCHES COMPARISON REPORT (3 Cards + Comparison Matrix)
+// ─────────────────────────────────────────────────────────────
+function renderBranchesReport(container, sales) {
+ const branches = [
+  { id: 'Beit Shemesh', name: 'Beit Shemesh', stockField: F.P.BS, icon: '🏙️' },
+  { id: 'Jerusalem', name: 'Jerusalem', stockField: F.P.J, icon: '🏛️' },
+  { id: 'Beitar', name: 'Beitar Illit', stockField: F.P.B, icon: '🌲' }
+ ];
+
+ const branchData = branches.map(brInfo => {
+  let bSales = 0, bCOGS = 0, bUnits = 0;
+  const orderSet = new Set();
+  const custSet = new Set();
+  const prodSales = {};
+  const brandSales = {};
+
+  sales.forEach(tx => {
+   const f = tx.fields;
+   const br = f[F.TX.BR] || '';
+   const match = brInfo.id === 'Beitar' ? (br === 'Beitar' || br === 'Beitar Illit') : (br === brInfo.id);
+   if (!match) return;
+
+   const qty = Math.abs(f[F.TX.QTY] || 1);
+   const prod = resolveProdFromTx(tx);
+   const paidPrice = getTxPrice(tx, prod);
+   const cp = (prod && prod.fields[F.P.CP] != null) ? parseFloat(prod.fields[F.P.CP]) : 0;
+
+   const lineRev = qty * paidPrice;
+   const lineCOGS = qty * cp;
+
+   bSales += lineRev;
+   bCOGS += lineCOGS;
+   bUnits += qty;
+
+   const ref = f[F.TX.REF] || f[F.TX.NM] || tx.id;
+   orderSet.add(ref);
+
+   const cIds = f[F.TX.CU] || [];
+   const cId = Array.isArray(cIds) ? cIds[0] : cIds;
+   if (cId) custSet.add(cId);
+
+   if (prod) {
+    const pName = prod.fields[F.P.NM] || 'Item';
+    const brName = prod.fields[F.P.BR] || 'Other';
+    prodSales[pName] = (prodSales[pName] || 0) + qty;
+    brandSales[brName] = (brandSales[brName] || 0) + lineRev;
+   }
+  });
+
+  // Current Branch Stock
+  let stockUnits = 0, stockValCost = 0, stockValRetail = 0;
+  allP.forEach(p => {
+   const st = p.fields[brInfo.stockField] ?? 0;
+   stockUnits += st;
+   stockValCost += st * (p.fields[F.P.CP] || 0);
+   stockValRetail += st * (p.fields[F.P.SP] || 0);
+  });
+
+  const profit = bSales - bCOGS;
+  const margin = bSales > 0 ? ((profit / bSales) * 100).toFixed(1) : '0.0';
+  const orders = orderSet.size;
+  const aov = orders > 0 ? (bSales / orders) : 0;
+
+  const topProds = Object.entries(prodSales).sort((a, b) => b[1] - a[1]).slice(0, 3).map(x => x[0] + ' (' + x[1] + ' pcs)');
+  const topBrands = Object.entries(brandSales).sort((a, b) => b[1] - a[1]).slice(0, 2).map(x => x[0]);
+
+  return {
+   ...brInfo,
+   sales: bSales,
+   cogs: bCOGS,
+   profit,
+   margin,
+   units: bUnits,
+   orders,
+   aov,
+   custCount: custSet.size,
+   stockUnits,
+   stockValCost,
+   stockValRetail,
+   topProds,
+   topBrands
+  };
+ });
+
+ container.innerHTML = `
+  <!-- 3 Comparative Branch Scorecard Cards -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:16px;margin-bottom:20px;">
+   ${branchData.map(b => `
+    <div class="card" style="padding:18px;border-radius:14px;border-top:4px solid #db2777;">
+     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+      <div style="display:flex;align-items:center;gap:8px;">
+       <span style="font-size:22px;">${b.icon}</span>
+       <h3 style="font-size:16px;margin:0;color:#0f172a;">${b.name}</h3>
+      </div>
+      <button class="btn btn-s btn-xs" onclick="openBranch360('${b.name}')">🔍 360°</button>
+     </div>
+
+     <!-- Main Financials -->
+     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;background:#f8fafc;padding:12px;border-radius:10px;">
+      <div>
+       <span style="font-size:11px;color:#64748b;display:block;">Sales Revenue</span>
+       <strong style="font-size:18px;color:#db2777;">₪ ${Math.round(b.sales).toLocaleString()}</strong>
+      </div>
+      <div>
+       <span style="font-size:11px;color:#64748b;display:block;">Gross Profit</span>
+       <strong style="font-size:18px;color:#16a34a;">₪ ${Math.round(b.profit).toLocaleString()}</strong>
+       <span class="badge bg" style="font-size:10px;margin-left:4px;">${b.margin}%</span>
+      </div>
+      <div>
+       <span style="font-size:11px;color:#64748b;display:block;">COGS (Cost)</span>
+       <span style="font-size:14px;font-weight:600;color:#475569;">₪ ${Math.round(b.cogs).toLocaleString()}</span>
+      </div>
+      <div>
+       <span style="font-size:11px;color:#64748b;display:block;">Avg Ticket (AOV)</span>
+       <span style="font-size:14px;font-weight:600;color:#0284c7;">₪ ${b.aov.toFixed(2)}</span>
+      </div>
+     </div>
+
+     <!-- Operational Volumes -->
+     <div style="font-size:12.5px;color:#475569;display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f1f5f9;">
+      <span>Transactions / Units:</span>
+      <strong>${b.orders} orders / ${b.units} units</strong>
+     </div>
+     <div style="font-size:12.5px;color:#475569;display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f1f5f9;">
+      <span>Unique Customers:</span>
+      <strong>${b.custCount} identified</strong>
+     </div>
+     <div style="font-size:12.5px;color:#475569;display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f1f5f9;">
+      <span>Current Stock on Hand:</span>
+      <strong>${b.stockUnits} units (₪ ${Math.round(b.stockValCost).toLocaleString()})</strong>
+     </div>
+
+     <!-- Top Products in Branch -->
+     <div style="margin-top:10px;font-size:11.5px;color:#64748b;">
+      <strong style="color:#0f172a;display:block;margin-bottom:2px;">Top Products:</strong>
+      ${b.topProds.length ? b.topProds.map(p => '<div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">• ' + esc(p) + '</div>').join('') : '<div>None in period</div>'}
+     </div>
+    </div>
+   `).join('')}
+  </div>
+
+  <!-- Branch Comparison Matrix Table -->
+  <div class="card">
+   <div class="card-hdr" style="background:#fcfcfd;">
+    <div>
+     <h3 style="font-size:14px;">Branch Performance Matrix &amp; Stock Value Comparison</h3>
+     <span style="font-size:12px;color:#64748b;">Cross-branch operational &amp; margin metrics</span>
+    </div>
+   </div>
+   <div style="overflow-x:auto;">
+    <table>
+     <thead>
+      <tr>
+       <th>Branch Name</th>
+       <th style="text-align:right;">Sales Revenue &#8362;</th>
+       <th style="text-align:right;">COGS &#8362;</th>
+       <th style="text-align:right;">Gross Profit &#8362;</th>
+       <th style="text-align:center;">Margin %</th>
+       <th style="text-align:center;">Units Sold</th>
+       <th style="text-align:center;">Orders</th>
+       <th style="text-align:right;">Avg Ticket &#8362;</th>
+       <th style="text-align:center;">Stock Units</th>
+       <th style="text-align:right;">Stock Valuation (Cost) &#8362;</th>
+       <th style="text-align:center;">Action</th>
+      </tr>
+     </thead>
+     <tbody>
+      ${branchData.map(b => `
+       <tr>
+        <td style="font-weight:700;font-size:14px;color:#0f172a;">📍 ${b.name}</td>
+        <td style="text-align:right;font-weight:700;color:#db2777;">₪ ${Math.round(b.sales).toLocaleString()}</td>
+        <td style="text-align:right;color:#64748b;">₪ ${Math.round(b.cogs).toLocaleString()}</td>
+        <td style="text-align:right;font-weight:800;color:#16a34a;">₪ ${Math.round(b.profit).toLocaleString()}</td>
+        <td style="text-align:center;"><span class="badge bg">${b.margin}%</span></td>
+        <td style="text-align:center;font-weight:700;">${b.units}</td>
+        <td style="text-align:center;">${b.orders}</td>
+        <td style="text-align:right;color:#0284c7;">₪ ${b.aov.toFixed(2)}</td>
+        <td style="text-align:center;font-weight:700;">${b.stockUnits}</td>
+        <td style="text-align:right;color:#64748b;">₪ ${Math.round(b.stockValCost).toLocaleString()}</td>
+        <td style="text-align:center;"><button class="btn btn-s btn-xs" onclick="openBranch360('${b.name}')">🔍 360°</button></td>
+       </tr>
+      `).join('')}
+      <tr style="background:#f8fafc;font-weight:800;border-top:2px solid #cbd5e1;">
+       <td>Total / All Branches</td>
+       <td style="text-align:right;color:#db2777;">₪ ${Math.round(branchData.reduce((s, b) => s + b.sales, 0)).toLocaleString()}</td>
+       <td style="text-align:right;color:#64748b;">₪ ${Math.round(branchData.reduce((s, b) => s + b.cogs, 0)).toLocaleString()}</td>
+       <td style="text-align:right;color:#16a34a;">₪ ${Math.round(branchData.reduce((s, b) => s + b.profit, 0)).toLocaleString()}</td>
+       <td style="text-align:center;">--</td>
+       <td style="text-align:center;">${branchData.reduce((s, b) => s + b.units, 0)}</td>
+       <td style="text-align:center;">${branchData.reduce((s, b) => s + b.orders, 0)}</td>
+       <td style="text-align:right;">--</td>
+       <td style="text-align:center;">${branchData.reduce((s, b) => s + b.stockUnits, 0)}</td>
+       <td style="text-align:right;">₪ ${Math.round(branchData.reduce((s, b) => s + b.stockValCost, 0)).toLocaleString()}</td>
+       <td></td>
+      </tr>
+     </tbody>
+    </table>
+   </div>
+  </div>
+ `;
+}
+
+// ─────────────────────────────────────────────────────────────
+// TAB 7: EMPLOYEES REPORT (Volume, Basket, Productivity)
+// ─────────────────────────────────────────────────────────────
+function renderEmployeesReport(container, sales) {
+ const empMap = {};
+
+ sales.forEach(tx => {
+  const f = tx.fields;
+  const emp = (f[F.TX.EMP] || 'General Staff').trim();
+  const qty = Math.abs(f[F.TX.QTY] || 1);
+  const prod = resolveProdFromTx(tx);
+  const paidPrice = getTxPrice(tx, prod);
+  const cp = (prod && prod.fields[F.P.CP] != null) ? parseFloat(prod.fields[F.P.CP]) : 0;
+  const rev = qty * paidPrice;
+  const cogs = qty * cp;
+
+  if (!empMap[emp]) {
+   empMap[emp] = {
+    name: emp,
+    orders: 0,
+    units: 0,
+    sales: 0,
+    cogs: 0,
+    branches: new Set(),
+    dates: new Set()
+   };
+  }
+
+  empMap[emp].orders += 1;
+  empMap[emp].units += qty;
+  empMap[emp].sales += rev;
+  empMap[emp].cogs += cogs;
+
+  if (f[F.TX.BR]) empMap[emp].branches.add(f[F.TX.BR]);
+  const dt = (f[F.TX.DT] || '').split('T')[0];
+  if (dt) empMap[emp].dates.add(dt);
+ });
+
+ const rows = Object.values(empMap).map(e => {
+  const profit = e.sales - e.cogs;
+  const margin = e.sales > 0 ? ((profit / e.sales) * 100).toFixed(1) : '0.0';
+  const aov = e.orders > 0 ? (e.sales / e.orders).toFixed(2) : '0.00';
+  const workDays = e.dates.size || 1;
+  const salesPerDay = e.sales / workDays;
+
+  return {
+   ...e,
+   profit,
+   margin,
+   aov,
+   workDays,
+   salesPerDay
+  };
+ }).sort((a, b) => b.sales - a.sales);
+
+ const totSales = rows.reduce((s, r) => s + r.sales, 0);
+
+ container.innerHTML = `
+  <!-- KPIs -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));gap:12px;margin-bottom:18px;">
+   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Active Salespeople</div><div class="dash-kpi-val" style="font-size:22px;">${rows.length}</div><div class="dash-kpi-sub">Operating cash registers</div></div>
+   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Total Staff Sales</div><div class="dash-kpi-val" style="font-size:22px;color:#db2777;">₪ ${Math.round(totSales).toLocaleString()}</div><div class="dash-kpi-sub">${sales.length} transactions processed</div></div>
+   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Top Salesperson</div><div class="dash-kpi-val" style="font-size:20px;color:#16a34a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${rows.length ? esc(rows[0].name) : '--'}</div><div class="dash-kpi-sub">${rows.length ? '₪ ' + Math.round(rows[0].sales).toLocaleString() : '--'}</div></div>
+  </div>
+
+  <!-- Employee Table -->
+  <div class="card">
+   <div class="card-hdr" style="background:#fcfcfd;">
+    <div>
+     <h3 style="font-size:14px;">Salesperson Performance, Basket &amp; Productivity</h3>
+     <span style="font-size:12px;color:#64748b;">${rows.length} staff members</span>
+    </div>
+   </div>
+   <div style="overflow-x:auto;">
+    <table>
+     <thead>
+      <tr>
+       <th>Employee / Salesperson</th>
+       <th style="text-align:center;">Transactions</th>
+       <th style="text-align:center;">Units Sold</th>
+       <th style="text-align:right;">Total Sales &#8362;</th>
+       <th style="text-align:right;">Gross Profit &#8362;</th>
+       <th style="text-align:center;">Margin %</th>
+       <th style="text-align:right;">Average Basket &#8362;</th>
+       <th>Branches Operated</th>
+       <th style="text-align:right;">Est. Sales / Work Day &#8362;</th>
+      </tr>
+     </thead>
+     <tbody>
+      ${rows.length ? rows.map(r => `
+       <tr>
+        <td style="font-weight:700;font-size:13.5px;color:#0f172a;">👩‍💼 ${esc(r.name)}</td>
+        <td style="text-align:center;font-weight:700;">${r.orders}</td>
+        <td style="text-align:center;">${r.units}</td>
+        <td style="text-align:right;font-weight:800;color:#db2777;">₪ ${Math.round(r.sales).toLocaleString()}</td>
+        <td style="text-align:right;font-weight:700;color:#16a34a;">₪ ${Math.round(r.profit).toLocaleString()}</td>
+        <td style="text-align:center;"><span class="badge bg">${r.margin}%</span></td>
+        <td style="text-align:right;color:#0284c7;">₪ ${r.aov}</td>
+        <td style="font-size:12px;color:#64748b;">${[...r.branches].map(b => brB(b)).join(' ') || '--'}</td>
+        <td style="text-align:right;font-weight:600;color:#475569;">₪ ${Math.round(r.salesPerDay).toLocaleString()} (${r.workDays}d)</td>
+       </tr>
+      `).join('') : `<tr><td colspan="9"><div class="empty">No employee records in this period</div></td></tr>`}
+     </tbody>
+    </table>
+   </div>
+  </div>
+ `;
+}
+
+// ─────────────────────────────────────────────────────────────
+// TAB 8: DAILY SUMMARY REPORT (Day-by-Day Sales, Profit, Top Item)
+// ─────────────────────────────────────────────────────────────
+function renderDailyReport(container, sales) {
+ const dailyMap = {};
+
+ sales.forEach(tx => {
+  const f = tx.fields;
+  const dt = (f[F.TX.DT] || '').split('T')[0] || 'Unknown';
+  const qty = Math.abs(f[F.TX.QTY] || 1);
+  const prod = resolveProdFromTx(tx);
+  const paidPrice = getTxPrice(tx, prod);
+  const cp = (prod && prod.fields[F.P.CP] != null) ? parseFloat(prod.fields[F.P.CP]) : 0;
+  const rev = qty * paidPrice;
+  const cost = qty * cp;
+
+  if (!dailyMap[dt]) {
+   dailyMap[dt] = {
+    date: dt,
+    orders: 0,
+    units: 0,
+    rev: 0,
+    cost: 0,
+    products: {}
+   };
+  }
+
+  dailyMap[dt].orders += 1;
+  dailyMap[dt].units += qty;
+  dailyMap[dt].rev += rev;
+  dailyMap[dt].cost += cost;
+
+  const pName = prod ? (prod.fields[F.P.NM] || 'Item') : pNmTx(tx);
+  dailyMap[dt].products[pName] = (dailyMap[dt].products[pName] || 0) + qty;
+ });
+
+ const rows = Object.values(dailyMap).map(d => {
+  const profit = d.rev - d.cost;
+  const margin = d.rev > 0 ? ((profit / d.rev) * 100).toFixed(1) : '0.0';
+
+  // Determine top product of the day
+  const topProdEntry = Object.entries(d.products).sort((a, b) => b[1] - a[1])[0];
+  const topProd = topProdEntry ? (topProdEntry[0] + ' (' + topProdEntry[1] + ' pcs)') : '--';
+
+  // Day of week
+  let dow = '';
+  try {
+   const dateObj = new Date(d.date + 'T12:00:00Z');
+   dow = dateObj.toLocaleDateString('en-US', { weekday: 'short' });
+  } catch (e) {}
+
+  return {
+   ...d,
+   profit,
+   margin,
+   topProd,
+   dow
+  };
+ }).sort((a, b) => b.date.localeCompare(a.date));
+
+ const totRev = rows.reduce((s, r) => s + r.rev, 0);
+ const totProfit = rows.reduce((s, r) => s + r.profit, 0);
+ const avgDaily = rows.length > 0 ? (totRev / rows.length) : 0;
+ const bestDay = rows.reduce((max, r) => (r.rev > (max?.rev || 0) ? r : max), null);
+
+ container.innerHTML = `
+  <!-- KPIs -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));gap:12px;margin-bottom:18px;">
+   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Active Days</div><div class="dash-kpi-val" style="font-size:22px;">${rows.length}</div><div class="dash-kpi-sub">With recorded sales</div></div>
+   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Average Daily Sales</div><div class="dash-kpi-val" style="font-size:22px;color:#db2777;">₪ ${Math.round(avgDaily).toLocaleString()}</div><div class="dash-kpi-sub">Per operating day</div></div>
+   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Best Sales Day</div><div class="dash-kpi-val" style="font-size:22px;color:#16a34a;">${bestDay ? '₪ ' + Math.round(bestDay.rev).toLocaleString() : '--'}</div><div class="dash-kpi-sub">${bestDay ? fmtD(bestDay.date) : '--'}</div></div>
+   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Total Period Profit</div><div class="dash-kpi-val" style="font-size:22px;color:#0284c7;">₪ ${Math.round(totProfit).toLocaleString()}</div><div class="dash-kpi-sub">Gross margin earned</div></div>
+  </div>
+
+  <!-- Daily Table -->
+  <div class="card">
+   <div class="card-hdr" style="background:#fcfcfd;">
+    <div>
+     <h3 style="font-size:14px;">Daily Sales, Margins &amp; Top Product Ledger</h3>
+     <span style="font-size:12px;color:#64748b;">${rows.length} calendar days</span>
+    </div>
+   </div>
+   <div style="overflow-x:auto;">
+    <table>
+     <thead>
+      <tr>
+       <th>Date</th>
+       <th>Day</th>
+       <th style="text-align:center;">Transactions</th>
+       <th style="text-align:center;">Units Sold</th>
+       <th style="text-align:right;">Sales Revenue &#8362;</th>
+       <th style="text-align:right;">COGS &#8362;</th>
+       <th style="text-align:right;">Gross Profit &#8362;</th>
+       <th style="text-align:center;">Margin %</th>
+       <th>Top Selling Product of the Day</th>
+      </tr>
+     </thead>
+     <tbody>
+      ${rows.length ? rows.map(r => `
+       <tr>
+        <td style="font-weight:700;font-size:13.5px;color:#0f172a;white-space:nowrap;">${fmtD(r.date)}</td>
+        <td style="font-size:12.5px;color:#64748b;">${r.dow}</td>
+        <td style="text-align:center;font-weight:700;">${r.orders}</td>
+        <td style="text-align:center;">${r.units}</td>
+        <td style="text-align:right;font-weight:800;color:#db2777;">₪ ${Math.round(r.rev).toLocaleString()}</td>
+        <td style="text-align:right;color:#64748b;">₪ ${Math.round(r.cost).toLocaleString()}</td>
+        <td style="text-align:right;font-weight:800;color:#16a34a;">₪ ${Math.round(r.profit).toLocaleString()}</td>
+        <td style="text-align:center;"><span class="badge bg">${r.margin}%</span></td>
+        <td style="font-size:12.5px;color:#0f172a;font-weight:600;max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${esc(r.topProd)}">⭐ ${esc(r.topProd)}</td>
+       </tr>
+      `).join('') : `<tr><td colspan="9"><div class="empty">No sales records in selected period</div></td></tr>`}
+     </tbody>
+    </table>
+   </div>
+  </div>
+ `;
+}
+
+// ─────────────────────────────────────────────────────────────
+// UNIVERSAL EXCEL / CSV EXPORT UTILITIES (UTF-8 BOM FOR HEBREW)
+// ─────────────────────────────────────────────────────────────
 function exportToCSV(filename, headers, rows) {
  const escapeCell = cell => {
   if (cell == null) return '""';
@@ -2937,7 +4375,7 @@ function exportToCSV(filename, headers, rows) {
  document.body.appendChild(link);
  link.click();
  document.body.removeChild(link);
- toast(`Exported ${filename} successfully!`);
+ toast('Exported ' + filename + ' successfully!');
 }
 
 function exportCurrentDashboardCSV() {
@@ -2977,7 +4415,7 @@ function exportCurrentDashboardCSV() {
  });
 
  const dtStr = today();
- exportToCSV(`makeup_dashboard_sales_${dashBranch || 'all_branches'}_${dtStr}.csv`, headers, rows);
+ exportToCSV('makeup_dashboard_sales_' + (dashBranch || 'all_branches') + '_' + dtStr + '.csv', headers, rows);
 }
 
 function exportProduct360CSV() {
@@ -3013,7 +4451,7 @@ function exportProduct360CSV() {
   ];
  });
 
- exportToCSV(`product_history_${sku}_${today()}.csv`, headers, rows);
+ exportToCSV('product_history_' + sku + '_' + today() + '.csv', headers, rows);
 }
 
 function exportCustomer360CSV() {
@@ -3047,7 +4485,7 @@ function exportCustomer360CSV() {
   ];
  });
 
- exportToCSV(`customer_360_${cName.replace(/\s+/g, '_')}_${today()}.csv`, headers, rows);
+ exportToCSV('customer_360_' + cName.replace(/\s+/g, '_') + '_' + today() + '.csv', headers, rows);
 }
 
 function exportBranch360CSV() {
@@ -3078,142 +4516,111 @@ function exportBranch360CSV() {
   ];
  });
 
- exportToCSV(`branch_report_${normName}_${today()}.csv`, headers, rows);
+ exportToCSV('branch_report_' + normName + '_' + today() + '.csv', headers, rows);
 }
 
 function exportActiveReportToCSV() {
  const dtStr = today();
- const sales = getFilteredSales(dashDateFrom, dashDateTo, dashBranch);
+ const sales = getFilteredReportSales();
 
- if (activeReportTab === 'daily') {
-  const map = {};
-  sales.forEach(tx => {
+ if (activeReportTab === 'sales') {
+  const headers = ['Date & Time', 'Receipt Ref', 'Branch', 'Product Name', 'SKU', 'Brand', 'Units Sold', 'List Price ₪', 'Actual Paid ₪', 'Discount ₪', 'Net Total ₪', 'Customer', 'Salesperson', 'Notes'];
+  const rows = sales.map(tx => {
    const f = tx.fields;
-   const dt = (f[F.TX.DT] || '').split('T')[0] || 'Unknown';
    const qty = Math.abs(f[F.TX.QTY] || 1);
    const prod = resolveProdFromTx(tx);
-   const price = getTxPrice(tx, prod);
-   const cost = (prod && prod.fields[F.P.CP] != null) ? parseFloat(prod.fields[F.P.CP]) : 0;
-   const rev = qty * price;
-   if (!map[dt]) map[dt] = { date: dt, orders: 0, units: 0, rev: 0, cost: 0 };
-   map[dt].orders += 1;
-   map[dt].units += qty;
-   map[dt].rev += rev;
-   map[dt].cost += qty * cost;
+   const sp = (prod && prod.fields[F.P.SP] != null) ? parseFloat(prod.fields[F.P.SP]) : 0;
+   const paidPrice = getTxPrice(tx, prod);
+   const lineNet = qty * paidPrice;
+   const disc = Math.max(0, qty * sp - lineNet);
+   const cust = resolveCustFromTx(tx);
+   const cName = cust ? cust.fields[F.CU.NM] : (f[F.TX.NM] || '');
+   return [
+    fmtDT(f[F.TX.DT]),
+    f[F.TX.REF] || f[F.TX.NM] || '',
+    f[F.TX.BR] || '',
+    prod ? (prod.fields[F.P.NM] || '') : pNmTx(tx),
+    prod ? (prod.fields[F.P.SKU] || '') : (f[F.TX.SKUL] || [''])[0],
+    prod ? (prod.fields[F.P.BR] || '') : '',
+    qty,
+    sp ? sp.toFixed(2) : '--',
+    paidPrice.toFixed(2),
+    disc.toFixed(2),
+    lineNet.toFixed(2),
+    cName,
+    f[F.TX.EMP] || '',
+    f[F.TX.NO] || ''
+   ];
   });
-  const headers = ['Date', 'Transactions Count', 'Units Sold', 'Sales Revenue ₪', 'COGS ₪', 'Gross Profit ₪', 'Margin %'];
-  const rows = Object.values(map).sort((a, b) => b.date.localeCompare(a.date)).map(r => {
-   const profit = r.rev - r.cost;
-   const margin = r.rev > 0 ? ((profit / r.rev) * 100).toFixed(1) : '0.0';
-   return [fmtD(r.date), r.orders, r.units, r.rev.toFixed(2), r.cost.toFixed(2), profit.toFixed(2), `${margin}%`];
+  exportToCSV('sales_report_' + (repBranch || 'all_branches') + '_' + dtStr + '.csv', headers, rows);
+ } else if (activeReportTab === 'profit') {
+  const brandMap = {};
+  let totGross = 0, totNet = 0, totCOGS = 0;
+  sales.forEach(tx => {
+   const f = tx.fields;
+   const qty = Math.abs(f[F.TX.QTY] || 1);
+   const prod = resolveProdFromTx(tx);
+   const sp = (prod && prod.fields[F.P.SP] != null) ? parseFloat(prod.fields[F.P.SP]) : 0;
+   const paidPrice = getTxPrice(tx, prod);
+   const cp = (prod && prod.fields[F.P.CP] != null) ? parseFloat(prod.fields[F.P.CP]) : 0;
+   const lineGross = qty * (sp || paidPrice);
+   const lineNet = qty * paidPrice;
+   const lineCOGS = qty * cp;
+   totGross += lineGross;
+   totNet += lineNet;
+   totCOGS += lineCOGS;
+   const brand = (prod ? prod.fields[F.P.BR] : '') || 'Unbranded';
+   if (!brandMap[brand]) brandMap[brand] = { brand, units: 0, gross: 0, net: 0, cogs: 0 };
+   brandMap[brand].units += qty;
+   brandMap[brand].gross += lineGross;
+   brandMap[brand].net += lineNet;
+   brandMap[brand].cogs += lineCOGS;
   });
-  exportToCSV(`daily_sales_summary_${dtStr}.csv`, headers, rows);
+  const headers = ['Brand', 'Units Sold', 'Gross List Sales ₪', 'Net Paid Sales ₪', 'COGS ₪', 'Gross Profit ₪', 'Margin %'];
+  const rows = Object.values(brandMap).sort((a, b) => (b.net - b.cogs) - (a.net - a.cogs)).map(b => {
+   const profit = b.net - b.cogs;
+   const margin = b.net > 0 ? ((profit / b.net) * 100).toFixed(1) : '0.0';
+   return [b.brand, b.units, b.gross.toFixed(2), b.net.toFixed(2), b.cogs.toFixed(2), profit.toFixed(2), margin + '%'];
+  });
+  exportToCSV('profit_loss_analysis_' + dtStr + '.csv', headers, rows);
  } else if (activeReportTab === 'products') {
-  const map = {};
+  const prodMap = {};
   sales.forEach(tx => {
    const f = tx.fields;
    const qty = Math.abs(f[F.TX.QTY] || 1);
    const prod = resolveProdFromTx(tx);
-   const price = getTxPrice(tx, prod);
-   const cost = (prod && prod.fields[F.P.CP] != null) ? parseFloat(prod.fields[F.P.CP]) : 0;
-   const rev = qty * price;
+   const paidPrice = getTxPrice(tx, prod);
+   const cp = (prod && prod.fields[F.P.CP] != null) ? parseFloat(prod.fields[F.P.CP]) : 0;
    const pId = prod ? prod.id : (f[F.TX.PR] || [])[0];
    const sku = prod ? (prod.fields[F.P.SKU] || '--') : (f[F.TX.SKUL] || ['--'])[0];
    const name = prod ? (prod.fields[F.P.NM] || 'Unknown') : pNmTx(tx);
    const brand = prod ? (prod.fields[F.P.BR] || '') : '';
    const key = pId || sku || name;
-   if (!map[key]) map[key] = { sku, name, brand, units: 0, rev: 0, cost: 0 };
-   map[key].units += qty;
-   map[key].rev += rev;
-   map[key].cost += qty * cost;
+   if (!prodMap[key]) prodMap[key] = { sku, name, brand, units: 0, rev: 0, cost: 0 };
+   prodMap[key].units += qty;
+   prodMap[key].rev += qty * paidPrice;
+   prodMap[key].cost += qty * cp;
   });
-  const headers = ['SKU', 'Product Name', 'Brand', 'Units Sold', 'Revenue ₪', 'Cost ₪', 'Gross Profit ₪', 'Margin %'];
-  const rows = Object.values(map).sort((a, b) => b.units - a.units).map(r => {
+  const headers = ['SKU', 'Product Name', 'Brand', 'Units Sold', 'Avg. Paid Price ₪', 'Revenue ₪', 'COGS ₪', 'Gross Profit ₪', 'Margin %'];
+  const rows = Object.values(prodMap).sort((a, b) => b.units - a.units).map(r => {
    const profit = r.rev - r.cost;
    const margin = r.rev > 0 ? ((profit / r.rev) * 100).toFixed(1) : '0.0';
-   return [r.sku, r.name, r.brand, r.units, r.rev.toFixed(2), r.cost.toFixed(2), profit.toFixed(2), `${margin}%`];
+   const avgPaid = r.units > 0 ? (r.rev / r.units).toFixed(2) : '0.00';
+   return [r.sku, r.name, r.brand, r.units, avgPaid, r.rev.toFixed(2), r.cost.toFixed(2), profit.toFixed(2), margin + '%'];
   });
-  exportToCSV(`product_performance_${dtStr}.csv`, headers, rows);
- } else if (activeReportTab === 'customers') {
-  const map = {};
-  allCU.forEach(cu => {
-   map[cu.id] = { name: cu.fields[F.CU.NM] || 'Customer', phone: cu.fields[F.CU.PH] || '--', orders: 0, spend: 0, lastDt: '' };
-  });
-  allTX.forEach(tx => {
-   const f = tx.fields;
-   if (f[F.TX.TY] !== 'Sale') return;
-   const cIds = f[F.TX.CU] || [];
-   const cId = Array.isArray(cIds) ? cIds[0] : cIds;
-   if (!cId) return;
-   const qty = Math.abs(f[F.TX.QTY] || 1);
-   const prod = resolveProdFromTx(tx);
-   const rev = qty * getTxPrice(tx, prod);
-   if (!map[cId]) map[cId] = { name: 'Customer', phone: '--', orders: 0, spend: 0, lastDt: '' };
-   map[cId].orders += 1;
-   map[cId].spend += rev;
-   const dt = (f[F.TX.DT] || '').split('T')[0];
-   if (dt && (!map[cId].lastDt || dt > map[cId].lastDt)) map[cId].lastDt = dt;
-  });
-  const headers = ['Customer Name', 'Phone', 'Orders Count', 'Lifetime Spend ₪', 'Average Basket ₪', 'Last Order Date'];
-  const rows = Object.values(map).sort((a, b) => b.spend - a.spend).map(r => {
-   const avg = r.orders > 0 ? (r.spend / r.orders).toFixed(2) : '0.00';
-   return [r.name, r.phone, r.orders, r.spend.toFixed(2), avg, r.lastDt ? fmtD(r.lastDt) : '--'];
-  });
-  exportToCSV(`customer_rankings_${dtStr}.csv`, headers, rows);
- } else if (activeReportTab === 'branches') {
-  const branches = ['Beit Shemesh', 'Jerusalem', 'Beitar Illit'];
-  const headers = ['Branch Name', 'Sales Revenue ₪', 'COGS ₪', 'Gross Profit ₪', 'Margin %', 'Units Sold', 'Current Stock Units', 'Stock Value (Cost) ₪', 'Stock Value (Retail) ₪'];
-  const rows = branches.map(brName => {
-   const normName = (brName === 'Beitar Illit' || brName === 'Beitar') ? 'Beitar' : brName;
-   let bSales = 0, bCOGS = 0, bUnits = 0;
-   sales.forEach(tx => {
-    const f = tx.fields;
-    const br = f[F.TX.BR];
-    const match = normName === 'Beitar' ? (br === 'Beitar' || br === 'Beitar Illit') : (br === normName);
-    if (!match) return;
-    const qty = Math.abs(f[F.TX.QTY] || 1);
-    const prod = resolveProdFromTx(tx);
-    const price = getTxPrice(tx, prod);
-    const cost = (prod && prod.fields[F.P.CP] != null) ? parseFloat(prod.fields[F.P.CP]) : 0;
-    bSales += qty * price;
-    bCOGS += qty * cost;
-    bUnits += qty;
-   });
-   const fld = normName === 'Beit Shemesh' ? F.P.BS : (normName === 'Jerusalem' ? F.P.J : F.P.B);
-   let unitsInStock = 0, valCost = 0, valRetail = 0;
-   allP.forEach(p => {
-    const st = p.fields[fld] ?? 0;
-    unitsInStock += st;
-    valCost += st * (p.fields[F.P.CP] || 0);
-    valRetail += st * (p.fields[F.P.SP] || 0);
-   });
-   const profit = bSales - bCOGS;
-   const margin = bSales > 0 ? ((profit / bSales) * 100).toFixed(1) : '0.0';
-   return [brName, bSales.toFixed(2), bCOGS.toFixed(2), profit.toFixed(2), `${margin}%`, bUnits, unitsInStock, valCost.toFixed(2), valRetail.toFixed(2)];
-  });
-  exportToCSV(`branch_breakdown_${dtStr}.csv`, headers, rows);
- } else if (activeReportTab === 'employees') {
-  const map = {};
-  sales.forEach(tx => {
-   const f = tx.fields;
-   const emp = (f[F.TX.EMP] || 'General Staff').trim();
-   const qty = Math.abs(f[F.TX.QTY] || 1);
-   const prod = resolveProdFromTx(tx);
-   const rev = qty * getTxPrice(tx, prod);
-   if (!map[emp]) map[emp] = { name: emp, orders: 0, units: 0, sales: 0 };
-   map[emp].orders += 1;
-   map[emp].units += qty;
-   map[emp].sales += rev;
-  });
-  const headers = ['Employee / Salesperson', 'Transactions Count', 'Units Sold', 'Total Sales ₪', 'Average Ticket ₪'];
-  const rows = Object.values(map).sort((a, b) => b.sales - a.sales).map(r => {
-   const avg = r.orders > 0 ? (r.sales / r.orders).toFixed(2) : '0.00';
-   return [r.name, r.orders, r.units, r.sales.toFixed(2), avg];
-  });
-  exportToCSV(`employee_performance_${dtStr}.csv`, headers, rows);
+  exportToCSV('product_performance_' + dtStr + '.csv', headers, rows);
  } else if (activeReportTab === 'inventory') {
-  const headers = ['SKU', 'Product Name', 'Brand', 'Cost Price ₪', 'Selling Price ₪', 'Beitar Units', 'Beit Shemesh Units', 'Jerusalem Units', 'Total Units', 'Valuation at Cost ₪', 'Valuation at Retail ₪'];
-  const rows = allP.map(p => {
+  let prods = [...allP];
+  if (repBrand) prods = prods.filter(p => p.fields[F.P.BR] === repBrand);
+  if (repProduct) prods = prods.filter(p => p.id === repProduct);
+  if (repInvFilter === 'low') prods = prods.filter(p => isLow(p.fields));
+  else if (repInvFilter === 'neg') prods = prods.filter(p => {
+   const f = p.fields;
+   return (f[F.P.B] ?? 0) < 0 || (f[F.P.BS] ?? 0) < 0 || (f[F.P.J] ?? 0) < 0;
+  });
+
+  const headers = ['SKU', 'Product Name', 'Brand', 'Cost Price ₪', 'Retail Price ₪', 'Beitar Units', 'Beit Shemesh Units', 'Jerusalem Units', 'Total Stock Units', 'Valuation at Cost ₪', 'Valuation at Retail ₪'];
+  const rows = prods.map(p => {
    const f = p.fields;
    const b = f[F.P.B] ?? 0, bs = f[F.P.BS] ?? 0, j = f[F.P.J] ?? 0, tot = b + bs + j;
    const cp = f[F.P.CP] || 0;
@@ -3229,10 +4636,123 @@ function exportActiveReportToCSV() {
     (tot * sp).toFixed(2)
    ];
   }).sort((a, b) => parseFloat(b[10]) - parseFloat(a[10]));
-  exportToCSV(`inventory_valuation_${dtStr}.csv`, headers, rows);
+  exportToCSV('inventory_valuation_' + dtStr + '.csv', headers, rows);
+ } else if (activeReportTab === 'customers') {
+  const custMap = {};
+  allCU.forEach(cu => {
+   custMap[cu.id] = { name: cu.fields[F.CU.NM] || 'Customer', phone: cu.fields[F.CU.PH] || '--', orders: 0, spend: 0, units: 0, lastDt: '' };
+  });
+  sales.forEach(tx => {
+   const f = tx.fields;
+   const cIds = f[F.TX.CU] || [];
+   const cId = Array.isArray(cIds) ? cIds[0] : cIds;
+   if (!cId) return;
+   const qty = Math.abs(f[F.TX.QTY] || 1);
+   const prod = resolveProdFromTx(tx);
+   const rev = qty * getTxPrice(tx, prod);
+   if (!custMap[cId]) custMap[cId] = { name: f[F.TX.NM] || 'Customer', phone: '--', orders: 0, spend: 0, units: 0, lastDt: '' };
+   custMap[cId].orders += 1;
+   custMap[cId].units += qty;
+   custMap[cId].spend += rev;
+   const dt = (f[F.TX.DT] || '').split('T')[0];
+   if (dt && (!custMap[cId].lastDt || dt > custMap[cId].lastDt)) custMap[cId].lastDt = dt;
+  });
+  const headers = ['Customer Name', 'Phone', 'Orders Count', 'Units Bought', 'Total Spend ₪', 'Average Ticket ₪', 'Last Order Date'];
+  const rows = Object.values(custMap).filter(c => c.spend > 0).sort((a, b) => b.spend - a.spend).map(r => {
+   const avg = r.orders > 0 ? (r.spend / r.orders).toFixed(2) : '0.00';
+   return [r.name, r.phone, r.orders, r.units, r.spend.toFixed(2), avg, r.lastDt ? fmtD(r.lastDt) : '--'];
+  });
+  exportToCSV('customer_rankings_' + dtStr + '.csv', headers, rows);
+ } else if (activeReportTab === 'branches') {
+  const branches = [
+   { name: 'Beit Shemesh', fld: F.P.BS },
+   { name: 'Jerusalem', fld: F.P.J },
+   { name: 'Beitar Illit', fld: F.P.B }
+  ];
+  const headers = ['Branch Name', 'Sales Revenue ₪', 'COGS ₪', 'Gross Profit ₪', 'Margin %', 'Units Sold', 'Orders Count', 'Current Stock Units', 'Stock Value (Cost) ₪'];
+  const rows = branches.map(brInfo => {
+   const normName = brInfo.name === 'Beitar Illit' ? 'Beitar' : brInfo.name;
+   let bSales = 0, bCOGS = 0, bUnits = 0, bOrders = 0;
+   sales.forEach(tx => {
+    const f = tx.fields;
+    const br = f[F.TX.BR] || '';
+    const match = normName === 'Beitar' ? (br === 'Beitar' || br === 'Beitar Illit') : (br === normName);
+    if (!match) return;
+    const qty = Math.abs(f[F.TX.QTY] || 1);
+    const prod = resolveProdFromTx(tx);
+    const paidPrice = getTxPrice(tx, prod);
+    const cp = (prod && prod.fields[F.P.CP] != null) ? parseFloat(prod.fields[F.P.CP]) : 0;
+    bSales += qty * paidPrice;
+    bCOGS += qty * cp;
+    bUnits += qty;
+    bOrders += 1;
+   });
+   let stockUnits = 0, stockValCost = 0;
+   allP.forEach(p => {
+    const st = p.fields[brInfo.fld] ?? 0;
+    stockUnits += st;
+    stockValCost += st * (p.fields[F.P.CP] || 0);
+   });
+   const profit = bSales - bCOGS;
+   const margin = bSales > 0 ? ((profit / bSales) * 100).toFixed(1) : '0.0';
+   return [brInfo.name, bSales.toFixed(2), bCOGS.toFixed(2), profit.toFixed(2), margin + '%', bUnits, bOrders, stockUnits, stockValCost.toFixed(2)];
+  });
+  exportToCSV('branch_breakdown_' + dtStr + '.csv', headers, rows);
+ } else if (activeReportTab === 'employees') {
+  const empMap = {};
+  sales.forEach(tx => {
+   const f = tx.fields;
+   const emp = (f[F.TX.EMP] || 'General Staff').trim();
+   const qty = Math.abs(f[F.TX.QTY] || 1);
+   const prod = resolveProdFromTx(tx);
+   const paidPrice = getTxPrice(tx, prod);
+   const cp = (prod && prod.fields[F.P.CP] != null) ? parseFloat(prod.fields[F.P.CP]) : 0;
+   const rev = qty * paidPrice;
+   const cogs = qty * cp;
+   if (!empMap[emp]) empMap[emp] = { name: emp, orders: 0, units: 0, sales: 0, cogs: 0 };
+   empMap[emp].orders += 1;
+   empMap[emp].units += qty;
+   empMap[emp].sales += rev;
+   empMap[emp].cogs += cogs;
+  });
+  const headers = ['Employee / Salesperson', 'Transactions Handled', 'Units Sold', 'Total Sales ₪', 'Gross Profit ₪', 'Margin %', 'Average Basket ₪'];
+  const rows = Object.values(empMap).sort((a, b) => b.sales - a.sales).map(r => {
+   const profit = r.sales - r.cogs;
+   const margin = r.sales > 0 ? ((profit / r.sales) * 100).toFixed(1) : '0.0';
+   const avg = r.orders > 0 ? (r.sales / r.orders).toFixed(2) : '0.00';
+   return [r.name, r.orders, r.units, r.sales.toFixed(2), profit.toFixed(2), margin + '%', avg];
+  });
+  exportToCSV('employee_performance_' + dtStr + '.csv', headers, rows);
+ } else if (activeReportTab === 'daily') {
+  const dailyMap = {};
+  sales.forEach(tx => {
+   const f = tx.fields;
+   const dt = (f[F.TX.DT] || '').split('T')[0] || 'Unknown';
+   const qty = Math.abs(f[F.TX.QTY] || 1);
+   const prod = resolveProdFromTx(tx);
+   const paidPrice = getTxPrice(tx, prod);
+   const cp = (prod && prod.fields[F.P.CP] != null) ? parseFloat(prod.fields[F.P.CP]) : 0;
+   const rev = qty * paidPrice;
+   const cost = qty * cp;
+   if (!dailyMap[dt]) dailyMap[dt] = { date: dt, orders: 0, units: 0, rev: 0, cost: 0, products: {} };
+   dailyMap[dt].orders += 1;
+   dailyMap[dt].units += qty;
+   dailyMap[dt].rev += rev;
+   dailyMap[dt].cost += cost;
+   const pName = prod ? (prod.fields[F.P.NM] || 'Item') : pNmTx(tx);
+   dailyMap[dt].products[pName] = (dailyMap[dt].products[pName] || 0) + qty;
+  });
+  const headers = ['Date', 'Transactions Count', 'Units Sold', 'Sales Revenue ₪', 'COGS ₪', 'Gross Profit ₪', 'Margin %', 'Top Product of Day'];
+  const rows = Object.values(dailyMap).sort((a, b) => b.date.localeCompare(a.date)).map(r => {
+   const profit = r.rev - r.cost;
+   const margin = r.rev > 0 ? ((profit / r.rev) * 100).toFixed(1) : '0.0';
+   const topProdEntry = Object.entries(r.products).sort((a, b) => b[1] - a[1])[0];
+   const topProd = topProdEntry ? (topProdEntry[0] + ' (' + topProdEntry[1] + ')') : '--';
+   return [fmtD(r.date), r.orders, r.units, r.rev.toFixed(2), r.cost.toFixed(2), profit.toFixed(2), margin + '%', topProd];
+  });
+  exportToCSV('daily_sales_summary_' + dtStr + '.csv', headers, rows);
  }
 }
-
 
 // ── RENDER PRODUCTS ────────────────────────────────────────────
 function popBrands(){const brands=[...new Set(allP.map(p=>p.fields[F.P.BR]).filter(Boolean))].sort();document.getElementById('p-br').innerHTML='<option value="">All Brands</option>'+brands.map(b=>`<option>${esc(b)}</option>`).join('');}
@@ -3249,24 +4769,154 @@ function renderProds(){
 
 // ── RENDER TRANSACTIONS ────────────────────────────────────────
 function txRow(r,short=false){const f=r.fields,qty=f[F.TX.QTY],qs=qty!=null?(qty>0?`+${qty}`:String(qty)):'--',qc=qty<0?'color:#ef4444;font-weight:700;':(qty>0?'color:#10b981;font-weight:700;':'');if(short)return`<tr><td style="white-space:nowrap;font-size:12.5px;">${fmtDT(f[F.TX.DT])}</td><td style="font-size:13px;max-width:180px;">${esc(pNmTx(r))}</td><td>${brB(f[F.TX.BR])}</td><td>${tyB(f[F.TX.TY])}</td><td style="text-align:center;font-size:15px;${qc}">${qs}</td><td>${srcB(f[F.TX.SRC])}</td><td style="font-size:12.5px;color:#64748b;">${esc(f[F.TX.REF]||'--')}</td><td>${cuHtml(r)}</td></tr>`;return`<tr><td style="white-space:nowrap;font-size:12.5px;">${fmtDT(f[F.TX.DT])}</td><td style="font-size:13px;max-width:160px;">${esc(pNmTx(r))}</td><td>${brB(f[F.TX.BR])}</td><td>${tyB(f[F.TX.TY])}</td><td style="text-align:center;font-size:15px;${qc}">${qs}</td><td>${srcB(f[F.TX.SRC])}</td><td style="font-size:12.5px;color:#64748b;">${esc(f[F.TX.REF]||'--')}</td><td>${cuHtml(r)}</td><td style="font-size:12.5px;color:#334155;">${esc(f[F.TX.EMP]||'--')}</td><td style="font-size:12px;color:#94a3b8;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${esc(f[F.TX.NO]||'')}">${esc(f[F.TX.NO]||'--')}</td></tr>`;}
+let currentHistProdId = '';
+
 function openHistory(productId, productName){
+ currentHistProdId = productId;
+ const prod = allP.find(p => p.id === productId);
+ const pf = prod ? prod.fields : {};
+ const sku = pf[F.P.SKU] || '--';
+ const sp = pf[F.P.SP] || 0;
+ const cp = pf[F.P.CP] || 0;
+
  const txForProd = allTX.filter(r => {
   const pr = r.fields[F.TX.PR] || [];
-  return Array.isArray(pr) ? pr.includes(productId) : pr === productId;
+  if (Array.isArray(pr) ? pr.includes(productId) : pr === productId) return true;
+  const skus = r.fields[F.TX.SKUL] || [];
+  if (Array.isArray(skus) ? skus.includes(sku) : skus === sku) return true;
+  return false;
  });
- document.getElementById('hist-title').textContent = productName + ' — ' + txForProd.length + ' transaction(s)';
+
+ const badgeEl = document.getElementById('hist-sku-badge');
+ if (badgeEl) badgeEl.textContent = 'SKU: ' + sku;
+ document.getElementById('hist-title').textContent = (productName || pf[F.P.NM] || 'Product') + ' — ' + txForProd.length + ' movement records';
+
+ let totalSoldUnits = 0, totalSalesRev = 0, totalSalesCOGS = 0;
+ txForProd.forEach(r => {
+  if (r.fields[F.TX.TY] === 'Sale') {
+   const q = Math.abs(r.fields[F.TX.QTY] || 1);
+   const p = getTxPrice(r, prod);
+   totalSoldUnits += q;
+   totalSalesRev += q * p;
+   totalSalesCOGS += q * cp;
+  }
+ });
+ const totalSalesProfit = totalSalesRev - totalSalesCOGS;
+ const totalSalesMargin = totalSalesRev > 0 ? ((totalSalesProfit / totalSalesRev) * 100).toFixed(1) : '0.0';
+
+ const pillsEl = document.getElementById('hist-summary-pills');
+ if (pillsEl) {
+  pillsEl.innerHTML = `
+   <div><strong>List Price:</strong> ₪ ${sp}</div>
+   <div><strong>Cost Price:</strong> ₪ ${cp}</div>
+   <div><strong>Total Units Sold:</strong> ${totalSoldUnits}</div>
+   <div><strong>Total Revenue:</strong> <span style="font-weight:700;color:#db2777;">₪ ${Math.round(totalSalesRev).toLocaleString()}</span></div>
+   <div><strong>Total Profit:</strong> <span style="font-weight:700;color:#16a34a;">₪ ${Math.round(totalSalesProfit).toLocaleString()}</span> (${totalSalesMargin}% Margin)</div>
+  `;
+ }
+
  const qty_col = (qty) => {
   if(qty == null) return '<td style="text-align:center;">--</td>';
-  const qc = qty<0 ? 'color:#ef4444;font-weight:700;' : 'color:#10b981;font-weight:700;';
+  const qc = qty < 0 ? 'color:#ef4444;font-weight:700;' : (qty > 0 ? 'color:#10b981;font-weight:700;' : '');
   return '<td style="text-align:center;font-size:14px;'+qc+'">'+(qty>0?'+':'')+qty+'</td>';
  };
+
  document.getElementById('hist-body').innerHTML = txForProd.length
   ? txForProd.map(r => {
    const f = r.fields;
-   return '<tr><td style="white-space:nowrap;font-size:12.5px;">'+fmtDT(f[F.TX.DT])+'</td><td>'+tyB(f[F.TX.TY])+'</td><td>'+brB(f[F.TX.BR])+'</td>'+qty_col(f[F.TX.QTY])+'<td>'+srcB(f[F.TX.SRC])+'</td><td style="font-size:12px;color:#64748b;">'+esc(f[F.TX.REF]||'--')+'</td><td style="font-size:12px;color:#94a3b8;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+esc(f[F.TX.NO]||'--')+'</td></tr>';
+   const ty = f[F.TX.TY] || '';
+   const qty = f[F.TX.QTY];
+   const absQty = Math.abs(qty || 1);
+   const paidPrice = getTxPrice(r, prod);
+
+   let listPriceCell = '--';
+   let paidPriceCell = '--';
+   let costPriceCell = '--';
+   let profitCell = '--';
+
+   if (ty === 'Sale') {
+    listPriceCell = sp ? ('₪ ' + sp) : '--';
+    paidPriceCell = paidPrice ? ('₪ ' + paidPrice.toFixed(2)) : '--';
+    costPriceCell = cp ? ('₪ ' + cp) : '--';
+    const lineProfit = absQty * (paidPrice - cp);
+    const lineMargin = paidPrice > 0 ? (((paidPrice - cp) / paidPrice) * 100).toFixed(0) : '0';
+    const pColor = lineProfit >= 0 ? '#16a34a' : '#ef4444';
+    profitCell = '<span style="font-weight:700;color:'+pColor+';">₪ ' + lineProfit.toFixed(2) + '</span> <span style="font-size:10.5px;color:#64748b;">(' + lineMargin + '%)</span>';
+   } else if (ty === 'PO Receipt' || ty === 'Stock' || ty === 'Purchase') {
+    const itemCost = f[F.TX.COST] || cp || 0;
+    costPriceCell = itemCost ? ('₪ ' + itemCost) : '--';
+    profitCell = '<span style="font-size:11px;color:#64748b;">Stock In</span>';
+   } else if (ty === 'Transfer') {
+    costPriceCell = cp ? ('₪ ' + cp) : '--';
+    profitCell = '<span style="font-size:11px;color:#64748b;">Transfer</span>';
+   } else {
+    costPriceCell = cp ? ('₪ ' + cp) : '--';
+    profitCell = '<span style="font-size:11px;color:#64748b;">Adjustment</span>';
+   }
+
+   return '<tr>'
+    + '<td style="white-space:nowrap;font-size:12.5px;">' + fmtDT(f[F.TX.DT]) + '</td>'
+    + '<td>' + tyB(ty) + '</td>'
+    + '<td>' + brB(f[F.TX.BR]) + '</td>'
+    + qty_col(qty)
+    + '<td style="text-align:right;color:#64748b;">' + listPriceCell + '</td>'
+    + '<td style="text-align:right;font-weight:700;color:#0f172a;">' + paidPriceCell + '</td>'
+    + '<td style="text-align:right;color:#64748b;">' + costPriceCell + '</td>'
+    + '<td style="text-align:right;">' + profitCell + '</td>'
+    + '<td>' + cuHtml(r) + '</td>'
+    + '<td style="font-size:12px;color:#334155;">' + esc(f[F.TX.EMP] || '--') + '</td>'
+    + '<td style="font-size:12px;color:#64748b;">' + esc(f[F.TX.REF] || '--') + '</td>'
+    + '<td style="font-size:11.5px;color:#94a3b8;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + esc(f[F.TX.NO]||'') + '">' + esc(f[F.TX.NO] || '--') + '</td>'
+    + '</tr>';
   }).join('')
-  : '<tr><td colspan="7"><div class="empty">No transactions found for this product</div></td></tr>';
+  : '<tr><td colspan="12"><div class="empty">No transactions found for this product</div></td></tr>';
+
  openModal('m-hist');
+}
+
+function exportProductHistoryCSV(){
+ if (!currentHistProdId) return;
+ const prod = allP.find(p => p.id === currentHistProdId);
+ const pf = prod ? prod.fields : {};
+ const sku = pf[F.P.SKU] || 'SKU';
+ const sp = pf[F.P.SP] || 0;
+ const cp = pf[F.P.CP] || 0;
+
+ const txForProd = allTX.filter(r => {
+  const pr = r.fields[F.TX.PR] || [];
+  if (Array.isArray(pr) ? pr.includes(currentHistProdId) : pr === currentHistProdId) return true;
+  const skus = r.fields[F.TX.SKUL] || [];
+  if (Array.isArray(skus) ? skus.includes(sku) : skus === sku) return true;
+  return false;
+ });
+
+ const headers = ['Date', 'Type', 'Branch', 'Quantity', 'List Price', 'Actual Price Paid', 'Cost Price', 'Line Profit', 'Customer', 'Employee', 'Reference', 'Notes'];
+ const rows = txForProd.map(r => {
+  const f = r.fields;
+  const ty = f[F.TX.TY] || '';
+  const qty = f[F.TX.QTY] || 0;
+  const absQty = Math.abs(qty);
+  const paidPrice = getTxPrice(r, prod);
+  const profit = ty === 'Sale' ? (absQty * (paidPrice - cp)).toFixed(2) : '0';
+  const custName = r._custName || (f[F.TX.CU] ? 'Linked Customer' : 'Anonymous');
+
+  return [
+   f[F.TX.DT] || '',
+   ty,
+   f[F.TX.BR] || '',
+   qty,
+   sp,
+   ty === 'Sale' ? paidPrice.toFixed(2) : '',
+   cp,
+   profit,
+   custName,
+   f[F.TX.EMP] || '',
+   f[F.TX.REF] || '',
+   f[F.TX.NO] || ''
+  ];
+ });
+
+ exportToCSV(`Product_History_${sku}_${todayStr()}.csv`, headers, rows);
 }
 
 function filterTx(){const br=document.getElementById('tx-br').value,ty=document.getElementById('tx-ty').value,src=document.getElementById('tx-src').value,fr=document.getElementById('tx-fr').value,to=document.getElementById('tx-to').value;filtTX=allTX.filter(r=>{const f=r.fields;if(br&&f[F.TX.BR]!==br)return false;if(ty&&f[F.TX.TY]!==ty)return false;if(src&&f[F.TX.SRC]!==src)return false;const dt=(f[F.TX.DT]||'').split('T')[0];if(fr&&dt&&dt<fr)return false;if(to&&dt&&dt>to)return false;return true;});txPage=1;renderTX();}
