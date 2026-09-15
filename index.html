@@ -380,7 +380,7 @@
    </button>
 
    <!-- Export to Excel Button -->
-   <button class="btn btn-ok" onclick="exportCurrentDashboardCSV()" title="Export Summary to Excel/CSV" style="padding:7px 13px;border-radius:10px;font-size:12.5px;font-weight:600;">
+   <button class="btn btn-ok" onclick="exportCurrentDashboardCSV()" title="ייצוא סיכום לאקסל" style="padding:7px 13px;border-radius:10px;font-size:12.5px;font-weight:600;">
     📥 Excel
    </button>
 
@@ -1427,7 +1427,7 @@
     <p id="c360-meta" style="font-size:12.5px;color:#64748b;margin-top:4px;">Customer lifetime spending, purchase frequency &amp; preferences</p>
    </div>
    <div style="display:flex;align-items:center;gap:8px;">
-    <button class="btn btn-ok btn-sm" onclick="exportCustomer360CSV()">📥 Export to Excel</button>
+    <button class="btn btn-ok btn-sm" onclick="exportCustomer360CSV()">📥 ייצוא לאקסל</button>
     <button class="m-x" onclick="closeModal('m-cust360')">&times;</button>
    </div>
   </div>
@@ -1491,7 +1491,7 @@
     <p id="b360-meta" style="font-size:12.5px;color:#64748b;margin-top:4px;">Branch sales, profitability, inventory valuation &amp; operations</p>
    </div>
    <div style="display:flex;align-items:center;gap:8px;">
-    <button class="btn btn-ok btn-sm" onclick="exportBranch360CSV()">📥 Export to Excel</button>
+    <button class="btn btn-ok btn-sm" onclick="exportBranch360CSV()">📥 ייצוא לאקסל</button>
     <button class="m-x" onclick="closeModal('m-branch360')">&times;</button>
    </div>
   </div>
@@ -4395,6 +4395,15 @@ function renderDailyReport(container, sales) {
 // UNIVERSAL EXCEL / CSV EXPORT UTILITIES (UTF-8 BOM FOR HEBREW)
 // ─────────────────────────────────────────────────────────────
 // Native Microsoft Excel (.xlsx) Export using SheetJS with RTL support
+function hebrewBranchName(br) {
+ if (!br) return '';
+ const s = String(br).trim();
+ if (s === 'Beit Shemesh' || s === 'בית שמש') return 'בית שמש';
+ if (s === 'Jerusalem' || s === 'ירושלים') return 'ירושלים';
+ if (s === 'Beitar' || s === 'Beitar Illit' || s === 'ביתר' || s === 'ביתר עילית') return 'ביתר עילית';
+ return s;
+}
+
 function exportToExcel(filename, headers, rows, sheetName = 'דוח') {
  try {
   if (typeof XLSX !== 'undefined') {
@@ -4445,7 +4454,24 @@ function exportToCSV(filename, headers, rows) {
 
 function exportCurrentDashboardCSV() {
  const sales = getFilteredSales(dashDateFrom, dashDateTo, dashBranch);
- const headers = ['Transaction ID', 'Date & Time', 'Branch', 'Product Name', 'SKU', 'Brand', 'Units Sold', 'Actual Paid Price', 'Cost Price', 'Revenue ₪', 'COGS ₪', 'Gross Profit ₪', 'Customer', 'Employee', 'Receipt Ref', 'Notes'];
+ const headers = [
+  'מספר עסקה',
+  'תאריך ושעה',
+  'שם הסניף',
+  'שם המוצר',
+  'מק״ט',
+  'מותג',
+  'יחידות שנמכרו',
+  'מחיר ששולם בפועל ₪',
+  'מחיר עלות ₪',
+  'הכנסות ממכירות ₪',
+  'עלות הסחורה שנמכרה ₪',
+  'רווח גולמי ₪',
+  'לקוח',
+  'עובד / איש מכירות',
+  'אסמכתא',
+  'הערות'
+ ];
 
  const rows = sales.map(tx => {
   const f = tx.fields;
@@ -4457,12 +4483,12 @@ function exportCurrentDashboardCSV() {
   const cogs = qty * cost;
   const profit = rev - cogs;
   const cust = resolveCustFromTx(tx);
-  const custName = cust ? cust.fields[F.CU.NM] : (f[F.TX.NM] || 'Anonymous');
+  const custName = cust ? cust.fields[F.CU.NM] : (f[F.TX.NM] || 'אנונימי');
 
   return [
    f[F.TX.NM] || tx.id,
    fmtDT(f[F.TX.DT]),
-   f[F.TX.BR] || '',
+   hebrewBranchName(f[F.TX.BR]),
    prod ? (prod.fields[F.P.NM] || '') : pNmTx(tx),
    prod ? (prod.fields[F.P.SKU] || '') : (f[F.TX.SKUL] || [''])[0],
    prod ? (prod.fields[F.P.BR] || '') : '',
@@ -4480,7 +4506,8 @@ function exportCurrentDashboardCSV() {
  });
 
  const dtStr = today();
- exportToCSV('makeup_dashboard_sales_' + (dashBranch || 'all_branches') + '_' + dtStr + '.csv', headers, rows);
+ const brLabel = dashBranch ? hebrewBranchName(dashBranch) : 'כל_הסניפים';
+ exportToExcel('עסקאות_דשבורד_' + brLabel + '_' + dtStr + '.xlsx', headers, rows, 'דשבורד');
 }
 
 function exportProduct360CSV() {
@@ -4498,7 +4525,7 @@ function exportProduct360CSV() {
   return false;
  });
 
- const headers = ['Date & Time', 'Type', 'Branch', 'Qty Change', 'Actual Price Paid ₪', 'Customer', 'Employee', 'Reference', 'Notes'];
+ const headers = ['תאריך ושעה', 'סוג פעולה', 'שם הסניף', 'שינוי כמות', 'מחיר ששולם בפועל ₪', 'לקוח', 'עובד / איש מכירות', 'אסמכתא', 'הערות'];
  const rows = txForProd.map(tx => {
   const tf = tx.fields;
   const cust = resolveCustFromTx(tx);
@@ -4506,7 +4533,7 @@ function exportProduct360CSV() {
   return [
    fmtDT(tf[F.TX.DT]),
    tf[F.TX.TY] || '',
-   tf[F.TX.BR] || '',
+   hebrewBranchName(tf[F.TX.BR]),
    tf[F.TX.QTY] || 0,
    getTxPrice(tx, prod),
    cName,
@@ -4516,7 +4543,7 @@ function exportProduct360CSV() {
   ];
  });
 
- exportToCSV('product_history_' + sku + '_' + today() + '.csv', headers, rows);
+ exportToExcel('היסטוריית_מוצר_' + sku + '_' + today() + '.xlsx', headers, rows, 'מוצר_360');
 }
 
 function exportCustomer360CSV() {
@@ -4530,7 +4557,7 @@ function exportCustomer360CSV() {
   return Array.isArray(cIds) ? cIds.includes(cust.id) : cIds === cust.id;
  });
 
- const headers = ['Date & Time', 'Receipt Ref', 'Branch', 'Product Name', 'SKU', 'Brand', 'Qty', 'Paid Price ₪', 'Total ₪', 'Salesperson'];
+ const headers = ['תאריך ושעה', 'אסמכתא / מספר עסקה', 'שם הסניף', 'שם המוצר', 'מק״ט', 'מותג', 'כמות', 'מחיר ששולם בפועל ₪', 'סה״כ ₪', 'עובד / איש מכירות'];
  const rows = txForCust.map(tx => {
   const tf = tx.fields;
   const prod = resolveProdFromTx(tx);
@@ -4539,7 +4566,7 @@ function exportCustomer360CSV() {
   return [
    fmtDT(tf[F.TX.DT]),
    tf[F.TX.REF] || '',
-   tf[F.TX.BR] || '',
+   hebrewBranchName(tf[F.TX.BR]),
    prod ? (prod.fields[F.P.NM] || '') : pNmTx(tx),
    prod ? (prod.fields[F.P.SKU] || '') : '',
    prod ? (prod.fields[F.P.BR] || '') : '',
@@ -4550,7 +4577,7 @@ function exportCustomer360CSV() {
   ];
  });
 
- exportToCSV('customer_360_' + cName.replace(/\s+/g, '_') + '_' + today() + '.csv', headers, rows);
+ exportToExcel('כרטיס_לקוח_' + cName.replace(/\s+/g, '_') + '_' + today() + '.xlsx', headers, rows, 'לקוח_360');
 }
 
 function exportBranch360CSV() {
@@ -4563,7 +4590,7 @@ function exportBranch360CSV() {
   return br === normName;
  });
 
- const headers = ['Date & Time', 'Operation Type', 'Product Name', 'SKU', 'Qty Change', 'Price Paid ₪', 'Customer', 'Employee', 'Notes'];
+ const headers = ['תאריך ושעה', 'סוג פעולה', 'שם המוצר', 'מק״ט', 'שינוי כמות', 'מחיר ששולם בפועל ₪', 'לקוח', 'עובד / איש מכירות', 'הערות'];
  const rows = txForBranch.map(tx => {
   const tf = tx.fields;
   const prod = resolveProdFromTx(tx);
@@ -4581,7 +4608,7 @@ function exportBranch360CSV() {
   ];
  });
 
- exportToCSV('branch_report_' + normName + '_' + today() + '.csv', headers, rows);
+ exportToExcel('דוח_סניף_' + hebrewBranchName(normName) + '_' + today() + '.xlsx', headers, rows, 'סניף_360');
 }
 
 function exportActiveReportToCSV() {
@@ -4633,7 +4660,7 @@ function exportActiveReportToCSV() {
    return [
     f[F.TX.REF] || f[F.TX.NM] || tx.id,
     fmtDT(f[F.TX.DT]),
-    f[F.TX.BR] || '',
+    hebrewBranchName(f[F.TX.BR] || ''),
     prod ? (prod.fields[F.P.NM] || '') : pNmTx(tx),
     prod ? (prod.fields[F.P.SKU] || '') : (f[F.TX.SKUL] || [''])[0],
     bc,
@@ -4677,7 +4704,7 @@ function exportActiveReportToCSV() {
    brandMap[brand].net += lineNet;
    brandMap[brand].cogs += lineCOGS;
   });
-  const headers = ['Brand', 'Units Sold', 'Gross List Sales ₪', 'Net Paid Sales ₪', 'COGS ₪', 'Gross Profit ₪', 'Margin %'];
+  const headers = ['מותג', 'יחידות שנמכרו', 'מכירות מחירון (ברוטו) ₪', 'שולם בפועל (כולל מע״מ) ₪', 'עלות הסחורה שנמכרה ₪', 'רווח גולמי ₪', 'שיעור רווח %'];
   const rows = Object.values(brandMap).sort((a, b) => (b.net - b.cogs) - (a.net - a.cogs)).map(b => {
    const profit = b.net - b.cogs;
    const margin = b.net > 0 ? ((profit / b.net) * 100).toFixed(1) : '0.0';
@@ -4702,7 +4729,7 @@ function exportActiveReportToCSV() {
    prodMap[key].rev += qty * paidPrice;
    prodMap[key].cost += qty * cp;
   });
-  const headers = ['SKU', 'Product Name', 'Brand', 'Units Sold', 'Avg. Paid Price ₪', 'Revenue ₪', 'COGS ₪', 'Gross Profit ₪', 'Margin %'];
+  const headers = ['מק״ט', 'שם המוצר', 'מותג', 'יחידות שנמכרו', 'מחיר ממוצע ששולם ₪', 'הכנסות ממכירות ₪', 'עלות הסחורה שנמכרה ₪', 'רווח גולמי ₪', 'שיעור רווח %'];
   const rows = Object.values(prodMap).sort((a, b) => b.units - a.units).map(r => {
    const profit = r.rev - r.cost;
    const margin = r.rev > 0 ? ((profit / r.rev) * 100).toFixed(1) : '0.0';
@@ -4720,7 +4747,7 @@ function exportActiveReportToCSV() {
    return (f[F.P.B] ?? 0) < 0 || (f[F.P.BS] ?? 0) < 0 || (f[F.P.J] ?? 0) < 0;
   });
 
-  const headers = ['SKU', 'Product Name', 'Brand', 'Cost Price ₪', 'Retail Price ₪', 'Beitar Units', 'Beit Shemesh Units', 'Jerusalem Units', 'Total Stock Units', 'Valuation at Cost ₪', 'Valuation at Retail ₪'];
+  const headers = ['מק״ט', 'שם המוצר', 'מותג', 'מחיר עלות ₪', 'מחיר מכירה ₪', 'מלאי ביתר עילית', 'מלאי בית שמש', 'מלאי ירושלים', 'מלאי נוכחי', 'שווי מלאי לפי עלות ₪', 'שווי מלאי לפי מחירון ₪'];
   const rows = prods.map(p => {
    const f = p.fields;
    const b = f[F.P.B] ?? 0, bs = f[F.P.BS] ?? 0, j = f[F.P.J] ?? 0, tot = b + bs + j;
@@ -4758,7 +4785,7 @@ function exportActiveReportToCSV() {
    const dt = (f[F.TX.DT] || '').split('T')[0];
    if (dt && (!custMap[cId].lastDt || dt > custMap[cId].lastDt)) custMap[cId].lastDt = dt;
   });
-  const headers = ['Customer Name', 'Phone', 'Orders Count', 'Units Bought', 'Total Spend ₪', 'Average Ticket ₪', 'Last Order Date'];
+  const headers = ['שם הלקוח', 'טלפון', 'מספר עסקאות', 'יחידות שנרכשו', 'סך רכישות ₪', 'ממוצע לעסקה ₪', 'תאריך רכישה אחרון'];
   const rows = Object.values(custMap).filter(c => c.spend > 0).sort((a, b) => b.spend - a.spend).map(r => {
    const avg = r.orders > 0 ? (r.spend / r.orders).toFixed(2) : '0.00';
    return [r.name, r.phone, r.orders, r.units, r.spend.toFixed(2), avg, r.lastDt ? fmtD(r.lastDt) : '--'];
@@ -4770,7 +4797,7 @@ function exportActiveReportToCSV() {
    { name: 'Jerusalem', fld: F.P.J },
    { name: 'Beitar Illit', fld: F.P.B }
   ];
-  const headers = ['Branch Name', 'Sales Revenue ₪', 'COGS ₪', 'Gross Profit ₪', 'Margin %', 'Units Sold', 'Orders Count', 'Current Stock Units', 'Stock Value (Cost) ₪'];
+  const headers = ['שם הסניף', 'הכנסות ממכירות ₪', 'עלות הסחורה שנמכרה ₪', 'רווח גולמי ₪', 'שיעור רווח %', 'יחידות שנמכרו', 'מספר עסקאות', 'מלאי נוכחי', 'שווי מלאי לפי עלות ₪'];
   const rows = branches.map(brInfo => {
    const normName = brInfo.name === 'Beitar Illit' ? 'Beitar' : brInfo.name;
    let bSales = 0, bCOGS = 0, bUnits = 0, bOrders = 0;
@@ -4796,7 +4823,7 @@ function exportActiveReportToCSV() {
    });
    const profit = bSales - bCOGS;
    const margin = bSales > 0 ? ((profit / bSales) * 100).toFixed(1) : '0.0';
-   return [brInfo.name, bSales.toFixed(2), bCOGS.toFixed(2), profit.toFixed(2), margin + '%', bUnits, bOrders, stockUnits, stockValCost.toFixed(2)];
+   return [hebrewBranchName(brInfo.name), bSales.toFixed(2), bCOGS.toFixed(2), profit.toFixed(2), margin + '%', bUnits, bOrders, stockUnits, stockValCost.toFixed(2)];
   });
   exportToExcel('ניתוח_סניפים_' + dtStr + '.xlsx', headers, rows, 'סניפים');
  } else if (activeReportTab === 'employees') {
@@ -4816,7 +4843,7 @@ function exportActiveReportToCSV() {
    empMap[emp].sales += rev;
    empMap[emp].cogs += cogs;
   });
-  const headers = ['Employee / Salesperson', 'Transactions Handled', 'Units Sold', 'Total Sales ₪', 'Gross Profit ₪', 'Margin %', 'Average Basket ₪'];
+  const headers = ['עובד / איש מכירות', 'מספר עסקאות', 'יחידות שנמכרו', 'סך המכירות ₪', 'רווח גולמי ₪', 'שיעור רווח %', 'סל ממוצע ₪'];
   const rows = Object.values(empMap).sort((a, b) => b.sales - a.sales).map(r => {
    const profit = r.sales - r.cogs;
    const margin = r.sales > 0 ? ((profit / r.sales) * 100).toFixed(1) : '0.0';
@@ -4843,7 +4870,7 @@ function exportActiveReportToCSV() {
    const pName = prod ? (prod.fields[F.P.NM] || 'Item') : pNmTx(tx);
    dailyMap[dt].products[pName] = (dailyMap[dt].products[pName] || 0) + qty;
   });
-  const headers = ['Date', 'Transactions Count', 'Units Sold', 'Sales Revenue ₪', 'COGS ₪', 'Gross Profit ₪', 'Margin %', 'Top Product of Day'];
+  const headers = ['תאריך', 'מספר עסקאות', 'יחידות שנמכרו', 'הכנסות ממכירות ₪', 'עלות הסחורה שנמכרה ₪', 'רווח גולמי ₪', 'שיעור רווח %', 'מוצר מוביל יומי'];
   const rows = Object.values(dailyMap).sort((a, b) => b.date.localeCompare(a.date)).map(r => {
    const profit = r.rev - r.cost;
    const margin = r.rev > 0 ? ((profit / r.rev) * 100).toFixed(1) : '0.0';
@@ -4991,7 +5018,7 @@ function exportProductHistoryCSV(){
   return false;
  });
 
- const headers = ['Date', 'Type', 'Branch', 'Quantity', 'List Price', 'Actual Price Paid', 'Cost Price', 'Line Profit', 'Customer', 'Employee', 'Reference', 'Notes'];
+ const headers = ['תאריך', 'סוג פעולה', 'שם הסניף', 'כמות', 'מחיר מחירון ₪', 'מחיר ששולם בפועל ₪', 'מחיר עלות ₪', 'רווח שורה ₪', 'לקוח', 'עובד / איש מכירות', 'אסמכתא', 'הערות'];
  const rows = txForProd.map(r => {
   const f = r.fields;
   const ty = f[F.TX.TY] || '';
@@ -4999,12 +5026,12 @@ function exportProductHistoryCSV(){
   const absQty = Math.abs(qty);
   const paidPrice = getTxPrice(r, prod);
   const profit = ty === 'Sale' ? (absQty * (paidPrice - cp)).toFixed(2) : '0';
-  const custName = r._custName || (f[F.TX.CU] ? 'Linked Customer' : 'Anonymous');
+  const custName = r._custName || (f[F.TX.CU] ? 'לקוח מקושר' : 'אנונימי');
 
   return [
    f[F.TX.DT] || '',
    ty,
-   f[F.TX.BR] || '',
+   hebrewBranchName(f[F.TX.BR] || ''),
    qty,
    sp,
    ty === 'Sale' ? paidPrice.toFixed(2) : '',
@@ -5017,7 +5044,7 @@ function exportProductHistoryCSV(){
   ];
  });
 
- exportToCSV(`Product_History_${sku}_${todayStr()}.csv`, headers, rows);
+ exportToExcel(`היסטוריית_מוצר_${sku}_${todayStr()}.xlsx`, headers, rows, 'היסטוריה');
 }
 
 function filterTx(){const br=document.getElementById('tx-br').value,ty=document.getElementById('tx-ty').value,src=document.getElementById('tx-src').value,fr=document.getElementById('tx-fr').value,to=document.getElementById('tx-to').value;filtTX=allTX.filter(r=>{const f=r.fields;if(br&&f[F.TX.BR]!==br)return false;if(ty&&f[F.TX.TY]!==ty)return false;if(src&&f[F.TX.SRC]!==src)return false;const dt=(f[F.TX.DT]||'').split('T')[0];if(fr&&dt&&dt<fr)return false;if(to&&dt&&dt>to)return false;return true;});txPage=1;renderTX();}
