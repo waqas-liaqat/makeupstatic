@@ -266,7 +266,7 @@
   </div>
   <div class="nav-item" id="nav-approvals" onclick="showPage('approvals')">
    <svg style="width:17px;height:17px;flex-shrink:0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-   <span style="flex:1;">Approvals</span>
+   <span style="flex:1;">אישורים</span>
    <span id="appr-badge" style="background:#ef4444;color:#fff;border-radius:9999px;font-size:10px;font-weight:700;padding:1px 6px;display:none;">0</span>
   </div>
 
@@ -297,7 +297,7 @@
   </div>
   <div class="nav-item" id="nav-reports" onclick="showPage('reports')">
    <svg style="width:17px;height:17px;flex-shrink:0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-   <span>דוחות וייצוא</span>
+   <span>אנליטיקה ודוחות</span>
   </div>
 
   <div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,.07);">
@@ -308,7 +308,7 @@
    <a href="user_manual.html" target="_blank" class="nav-item" style="text-decoration:none;color:#94a3b8;" title="Open Makeup Boutique Operating Manual & Guide">
     <svg style="width:17px;height:17px;flex-shrink:0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
     <span>מדריך למשתמש</span>
-    <span style="font-size:9.5px;font-weight:700;background:rgba(219,39,119,.2);color:#f472b6;padding:1px 6px;border-radius:4px;margin-left:auto;">v6.0</span>
+    <span style="font-size:9.5px;font-weight:700;background:rgba(219,39,119,.2);color:#f472b6;padding:1px 6px;border-radius:4px;margin-left:auto;">v6.2</span>
    </a>
   </div>
  </nav>
@@ -569,8 +569,8 @@
       <h3 style="font-size:15px;font-weight:700;color:#0f172a;margin:0;">Sales Over Time</h3>
       <select id="chart-overtime-metric" onchange="renderSalesOverTimeChart()" style="padding:4px 10px;border:1px solid #d1d5db;border-radius:8px;font-size:12px;font-weight:600;outline:none;background:#f8fafc;">
        <option value="sales">Sales (&#8362;)</option>
-       <option value="profit">Gross Profit (&#8362;)</option>
-       <option value="txs">Transactions</option>
+       <option value="profit">רווח גולמי (&#8362;)</option>
+       <option value="txs">עסקאות</option>
       </select>
      </div>
      <div id="chart-overtime-container" style="height:220px;position:relative;width:100%;">
@@ -735,16 +735,16 @@
  <!-- ── PRODUCTS ──────────────────────────────────────── -->
  <div class="page" id="page-products">
  <div class="fbar">
- <input class="fsrch" type="text" id="p-q" placeholder=" Search SKU, name, brand, shade..." oninput="filterProds()"/>
- <select id="p-br" onchange="filterProds()" style="min-width:140px;"><option value="">All Brands</option></select>
+ <input class="fsrch" type="text" id="p-q" placeholder="🔍 חיפוש לפי מק״ט, שם, מותג, גוון..." oninput="filterProds()"/>
+ <select id="p-br" onchange="filterProds()" style="min-width:140px;"><option value="">כל המותגים</option></select>
  <select id="p-st" onchange="filterProds()" style="min-width:140px;"><option value="">כל רמות המלאי</option><option value="low"> Low Stock</option><option value="ok"> OK</option></select>
- <span style="font-size:13px;color:#64748b;margin-left:auto;white-space:nowrap;"><span id="p-cnt">--</span> products</span>
+ <span style="font-size:13px;color:#64748b;margin-left:auto;white-space:nowrap;"><span id="p-cnt">--</span> מוצרים</span>
  <button class="btn btn-s btn-sm" onclick="openModal('m-sm')" style="margin-left:8px;" title="View all confirmed invoice-to-product mappings"> Saved Mappings (<span id="sm-cnt-btn">0</span>)</button>
  </div>
  <div class="card"><div style="overflow-x:auto;"><table><thead><tr>
- <th>SKU</th><th>Brand</th><th>Product Name</th><th>Shade</th>
+ <th>מק״ט</th><th>מותג</th><th>שם המוצר</th><th>גוון</th>
  <th style="text-align:center;"> Beitar</th><th style="text-align:center;"> Beit Sh.</th><th style="text-align:center;"> Jerusalem</th>
- <th style="text-align:center;">Total</th><th style="text-align:right;">Price &#8362;</th><th>Status</th><th>Actions</th>
+ <th style="text-align:center;">סה״כ</th><th style="text-align:right;">מחיר &#8362;</th><th>סטטוס</th><th>פעולות</th>
  </tr></thead><tbody id="prod-body"></tbody></table></div></div>
  </div>
 
@@ -761,12 +761,12 @@
  </div>
  <div class="card">
  <div style="overflow-x:auto;"><table><thead><tr>
- <th>Date &amp; Time</th><th>Product</th><th>Branch</th><th>Type</th><th style="text-align:center;">Qty</th><th>Source</th><th>Reference</th><th>Customer</th><th>Employee</th><th>Notes</th>
+ <th>תאריך ושעה</th><th>מוצר</th><th>סניף</th><th>סוג</th><th style="text-align:center;">כמות</th><th>מקור</th><th>אסמכתא</th><th>לקוח</th><th>עובד / איש מכירות</th><th>הערות</th>
  </tr></thead><tbody id="tx-body"></tbody></table></div>
  <div class="pager">
- <button class="btn btn-s btn-sm" id="tx-prev" onclick="chgPg(-1)">&larr; Prev</button>
+ <button class="btn btn-s btn-sm" id="tx-prev" onclick="chgPg(-1)">הקודם &rarr;</button>
  <span class="pager-info" id="tx-pgi">Page 1 of 1</span>
- <button class="btn btn-s btn-sm" id="tx-next" onclick="chgPg(1)">Next &rarr;</button>
+ <button class="btn btn-s btn-sm" id="tx-next" onclick="chgPg(1)">הבא &larr;</button>
  </div>
  </div>
  </div>
@@ -791,11 +791,11 @@
  <!-- ── CUSTOMERS ─────────────────────────────────────── -->
  <div class="page" id="page-customers">
  <div class="fbar">
- <input class="fsrch" type="text" id="cu-q" placeholder=" Search name, phone, email..." oninput="filterCusts()"/>
- <span style="font-size:13px;color:#64748b;margin-left:auto;white-space:nowrap;"><span id="cu-cnt">--</span> customers</span>
+ <input class="fsrch" type="text" id="cu-q" placeholder="🔍 חיפוש לפי שם, טלפון או אימייל..." oninput="filterCusts()"/>
+ <span style="font-size:13px;color:#64748b;margin-left:auto;white-space:nowrap;"><span id="cu-cnt">--</span> לקוחות</span>
  </div>
  <div class="card"><div style="overflow-x:auto;"><table><thead><tr>
- <th>Name</th><th>Phone</th><th>Email</th><th>Type</th><th>Points</th><th>Source</th><th>Created</th>
+ <th>שם</th><th>טלפון</th><th>אימייל</th><th>סוג</th><th>נקודות</th><th>מקור</th><th>תאריך יצירה</th>
  </tr></thead><tbody id="cu-body"></tbody></table></div></div>
  </div>
 
@@ -819,7 +819,7 @@
   <div class="card" style="padding:14px 18px;margin-bottom:16px;background:#ffffff;border:1px solid #e2e8f0;border-radius:14px;box-shadow:0 1px 4px rgba(15,23,42,0.03);">
    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
     <div style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:#0f172a;">
-     <span>🔍</span> Universal Filter &amp; Analytics Controls
+     <span>🔍</span> סינון ובקרת נתונים
      <span id="rf-active-badge" class="badge bb" style="display:none;font-size:11px;">Filtered</span>
     </div>
     <div style="display:flex;align-items:center;gap:8px;">
@@ -834,7 +834,7 @@
      <select id="rf-preset" onchange="onReportDatePresetChange()" style="padding:7px 8px;font-size:12.5px;border-radius:8px;border:1px solid #d1d5db;">
       <option value="today">היום</option>
       <option value="yesterday">אתמול</option>
-      <option value="7d" selected>Last 7 Days</option>
+      <option value="7d" selected>7 הימים האחרונים</option>
       <option value="30d">30 הימים האחרונים</option>
       <option value="month">החודש הנוכחי</option>
       <option value="all">כל הזמנים</option>
@@ -855,7 +855,7 @@
     <div class="fld" style="margin:0;">
      <label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">סניף</label>
      <select id="rf-branch" onchange="onReportFilterChange()" style="padding:7px 8px;font-size:12.5px;border-radius:8px;border:1px solid #d1d5db;">
-      <option value="">All Branches</option>
+      <option value="">כל הסניפים</option>
       <option value="Beitar">Beitar</option>
       <option value="Beit Shemesh">Beit Shemesh</option>
       <option value="Jerusalem">Jerusalem</option>
@@ -865,28 +865,28 @@
     <div class="fld" style="margin:0;">
      <label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">מותג</label>
      <select id="rf-brand" onchange="onReportFilterChange()" style="padding:7px 8px;font-size:12.5px;border-radius:8px;border:1px solid #d1d5db;">
-      <option value="">All Brands</option>
+      <option value="">כל המותגים</option>
      </select>
     </div>
     <!-- 6. Product -->
     <div class="fld" style="margin:0;">
      <label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">מוצר</label>
      <select id="rf-product" onchange="onReportFilterChange()" style="padding:7px 8px;font-size:12.5px;border-radius:8px;border:1px solid #d1d5db;">
-      <option value="">All Products</option>
+      <option value="">כל המוצרים</option>
      </select>
     </div>
     <!-- 7. Customer -->
     <div class="fld" style="margin:0;">
      <label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">לקוח</label>
      <select id="rf-customer" onchange="onReportFilterChange()" style="padding:7px 8px;font-size:12.5px;border-radius:8px;border:1px solid #d1d5db;">
-      <option value="">All Customers</option>
+      <option value="">כל הלקוחות</option>
      </select>
     </div>
     <!-- 8. Salesperson / Employee -->
     <div class="fld" style="margin:0;">
      <label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">מוכר/ת</label>
      <select id="rf-employee" onchange="onReportFilterChange()" style="padding:7px 8px;font-size:12.5px;border-radius:8px;border:1px solid #d1d5db;">
-      <option value="">All Staff</option>
+      <option value="">כל העובדים / קופאים</option>
      </select>
     </div>
    </div>
@@ -930,22 +930,22 @@
  <div class="m-body">
  <!-- Steps -->
  <div class="step-wrap">
- <div style="flex:1;text-align:center;"><div id="ps1-dot" class="step-dot s-act" style="margin:0 auto;">1</div><div class="step-lbl">Branch &amp; Date</div></div>
+ <div style="flex:1;text-align:center;"><div id="ps1-dot" class="step-dot s-act" style="margin:0 auto;">1</div><div class="step-lbl">סניף ותאריך</div></div>
  <div class="step-line" id="ps1-ln"></div>
- <div style="flex:1;text-align:center;"><div id="ps2-dot" class="step-dot s-pend" style="margin:0 auto;">2</div><div class="step-lbl">File 1: Products</div></div>
+ <div style="flex:1;text-align:center;"><div id="ps2-dot" class="step-dot s-pend" style="margin:0 auto;">2</div><div class="step-lbl">קובץ 1: מוצרים</div></div>
  <div class="step-line" id="ps2-ln"></div>
- <div style="flex:1;text-align:center;"><div id="ps3-dot" class="step-dot s-pend" style="margin:0 auto;">3</div><div class="step-lbl">File 2: Customers</div></div>
+ <div style="flex:1;text-align:center;"><div id="ps3-dot" class="step-dot s-pend" style="margin:0 auto;">3</div><div class="step-lbl">קובץ 2: לקוחות</div></div>
  <div class="step-line" id="ps3-ln"></div>
- <div style="flex:1;text-align:center;"><div id="ps4-dot" class="step-dot s-pend" style="margin:0 auto;">4</div><div class="step-lbl">Preview &amp; Import</div></div>
+ <div style="flex:1;text-align:center;"><div id="ps4-dot" class="step-dot s-pend" style="margin:0 auto;">4</div><div class="step-lbl">תצוגה מקדימה וייבוא</div></div>
  </div>
  <!-- Step 1 -->
  <div id="ps-1">
  <div class="a-i" style="margin-bottom:14px;"> Upload <strong>both</strong> POS Excel files together. They are linked by Invoice Number to match each product line to the correct customer.</div>
  <div class="g2">
  <div class="fld"><label>Branch *</label><select id="pos-br" translate="no"><option value="">Select branch...</option><option value="Beitar">Beitar</option><option value="Beit Shemesh">Beit Shemesh</option><option value="Jerusalem">Jerusalem</option></select></div>
- <div class="fld"><label>Sale Date *</label><input type="date" id="pos-dt"/></div>
+ <div class="fld"><label>תאריך המכירה *</label><input type="date" id="pos-dt"/></div>
  </div>
- <div class="fld"><label>Notes (optional)</label><input type="text" id="pos-note" placeholder="e.g. Daily sales 19 Aug"/></div>
+ <div class="fld"><label>הערות (אופציונלי)</label><input type="text" id="pos-note" placeholder="לדוגמה: מכירות יומיות 19 אוגוסט"/></div>
  </div>
  <!-- Step 2 -->
  <div id="ps-2" style="display:none;">
@@ -953,7 +953,7 @@
  <div class="dz" id="dz1" onclick="document.getElementById('fi1').click()"
  ondragover="event.preventDefault();this.classList.add('dg')" ondragleave="this.classList.remove('dg')" ondrop="drop1(event)">
  <div style="font-size:36px;margin-bottom:8px;" id="dz1-ico"></div>
- <div style="font-size:14px;font-weight:600;color:#374151;" id="dz1-ttl">Drop File 1 here or click to browse</div>
+ <div style="font-size:14px;font-weight:600;color:#374151;" id="dz1-ttl">גרור קובץ 1 לכאן או לחץ לבחירה</div>
  <div style="font-size:12px;color:#94a3b8;margin-top:4px;">.xlsx · .xls</div>
  <input type="file" id="fi1" accept=".xlsx,.xls" style="display:none" onchange="setF1(this.files[0])"/>
  </div>
@@ -965,7 +965,7 @@
  <div class="dz" id="dz2" onclick="document.getElementById('fi2').click()"
  ondragover="event.preventDefault();this.classList.add('dg')" ondragleave="this.classList.remove('dg')" ondrop="drop2(event)">
  <div style="font-size:36px;margin-bottom:8px;" id="dz2-ico"></div>
- <div style="font-size:14px;font-weight:600;color:#374151;" id="dz2-ttl">Drop File 2 here or click to browse</div>
+ <div style="font-size:14px;font-weight:600;color:#374151;" id="dz2-ttl">גרור קובץ 2 לכאן או לחץ לבחירה</div>
  <div style="font-size:12px;color:#94a3b8;margin-top:4px;">.xlsx · .xls</div>
  <input type="file" id="fi2" accept=".xlsx,.xls" style="display:none" onchange="setF2(this.files[0])"/>
  </div>
@@ -977,17 +977,17 @@
  <div id="pos-stats" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;"></div>
  <div id="pos-conf" style="display:none;margin-bottom:12px;" class="a-w"></div>
  <div style="max-height:340px;overflow-y:auto;border:1px solid #e2e8f0;border-radius:8px;">
- <table><thead><tr><th>Invoice</th><th>SKU</th><th>Product</th><th>Qty</th><th>Price &#8362;</th><th>Date &amp; Time</th><th>Customer</th><th>Phone</th></tr></thead>
+ <table><thead><tr><th>חשבונית</th><th>מק״ט</th><th>מוצר</th><th>כמות</th><th>מחיר &#8362;</th><th>תאריך ושעה</th><th>לקוח</th><th>טלפון</th></tr></thead>
  <tbody id="pos-prev"></tbody></table>
  </div>
  </div>
  </div>
  <div class="m-foot">
  <button class="btn btn-s" onclick="closeModal('m-pos')" id="pos-cancel">ביטול</button>
- <button class="btn btn-s" id="pos-skip" onclick="posSkipF2()" style="display:none;">Skip Customer File</button>
- <button class="btn btn-s" id="pos-back" onclick="posBack()" style="display:none;">&larr; Back</button>
- <button class="btn btn-p" id="pos-next" onclick="posNext()">Next &rarr;</button>
- <button class="btn btn-ok" id="pos-imp" onclick="posImport()" style="display:none;"> Import Transactions</button>
+ <button class="btn btn-s" id="pos-skip" onclick="posSkipF2()" style="display:none;">דלג על קובץ לקוחות</button>
+ <button class="btn btn-s" id="pos-back" onclick="posBack()" style="display:none;">חזור &rarr;</button>
+ <button class="btn btn-p" id="pos-next" onclick="posNext()">הבא &larr;</button>
+ <button class="btn btn-ok" id="pos-imp" onclick="posImport()" style="display:none;">📥 ייבוא עסקאות</button>
  </div>
  </div>
 </div>
@@ -1066,10 +1066,10 @@
    <span id="ocr-cust-status-badge"></span>
   </div>
   <div class="g4">
-   <div class="fld"><label>Customer Name</label><input type="text" id="ocr-cust-name" placeholder="Customer name" oninput="updOcrCustBadge()"/></div>
-   <div class="fld"><label>Customer Phone</label><input type="text" id="ocr-cust-phone" placeholder="Phone number" oninput="updOcrCustBadge()"/></div>
-   <div class="fld"><label>Customer Email</label><input type="text" id="ocr-cust-email" placeholder="email@example.com" oninput="updOcrCustBadge()"/></div>
-   <div class="fld"><label>Employee / Salesperson</label><input type="text" id="ocr-emp" placeholder="e.g. Sara, Michal..."/></div>
+   <div class="fld"><label>שם הלקוח</label><input type="text" id="ocr-cust-name" placeholder="שם הלקוח" oninput="updOcrCustBadge()"/></div>
+   <div class="fld"><label>טלפון</label><input type="text" id="ocr-cust-phone" placeholder="מספר טלפון" oninput="updOcrCustBadge()"/></div>
+   <div class="fld"><label>אימייל</label><input type="text" id="ocr-cust-email" placeholder="email@example.com" oninput="updOcrCustBadge()"/></div>
+   <div class="fld"><label>עובד / איש מכירות</label><input type="text" id="ocr-emp" placeholder="לדוגמה: שרה, מיכל..."/></div>
   </div>
  </div>
  <div style="border:1px solid #e2e8f0;border-radius:8px;overflow-x:auto;margin-bottom:10px;">
@@ -1108,7 +1108,7 @@
  </div>
  <div class="g2">
  <div class="fld"><label>Reference / Invoice #</label><input type="text" id="tx-ref" placeholder="e.g. INV-001"/></div>
- <div class="fld"><label>Employee / Salesperson <span style="font-weight:400;color:#94a3b8;">optional</span></label><input type="text" id="tx-emp" placeholder="e.g. Sara, Michal..."/></div>
+ <div class="fld"><label>עובד / איש מכירות <span style="font-weight:400;color:#94a3b8;">אופציונלי</span></label><input type="text" id="tx-emp" placeholder="לדוגמה: שרה, מיכל..."/></div>
  </div>
  <div id="tx-disc-row" style="display:none;">
  <div class="fld"><label>Discount % <span style="font-weight:400;color:#94a3b8;">for this sale</span></label>
@@ -1119,21 +1119,21 @@
  </div></div></div>
  <div id="tx-cust-row" style="display:none;">
  <div class="g3">
- <div class="fld"><label>Customer Name <span style="font-weight:400;color:#94a3b8;">optional</span></label><input type="text" id="tx-cname" placeholder="Customer name"/></div>
- <div class="fld"><label>Customer Phone <span style="font-weight:400;color:#94a3b8;">optional</span></label><input type="text" id="tx-cphone" placeholder="Phone"/></div>
- <div class="fld"><label>Customer Email <span style="font-weight:400;color:#94a3b8;">optional</span></label><input type="text" id="tx-cemail" placeholder="email@example.com"/></div>
+ <div class="fld"><label>שם הלקוח <span style="font-weight:400;color:#94a3b8;">אופציונלי</span></label><input type="text" id="tx-cname" placeholder="שם הלקוח"/></div>
+ <div class="fld"><label>טלפון <span style="font-weight:400;color:#94a3b8;">אופציונלי</span></label><input type="text" id="tx-cphone" placeholder="טלפון"/></div>
+ <div class="fld"><label>אימייל <span style="font-weight:400;color:#94a3b8;">אופציונלי</span></label><input type="text" id="tx-cemail" placeholder="email@example.com"/></div>
  </div>
  </div>
  <div style="margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;">
- <label style="font-size:12.5px;font-weight:600;color:#374151;">Products *</label>
+ <label style="font-size:12.5px;font-weight:600;color:#374151;">מוצרים *</label>
  <button type="button" class="btn btn-s btn-sm" onclick="txAddRow()">+ הוסף מוצר</button>
  </div>
  <div id="tx-rows" style="margin-bottom:10px;"></div>
- <div class="fld"><label>Notes</label><textarea id="tx-notes" placeholder="Any notes..."></textarea></div>
+ <div class="fld"><label>הערות</label><textarea id="tx-notes" placeholder="הערות נוספות..."></textarea></div>
  </div>
  <div class="m-foot">
  <button class="btn btn-s" onclick="closeModal('m-tx')">ביטול</button>
- <button class="btn btn-p" id="tx-sub" onclick="submitTx()">Save Transaction</button>
+ <button class="btn btn-p" id="tx-sub" onclick="submitTx()">שמור עסקה</button>
  </div>
  </div>
 </div>
@@ -1161,18 +1161,18 @@
    <table>
     <thead>
      <tr>
-      <th>Date &amp; Time</th>
-      <th>Type</th>
-      <th>Branch</th>
-      <th style="text-align:center;">Quantity</th>
-      <th style="text-align:right;">List Price &#8362;</th>
-      <th style="text-align:right;">Actual Paid &#8362;</th>
-      <th style="text-align:right;">Cost Price &#8362;</th>
-      <th style="text-align:right;">Profit / Margin &#8362;</th>
-      <th>Customer</th>
-      <th>Employee</th>
-      <th>Reference</th>
-      <th>Notes</th>
+      <th>תאריך ושעה</th>
+      <th>סוג</th>
+      <th>סניף</th>
+      <th style="text-align:center;">כמות</th>
+      <th style="text-align:right;">מחיר מחירון &#8362;</th>
+      <th style="text-align:right;">שולם בפועל &#8362;</th>
+      <th style="text-align:right;">מחיר עלות &#8362;</th>
+      <th style="text-align:right;">רווח / שיעור רווח &#8362;</th>
+      <th>לקוח</th>
+      <th>עובד / איש מכירות</th>
+      <th>אסמכתא</th>
+      <th>הערות</th>
      </tr>
     </thead>
     <tbody id="hist-body"></tbody>
@@ -1188,29 +1188,29 @@
 <!-- ── 4. TRANSFER ────────────────────────────────────────── -->
 <div class="modal-ov" id="m-trf">
  <div class="modal m-md">
- <div class="m-hdr"><div><h2> Transfer Stock Between Branches</h2><p>Creates 2 transactions: OUT (source) + IN (destination).</p></div><button class="m-x" onclick="closeModal('m-trf')">&times;</button></div>
+ <div class="m-hdr"><div><h2>🔄 העברת מלאי בין סניפים</h2><p>יוצר 2 עסקאות: יציאה (סניף מקור) + כניסה (סניף יעד).</p></div><button class="m-x" onclick="closeModal('m-trf')">&times;</button></div>
  <div class="m-body">
- <div class="fld"><label>Product *</label>
- <div class="ac-wrap"><input type="text" id="trf-pi" placeholder="Type SKU or product name..." autocomplete="off" oninput="acSrch(this,'trf-dd','trf-pid','trf')"/><input type="hidden" id="trf-pid"/><div class="ac-dd" id="trf-dd"></div></div>
+ <div class="fld"><label>מוצר *</label>
+ <div class="ac-wrap"><input type="text" id="trf-pi" placeholder="הקלד מק״ט או שם מוצר..." autocomplete="off" oninput="acSrch(this,'trf-dd','trf-pid','trf')"/><input type="hidden" id="trf-pid"/><div class="ac-dd" id="trf-dd"></div></div>
  </div>
  <div id="trf-stk" style="display:none;margin-bottom:12px;" class="a-i">
- <div style="font-size:12px;font-weight:600;margin-bottom:4px;">Current Stock:</div>
+ <div style="font-size:12px;font-weight:600;margin-bottom:4px;">מלאי נוכחי:</div>
  <div style="display:flex;gap:16px;font-size:13px;"><span> Beitar: <strong id="ts-b">--</strong></span><span> Beit Sh: <strong id="ts-bs">--</strong></span><span> Jerusalem: <strong id="ts-j">--</strong></span></div>
  </div>
  <div style="display:grid;grid-template-columns:1fr 28px 1fr;gap:6px;align-items:flex-end;margin-bottom:12px;">
- <div class="fld" style="margin:0;"><label>From *</label><select id="trf-fr" translate="no"><option value="">Select...</option><option value="Beitar">Beitar</option><option value="Beit Shemesh">Beit Shemesh</option><option value="Jerusalem">Jerusalem</option></select></div>
+ <div class="fld" style="margin:0;"><label>מסניף *</label><select id="trf-fr" translate="no"><option value="">בחר סניף...</option><option value="Beitar">Beitar</option><option value="Beit Shemesh">Beit Shemesh</option><option value="Jerusalem">Jerusalem</option></select></div>
  <div style="text-align:center;font-size:20px;padding-bottom:8px;">&rarr;</div>
- <div class="fld" style="margin:0;"><label>To *</label><select id="trf-to" translate="no"><option value="">Select...</option><option value="Beitar">Beitar</option><option value="Beit Shemesh">Beit Shemesh</option><option value="Jerusalem">Jerusalem</option></select></div>
+ <div class="fld" style="margin:0;"><label>לסניף *</label><select id="trf-to" translate="no"><option value="">בחר סניף...</option><option value="Beitar">Beitar</option><option value="Beit Shemesh">Beit Shemesh</option><option value="Jerusalem">Jerusalem</option></select></div>
  </div>
  <div class="g2">
- <div class="fld"><label>Quantity *</label><input type="number" id="trf-qty" min="1" placeholder="1"/></div>
- <div class="fld"><label>Date *</label><input type="date" id="trf-dt"/></div>
+ <div class="fld"><label>כמות *</label><input type="number" id="trf-qty" min="1" placeholder="1"/></div>
+ <div class="fld"><label>תאריך *</label><input type="date" id="trf-dt"/></div>
  </div>
- <div class="fld"><label>Notes</label><textarea id="trf-notes" placeholder="Reason for transfer..."></textarea></div>
+ <div class="fld"><label>הערות</label><textarea id="trf-notes" placeholder="סיבת ההעברה..."></textarea></div>
  </div>
  <div class="m-foot">
  <button class="btn btn-s" onclick="closeModal('m-trf')">ביטול</button>
- <button class="btn btn-p" id="trf-sub" onclick="submitTrf()">Transfer Stock</button>
+ <button class="btn btn-p" id="trf-sub" onclick="submitTrf()">העבר מלאי</button>
  </div>
  </div>
 </div>
@@ -1355,8 +1355,8 @@
    <!-- Branch Sales Performance Table -->
    <div class="card" style="margin-bottom:18px;">
     <div class="card-hdr" style="background:#fcfcfd;">
-     <h3 style="font-size:13.5px;display:flex;align-items:center;gap:6px;">🏢 Performance by Branch in Selected Period</h3>
-     <span style="font-size:11.5px;color:#64748b;">Sales &amp; Gross Profit breakdown</span>
+     <h3 style="font-size:13.5px;display:flex;align-items:center;gap:6px;">🏢 ביצועים לפי סניף בתקופה הנבחרת</h3>
+     <span style="font-size:11.5px;color:#64748b;">פירוט מכירות ורווח גולמי</span>
     </div>
     <div style="overflow-x:auto;">
      <table>
@@ -1382,25 +1382,25 @@
    <!-- Complete Transaction History Table with Financials -->
    <div class="card">
     <div class="card-hdr">
-     <h3 style="font-size:14px;">Full Movement &amp; Financial Ledger (Sales, Receipts, Transfers)</h3>
+     <h3 style="font-size:14px;">יומן תנועות מלא ונתונים פיננסיים (מכירות, קבלות, העברות)</h3>
      <span id="p360-tx-count" style="font-size:12px;color:#64748b;">0 records</span>
     </div>
     <div style="overflow-x:auto;max-height:360px;">
      <table>
       <thead>
        <tr>
-        <th>Date &amp; Time</th>
-        <th>Type</th>
-        <th>Branch</th>
-        <th style="text-align:center;">Qty</th>
-        <th style="text-align:right;">List Price &#8362;</th>
-        <th style="text-align:right;">Actual Paid &#8362;</th>
-        <th style="text-align:right;">Cost Price &#8362;</th>
-        <th style="text-align:right;">Line Profit &#8362;</th>
-        <th>Customer</th>
-        <th>Employee</th>
-        <th>Reference</th>
-        <th>Notes</th>
+        <th>תאריך ושעה</th>
+        <th>סוג</th>
+        <th>סניף</th>
+        <th style="text-align:center;">כמות</th>
+        <th style="text-align:right;">מחיר מחירון &#8362;</th>
+        <th style="text-align:right;">שולם בפועל &#8362;</th>
+        <th style="text-align:right;">מחיר עלות &#8362;</th>
+        <th style="text-align:right;">רווח שורה &#8362;</th>
+        <th>לקוח</th>
+        <th>עובד / איש מכירות</th>
+        <th>אסמכתא</th>
+        <th>הערות</th>
        </tr>
       </thead>
       <tbody id="p360-tx-body"></tbody>
@@ -1440,14 +1440,14 @@
    <!-- Products Purchased Breakdown -->
    <div class="card" style="margin-bottom:18px;">
     <div class="card-hdr">
-     <h3 style="font-size:14px;">Products Purchased Breakdown</h3>
+     <h3 style="font-size:14px;">פירוט מוצרים שנרכשו</h3>
      <span id="c360-prod-count" style="font-size:12px;color:#64748b;">0 items</span>
     </div>
     <div style="overflow-x:auto;max-height:220px;">
      <table>
       <thead>
        <tr>
-        <th>Product</th><th>Brand</th><th style="text-align:center;">Total Units</th><th style="text-align:right;">Total Paid &#8362;</th><th style="text-align:right;">Avg Price / Unit</th><th>Last Branch</th>
+        <th>מוצר</th><th>מותג</th><th style="text-align:center;">סה״כ יחידות</th><th style="text-align:right;">שולם בפועל &#8362;</th><th style="text-align:right;">מחיר ממוצע ליחידה</th><th>סניף אחרון</th>
        </tr>
       </thead>
       <tbody id="c360-prods-body"></tbody>
@@ -1458,14 +1458,14 @@
    <!-- Transactions Log -->
    <div class="card">
     <div class="card-hdr">
-     <h3 style="font-size:14px;">All Transactions &amp; Receipts</h3>
+     <h3 style="font-size:14px;">כל העסקאות והקבלות</h3>
      <span id="c360-tx-count" style="font-size:12px;color:#64748b;">0 records</span>
     </div>
     <div style="overflow-x:auto;max-height:300px;">
      <table>
       <thead>
        <tr>
-        <th>Date &amp; Time</th><th>Receipt #</th><th>Branch</th><th>Product</th><th style="text-align:center;">Qty</th><th style="text-align:right;">Paid Price</th><th>Salesperson</th><th>Notes</th>
+        <th>תאריך ושעה</th><th>מס׳ קבלה</th><th>סניף</th><th>מוצר</th><th style="text-align:center;">כמות</th><th style="text-align:right;">מחיר ששולם &#8362;</th><th>עובד / איש מכירות</th><th>הערות</th>
        </tr>
       </thead>
       <tbody id="c360-tx-body"></tbody>
@@ -1504,14 +1504,14 @@
    <!-- Top Branch Products -->
    <div class="card" style="margin-bottom:18px;">
     <div class="card-hdr">
-     <h3 style="font-size:14px;">Top Selling Products in this Branch</h3>
+     <h3 style="font-size:14px;">מוצרים מובילים במכירות בסניף זה</h3>
      <span id="b360-prod-count" style="font-size:12px;color:#64748b;">Top 10</span>
     </div>
     <div style="overflow-x:auto;max-height:220px;">
      <table>
       <thead>
        <tr>
-        <th style="width:36px;text-align:center;">#</th><th>Product</th><th>Brand</th><th style="text-align:center;">Units Sold</th><th style="text-align:right;">Revenue &#8362;</th><th style="text-align:right;">Profit &#8362;</th>
+        <th style="width:36px;text-align:center;">#</th><th>מוצר</th><th>מותג</th><th style="text-align:center;">יחידות שנמכרו</th><th style="text-align:right;">הכנסות &#8362;</th><th style="text-align:right;">רווח &#8362;</th>
        </tr>
       </thead>
       <tbody id="b360-prods-body"></tbody>
@@ -1522,14 +1522,14 @@
    <!-- Branch Operations Log -->
    <div class="card">
     <div class="card-hdr">
-     <h3 style="font-size:14px;">Branch Operations &amp; Transactions</h3>
+     <h3 style="font-size:14px;">פעולות ועסקאות בסניף</h3>
      <span id="b360-tx-count" style="font-size:12px;color:#64748b;">0 records</span>
     </div>
     <div style="overflow-x:auto;max-height:300px;">
      <table>
       <thead>
        <tr>
-        <th>Date &amp; Time</th><th>Type</th><th>Product</th><th style="text-align:center;">Qty</th><th style="text-align:right;">Price</th><th>Customer</th><th>Employee</th><th>Notes</th>
+        <th>תאריך ושעה</th><th>סוג</th><th>מוצר</th><th style="text-align:center;">כמות</th><th style="text-align:right;">מחיר &#8362;</th><th>לקוח</th><th>עובד / איש מכירות</th><th>הערות</th>
        </tr>
       </thead>
       <tbody id="b360-tx-body"></tbody>
@@ -1649,7 +1649,7 @@ async function updateStockMany(ops) {
  }
 }
 
-const PT={'overview':'Executive Dashboard','products':'Products & Inventory','transactions':'Inventory Transactions','purchase-orders':'Purchase Orders','customers':'Customers','approvals':'Approvals & Errors','reports':'Analytics & Reports'};
+const PT={'overview':'Executive Dashboard','products':'Products & Inventory','transactions':'Inventory Transactions','purchase-orders':'Purchase Orders','customers':'Customers','approvals':'אישורים ושגיאות','reports':'אנליטיקה ודוחות'};
 function showPage(n){
  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
  document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
@@ -2594,7 +2594,7 @@ function renderProduct360Data(productId) {
    <div style="height:30px;width:1px;background:#cbd5e1;"></div>
    <div style="text-align:center;"><span style="font-size:12px;color:#64748b;display:block;">📍 Beitar Illit</span><strong style="font-size:18px;color:#0f172a;">${b}</strong><span style="font-size:10px;color:#94a3b8;display:block;">min: ${f[F.P.MB]||0}</span></div>
    <div style="height:30px;width:1px;background:#cbd5e1;"></div>
-   <div style="text-align:center;"><span style="font-size:12px;color:#64748b;display:block;">📦 Total Units</span><strong style="font-size:18px;color:#db2777;">${totStock}</strong></div>
+   <div style="text-align:center;"><span style="font-size:12px;color:#64748b;display:block;">📦 סה״כ יחידות במלאי</span><strong style="font-size:18px;color:#db2777;">${totStock}</strong></div>
   </div>
  `;
 
@@ -2652,7 +2652,7 @@ function renderProduct360Data(productId) {
    </tr>
   `).join('') + `
    <tr style="background:#f8fafc;font-weight:700;border-top:2px solid #e2e8f0;">
-    <td>Total / All Branches</td>
+    <td>סה״כ / כל הסניפים</td>
     <td style="text-align:center;">${pUnitsSold}</td>
     <td style="text-align:right;color:#db2777;">₪ ${Math.round(pRevenue).toLocaleString()}</td>
     <td style="text-align:right;color:#64748b;">₪ ${Math.round(pCOGS).toLocaleString()}</td>
@@ -2775,10 +2775,10 @@ function openCustomer360(customerId) {
  const avgBasket = orderCount > 0 ? (lifetimeSpend / orderCount).toFixed(2) : '0.00';
 
  document.getElementById('c360-kpis').innerHTML = `
-  <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Lifetime Spend</div><div class="dash-kpi-val" style="font-size:22px;color:#db2777;">₪ ${Math.round(lifetimeSpend).toLocaleString()}</div><div class="dash-kpi-sub">Total purchases</div></div>
-  <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">In-Range Spend</div><div class="dash-kpi-val" style="font-size:22px;">₪ ${Math.round(periodSpend).toLocaleString()}</div><div class="dash-kpi-sub">Selected filter period</div></div>
-  <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Visits / Orders</div><div class="dash-kpi-val" style="font-size:22px;">${orderCount}</div><div class="dash-kpi-sub">Distinct receipts</div></div>
-  <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Avg. Basket Size</div><div class="dash-kpi-val" style="font-size:22px;color:#16a34a;">₪ ${avgBasket}</div><div class="dash-kpi-sub">Average per visit</div></div>
+  <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">סך רכישות (מצטבר)</div><div class="dash-kpi-val" style="font-size:22px;color:#db2777;">₪ ${Math.round(lifetimeSpend).toLocaleString()}</div><div class="dash-kpi-sub">מספר רכישות</div></div>
+  <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">רכישות בתקופה הנבחרת</div><div class="dash-kpi-val" style="font-size:22px;">₪ ${Math.round(periodSpend).toLocaleString()}</div><div class="dash-kpi-sub">לפי הסינון הנוכחי</div></div>
+  <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">עסקאות וביקורים</div><div class="dash-kpi-val" style="font-size:22px;">${orderCount}</div><div class="dash-kpi-sub">קבלות נפרדות</div></div>
+  <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">סל קניות ממוצע</div><div class="dash-kpi-val" style="font-size:22px;color:#16a34a;">₪ ${avgBasket}</div><div class="dash-kpi-sub">ממוצע לביקור</div></div>
  `;
 
  const boughtList = Object.values(boughtMap);
@@ -2877,12 +2877,12 @@ function openBranch360(branchName) {
  });
 
  document.getElementById('b360-kpis').innerHTML = `
-  <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Branch Sales (Period)</div><div class="dash-kpi-val" style="font-size:22px;color:#db2777;">₪ ${Math.round(bSales).toLocaleString()}</div><div class="dash-kpi-sub">${salesForBranch.length} sales</div></div>
-  <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Branch Gross Profit</div><div class="dash-kpi-val" style="font-size:22px;color:#16a34a;">₪ ${Math.round(bProfit).toLocaleString()}</div><div class="dash-kpi-sub">${bMargin}% Margin</div></div>
+  <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">מכירות בסניף (לתקופה)</div><div class="dash-kpi-val" style="font-size:22px;color:#db2777;">₪ ${Math.round(bSales).toLocaleString()}</div><div class="dash-kpi-sub">${salesForBranch.length} עסקאות</div></div>
+  <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">רווח גולמי בסניף</div><div class="dash-kpi-val" style="font-size:22px;color:#16a34a;">₪ ${Math.round(bProfit).toLocaleString()}</div><div class="dash-kpi-sub">${bMargin}% שיעור רווח</div></div>
   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">כמות שנמכרה (יחידות)</div><div class="dash-kpi-val" style="font-size:22px;">${bUnits}</div><div class="dash-kpi-sub">Total products sold</div></div>
-  <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Stock In Branch</div><div class="dash-kpi-val" style="font-size:22px;">${branchStockUnits}</div><div class="dash-kpi-sub">Units in shelf</div></div>
-  <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Stock Value (Cost)</div><div class="dash-kpi-val" style="font-size:22px;">₪ ${Math.round(branchValCost).toLocaleString()}</div><div class="dash-kpi-sub">Wholesale valuation</div></div>
-  <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Stock Value (Retail)</div><div class="dash-kpi-val" style="font-size:22px;color:#db2777;">₪ ${Math.round(branchValRetail).toLocaleString()}</div><div class="dash-kpi-sub">Retail shelf value</div></div>
+  <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">מלאי בסניף</div><div class="dash-kpi-val" style="font-size:22px;">${branchStockUnits}</div><div class="dash-kpi-sub">יחידות על המדף</div></div>
+  <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">שווי מלאי (עלות)</div><div class="dash-kpi-val" style="font-size:22px;">₪ ${Math.round(branchValCost).toLocaleString()}</div><div class="dash-kpi-sub">לפי עלות סיטונאית</div></div>
+  <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">שווי מלאי (מחירון)</div><div class="dash-kpi-val" style="font-size:22px;color:#db2777;">₪ ${Math.round(branchValRetail).toLocaleString()}</div><div class="dash-kpi-sub">לפי מחירון לצרכן</div></div>
  `;
 
  const topProds = Object.values(prodMap).sort((a, b) => b.units - a.units).slice(0, 8);
@@ -2941,7 +2941,7 @@ function populateReportFilterOptions() {
  if (brEl) {
   const currentVal = brEl.value;
   const brands = [...new Set(allP.map(p => p.fields[F.P.BR]).filter(Boolean))].sort((a, b) => a.localeCompare(b));
-  let h = '<option value="">All Brands (' + brands.length + ')</option>';
+  let h = '<option value="">כל המותגים (' + brands.length + ')</option>';
   brands.forEach(b => {
    h += '<option value="' + esc(b) + '"' + (currentVal === b ? ' selected' : '') + '>' + esc(b) + '</option>';
   });
@@ -2957,7 +2957,7 @@ function populateReportFilterOptions() {
    const nb = b.fields[F.P.NM] || '';
    return na.localeCompare(nb);
   });
-  let h = '<option value="">All Products (' + prods.length + ')</option>';
+  let h = '<option value="">כל המוצרים (' + prods.length + ')</option>';
   prods.forEach(p => {
    const sku = p.fields[F.P.SKU] || '--';
    const name = p.fields[F.P.NM] || 'Unnamed';
@@ -2975,7 +2975,7 @@ function populateReportFilterOptions() {
    const nb = b.fields[F.CU.NM] || '';
    return na.localeCompare(nb);
   });
-  let h = '<option value="">All Customers (' + custs.length + ')</option>';
+  let h = '<option value="">כל הלקוחות (' + custs.length + ')</option>';
   custs.forEach(c => {
    const name = c.fields[F.CU.NM] || 'Customer';
    const phone = c.fields[F.CU.PH] || '--';
@@ -2989,7 +2989,7 @@ function populateReportFilterOptions() {
  if (empEl) {
   const currentVal = empEl.value;
   const emps = [...new Set(allTX.map(t => (t.fields[F.TX.EMP] || '').trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b));
-  let h = '<option value="">All Staff / Cashiers (' + emps.length + ')</option>';
+  let h = '<option value="">כל העובדים / קופאים (' + emps.length + ')</option>';
   emps.forEach(e => {
    h += '<option value="' + esc(e) + '"' + (currentVal === e ? ' selected' : '') + '>' + esc(e) + '</option>';
   });
@@ -3257,7 +3257,7 @@ function renderSalesReport(container, sales) {
    <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:16px;margin-bottom:18px;">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
      <div style="font-size:13.5px;font-weight:700;color:#0f172a;">📈 מכירות לאורך זמן (מגמת מכירות יומית)</div>
-     <div style="font-size:12px;color:#64748b;">${trendDays.length} Active Days · Peak: ₪ ${Math.round(maxDailyNet).toLocaleString()}</div>
+     <div style="font-size:12px;color:#64748b;">${trendDays.length} ימי מכירה פעילים · שיא: ₪ ${Math.round(maxDailyNet).toLocaleString()}</div>
     </div>
     <div style="width:100%;overflow-x:auto;">
      <svg viewBox="0 0 ${w} ${h}" style="width:100%;height:160px;min-width:600px;display:block;">
@@ -3293,12 +3293,12 @@ function renderSalesReport(container, sales) {
  container.innerHTML = `
   <!-- Top 6 KPI Cards -->
   <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));gap:12px;margin-bottom:18px;">
-   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">מכירות מחירון (ברוטו)</div><div class="dash-kpi-val" style="font-size:22px;color:#475569;">₪ ${Math.round(totGross).toLocaleString()}</div><div class="dash-kpi-sub">Pre-discount list price</div></div>
-   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">הנחות ומבצעים</div><div class="dash-kpi-val" style="font-size:22px;color:#f59e0b;">₪ ${Math.round(totDiscounts).toLocaleString()}</div><div class="dash-kpi-sub">${discPct}% discount rate</div></div>
-   <div class="dash-kpi" style="padding:14px;background:#fdf2f8;border-color:#fbcfe8;"><div class="dash-kpi-title" style="color:#9d174d;">שולם בפועל (כולל מע״מ)</div><div class="dash-kpi-val" style="font-size:24px;color:#db2777;">₪ ${Math.round(totNet).toLocaleString()}</div><div class="dash-kpi-sub" style="color:#be185d;">Actual paid revenue</div></div>
-   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">סה״כ עסקאות</div><div class="dash-kpi-val" style="font-size:22px;color:#0f172a;">${txCount}</div><div class="dash-kpi-sub">${totUnits} units sold</div></div>
-   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">ממוצע לעסקה (AOV)</div><div class="dash-kpi-val" style="font-size:22px;color:#0284c7;">₪ ${aov.toFixed(2)}</div><div class="dash-kpi-sub">Per receipt / order</div></div>
-   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">מחיר ממוצע ליחידה</div><div class="dash-kpi-val" style="font-size:22px;color:#16a34a;">₪ ${avgPaidPerUnit.toFixed(2)}</div><div class="dash-kpi-sub">Net per item line</div></div>
+   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">מכירות מחירון (ברוטו)</div><div class="dash-kpi-val" style="font-size:22px;color:#475569;">₪ ${Math.round(totGross).toLocaleString()}</div><div class="dash-kpi-sub">מחיר מלא לפני הנחות</div></div>
+   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">הנחות ומבצעים</div><div class="dash-kpi-val" style="font-size:22px;color:#f59e0b;">₪ ${Math.round(totDiscounts).toLocaleString()}</div><div class="dash-kpi-sub">${discPct}% שיעור הנחה</div></div>
+   <div class="dash-kpi" style="padding:14px;background:#fdf2f8;border-color:#fbcfe8;"><div class="dash-kpi-title" style="color:#9d174d;">שולם בפועל (כולל מע״מ)</div><div class="dash-kpi-val" style="font-size:24px;color:#db2777;">₪ ${Math.round(totNet).toLocaleString()}</div><div class="dash-kpi-sub" style="color:#be185d;">הכנסות בפועל</div></div>
+   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">סה״כ עסקאות</div><div class="dash-kpi-val" style="font-size:22px;color:#0f172a;">${txCount}</div><div class="dash-kpi-sub">${totUnits} יחידות שנמכרו</div></div>
+   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">ממוצע לעסקה (AOV)</div><div class="dash-kpi-val" style="font-size:22px;color:#0284c7;">₪ ${aov.toFixed(2)}</div><div class="dash-kpi-sub">ממוצע לעסקה</div></div>
+   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">מחיר ממוצע ליחידה</div><div class="dash-kpi-val" style="font-size:22px;color:#16a34a;">₪ ${avgPaidPerUnit.toFixed(2)}</div><div class="dash-kpi-sub">מחיר ממוצע ליחידה</div></div>
   </div>
 
   ${svgChart}
@@ -3315,18 +3315,18 @@ function renderSalesReport(container, sales) {
     <table>
      <thead>
       <tr>
-       <th>Date &amp; Time</th>
-       <th>Receipt Ref</th>
-       <th>Branch</th>
-       <th>Product Name</th>
-       <th>SKU / Brand</th>
-       <th style="text-align:center;">Qty</th>
-       <th style="text-align:right;">List Price &#8362;</th>
-       <th style="text-align:right;">Actual Paid &#8362;</th>
-       <th style="text-align:right;">Line Net Total &#8362;</th>
-       <th>Customer</th>
-       <th>Salesperson</th>
-       <th style="text-align:center;">Action</th>
+       <th>תאריך ושעה</th>
+       <th>אסמכתא / מספר עסקה</th>
+       <th>סניף</th>
+       <th>שם המוצר</th>
+       <th>מק״ט / מותג</th>
+       <th style="text-align:center;">כמות</th>
+       <th style="text-align:right;">מחיר מחירון &#8362;</th>
+       <th style="text-align:right;">שולם בפועל &#8362;</th>
+       <th style="text-align:right;">סה״כ נטו &#8362;</th>
+       <th>לקוח</th>
+       <th>עובד / איש מכירות</th>
+       <th style="text-align:center;">פעולה</th>
       </tr>
      </thead>
      <tbody>
@@ -3436,7 +3436,7 @@ function renderProfitReport(container, sales) {
   <!-- Visual P&L Waterfall Card -->
   <div class="card" style="margin-bottom:18px;padding:20px;background:#ffffff;border-radius:14px;box-shadow:0 1px 3px rgba(0,0,0,0.04);">
    <div style="font-size:14px;font-weight:700;color:#0f172a;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;">
-    <span>🌊 דוח רווח והפסד מדורג (P&amp;L Waterfall)</span>
+    <span>🌊 פירוט חישוב הרווח (דוח מדורג)</span>
     <span class="badge ${parseFloat(marginPct) >= 40 ? 'bg' : 'bw'}" style="font-size:13px;padding:4px 10px;">שיעור רווח גולמי: ${marginPct}%</span>
    </div>
 
@@ -3634,10 +3634,10 @@ function renderProductsReport(container, sales) {
   <!-- KPIs -->
   <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));gap:12px;margin-bottom:18px;">
    <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">מוצרים שנמכרו</div><div class="dash-kpi-val" style="font-size:22px;">${rows.length}</div><div class="dash-kpi-sub">Out of ${allP.length} catalogued</div></div>
-   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">Units Sold</div><div class="dash-kpi-val" style="font-size:22px;color:#0f172a;">${totUnits}</div><div class="dash-kpi-sub">Total volume</div></div>
-   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">סה״כ שולם בפועל</div><div class="dash-kpi-val" style="font-size:22px;color:#db2777;">₪ ${Math.round(totRev).toLocaleString()}</div><div class="dash-kpi-sub">Actual net price</div></div>
-   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">עלות המכר הכוללת</div><div class="dash-kpi-val" style="font-size:22px;color:#64748b;">₪ ${Math.round(totCost).toLocaleString()}</div><div class="dash-kpi-sub">Cost of items sold</div></div>
-   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">רווח גולמי (לאחר מע״מ)</div><div class="dash-kpi-val" style="font-size:22px;color:#16a34a;">₪ ${Math.round(totProfit).toLocaleString()}</div><div class="dash-kpi-sub">${overallMargin}% Margin</div></div>
+   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">יחידות שנמכרו</div><div class="dash-kpi-val" style="font-size:22px;color:#0f172a;">${totUnits}</div><div class="dash-kpi-sub">סה״כ יחידות שנמכרו</div></div>
+   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">סה״כ שולם בפועל</div><div class="dash-kpi-val" style="font-size:22px;color:#db2777;">₪ ${Math.round(totRev).toLocaleString()}</div><div class="dash-kpi-sub">מכירות בפועל</div></div>
+   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">עלות המכר הכוללת</div><div class="dash-kpi-val" style="font-size:22px;color:#64748b;">₪ ${Math.round(totCost).toLocaleString()}</div><div class="dash-kpi-sub">עלות הסחורה שנמכרה</div></div>
+   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">רווח גולמי (לאחר מע״מ)</div><div class="dash-kpi-val" style="font-size:22px;color:#16a34a;">₪ ${Math.round(totProfit).toLocaleString()}</div><div class="dash-kpi-sub">${overallMargin}% שיעור רווח</div></div>
   </div>
 
   <!-- Best-Selling Brands Bar -->
@@ -3653,24 +3653,24 @@ function renderProductsReport(container, sales) {
    <div class="card-hdr" style="background:#fcfcfd;">
     <div>
      <h3 style="font-size:14px;">ביצועי מכירות, רווחיות ומלאי לפי מוצר</h3>
-     <span style="font-size:12px;color:#64748b;">${rows.length} products sold during period</span>
+     <span style="font-size:12px;color:#64748b;">${rows.length} מוצרים שנמכרו בתקופה</span>
     </div>
    </div>
    <div style="overflow-x:auto;">
     <table>
      <thead>
       <tr>
-       <th>SKU</th>
-       <th>Product Name</th>
-       <th>Brand</th>
-       <th style="text-align:center;">Units Sold</th>
-       <th style="text-align:right;">Avg. Paid &#8362;</th>
-       <th style="text-align:right;">Total Revenue &#8362;</th>
-       <th style="text-align:right;">Total COGS &#8362;</th>
-       <th style="text-align:right;">Gross Profit &#8362;</th>
-       <th style="text-align:center;">Margin %</th>
-       <th style="text-align:center;">Stock on Hand</th>
-       <th style="text-align:center;">Action</th>
+       <th>מק״ט</th>
+       <th>שם המוצר</th>
+       <th>מותג</th>
+       <th style="text-align:center;">יחידות שנמכרו</th>
+       <th style="text-align:right;">מחיר ממוצע ששולם &#8362;</th>
+       <th style="text-align:right;">סך הכנסות &#8362;</th>
+       <th style="text-align:right;">עלות הסחורה שנמכרה &#8362;</th>
+       <th style="text-align:right;">רווח גולמי &#8362;</th>
+       <th style="text-align:center;">שיעור רווח %</th>
+       <th style="text-align:center;">מלאי נוכחי</th>
+       <th style="text-align:center;">פעולה</th>
       </tr>
      </thead>
      <tbody>
@@ -3773,9 +3773,9 @@ function renderInventoryReport(container) {
   <!-- Valuation KPIs -->
   <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));gap:12px;margin-bottom:18px;">
    <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">סה״כ יחידות במלאי</div><div class="dash-kpi-val" style="font-size:22px;color:#0f172a;">${totUnits.toLocaleString()}</div><div class="dash-kpi-sub">Across 3 branches</div></div>
-   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">שווי מלאי בעלות (סיטונאי)</div><div class="dash-kpi-val" style="font-size:22px;color:#475569;">₪ ${Math.round(totValCost).toLocaleString()}</div><div class="dash-kpi-sub">Capital invested at cost</div></div>
-   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">שווי מלאי במחירון (לצרכן)</div><div class="dash-kpi-val" style="font-size:22px;color:#db2777;">₪ ${Math.round(totValRetail).toLocaleString()}</div><div class="dash-kpi-sub">Full catalogue value</div></div>
-   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">רווח פוטנציאלי במלאי</div><div class="dash-kpi-val" style="font-size:22px;color:#16a34a;">₪ ${Math.round(potentialProfit).toLocaleString()}</div><div class="dash-kpi-sub">${potentialMargin}% Potential Margin</div></div>
+   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">שווי מלאי בעלות (סיטונאי)</div><div class="dash-kpi-val" style="font-size:22px;color:#475569;">₪ ${Math.round(totValCost).toLocaleString()}</div><div class="dash-kpi-sub">שווי המלאי לפי עלות</div></div>
+   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">שווי מלאי במחירון (לצרכן)</div><div class="dash-kpi-val" style="font-size:22px;color:#db2777;">₪ ${Math.round(totValRetail).toLocaleString()}</div><div class="dash-kpi-sub">שווי המלאי במחיר מלא</div></div>
+   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">רווח פוטנציאלי במלאי</div><div class="dash-kpi-val" style="font-size:22px;color:#16a34a;">₪ ${Math.round(potentialProfit).toLocaleString()}</div><div class="dash-kpi-sub">${potentialMargin}% רווח פוטנציאלי</div></div>
   </div>
 
   <!-- Inventory Table -->
@@ -3783,26 +3783,26 @@ function renderInventoryReport(container) {
    <div class="card-hdr" style="background:#fcfcfd;">
     <div>
      <h3 style="font-size:14px;">שווי מלאי וחלוקה בין סניפים</h3>
-     <span style="font-size:12px;color:#64748b;">Wholesale cost vs. retail list price</span>
+     <span style="font-size:12px;color:#64748b;">עלות מול מחיר מכירה</span>
     </div>
    </div>
    <div style="overflow-x:auto;max-height:480px;">
     <table>
      <thead>
       <tr>
-       <th>SKU</th>
-       <th>Product Name</th>
-       <th>Brand</th>
-       <th style="text-align:right;">Cost &#8362;</th>
-       <th style="text-align:right;">Retail &#8362;</th>
-       <th style="text-align:center;">Beitar</th>
-       <th style="text-align:center;">Beit Shemesh</th>
-       <th style="text-align:center;">Jerusalem</th>
-       <th style="text-align:center;">Total Units</th>
-       <th style="text-align:right;">Valuation (Cost) &#8362;</th>
-       <th style="text-align:right;">Valuation (Retail) &#8362;</th>
-       <th style="text-align:center;">Status</th>
-       <th style="text-align:center;">Action</th>
+       <th>מק״ט</th>
+       <th>שם המוצר</th>
+       <th>מותג</th>
+       <th style="text-align:right;">עלות &#8362;</th>
+       <th style="text-align:right;">מחיר מכירה &#8362;</th>
+       <th style="text-align:center;">ביתר</th>
+       <th style="text-align:center;">בית שמש</th>
+       <th style="text-align:center;">ירושלים</th>
+       <th style="text-align:center;">סה״כ יחידות</th>
+       <th style="text-align:right;">שווי מלאי (עלות) &#8362;</th>
+       <th style="text-align:right;">שווי מלאי (מחירון) &#8362;</th>
+       <th style="text-align:center;">סטטוס</th>
+       <th style="text-align:center;">פעולה</th>
       </tr>
      </thead>
      <tbody>
@@ -3907,9 +3907,9 @@ function renderCustomersReport(container, sales) {
   <!-- Customer KPIs -->
   <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));gap:12px;margin-bottom:18px;">
    <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">לקוחות פעילים</div><div class="dash-kpi-val" style="font-size:22px;">${rows.length}</div><div class="dash-kpi-sub">Out of ${allCU.length} registered</div></div>
-   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">מכירות מזוהות ללקוחות</div><div class="dash-kpi-val" style="font-size:22px;color:#db2777;">₪ ${Math.round(totIdentifiedSpend).toLocaleString()}</div><div class="dash-kpi-sub">Customer-linked receipts</div></div>
-   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">ממוצע רכישות ללקוח</div><div class="dash-kpi-val" style="font-size:22px;color:#0284c7;">₪ ${Math.round(avgCustSpend).toLocaleString()}</div><div class="dash-kpi-sub">Lifetime in period</div></div>
-   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">סה״כ הזמנות ועסקאות</div><div class="dash-kpi-val" style="font-size:22px;color:#16a34a;">${rows.reduce((s, r) => s + r.orders, 0)}</div><div class="dash-kpi-sub">Purchases made</div></div>
+   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">מכירות מזוהות ללקוחות</div><div class="dash-kpi-val" style="font-size:22px;color:#db2777;">₪ ${Math.round(totIdentifiedSpend).toLocaleString()}</div><div class="dash-kpi-sub">קבלות המקושרות ללקוח</div></div>
+   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">ממוצע רכישות ללקוח</div><div class="dash-kpi-val" style="font-size:22px;color:#0284c7;">₪ ${Math.round(avgCustSpend).toLocaleString()}</div><div class="dash-kpi-sub">סך רכישות בתקופה</div></div>
+   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">סה״כ הזמנות ועסקאות</div><div class="dash-kpi-val" style="font-size:22px;color:#16a34a;">${rows.reduce((s, r) => s + r.orders, 0)}</div><div class="dash-kpi-sub">מספר רכישות</div></div>
   </div>
 
   <!-- Customer Rankings Table -->
@@ -3924,15 +3924,15 @@ function renderCustomersReport(container, sales) {
     <table>
      <thead>
       <tr>
-       <th>Customer Name</th>
-       <th>Phone</th>
-       <th style="text-align:center;">Orders</th>
-       <th style="text-align:center;">Items Bought</th>
-       <th style="text-align:right;">Total Spend &#8362;</th>
-       <th style="text-align:right;">Avg. Ticket &#8362;</th>
-       <th>Last Purchase Date</th>
-       <th>Top Brands / Favorites</th>
-       <th style="text-align:center;">Action</th>
+       <th>שם הלקוח</th>
+       <th>טלפון</th>
+       <th style="text-align:center;">עסקאות</th>
+       <th style="text-align:center;">פריטים שנרכשו</th>
+       <th style="text-align:right;">סך רכישות &#8362;</th>
+       <th style="text-align:right;">ממוצע לעסקה &#8362;</th>
+       <th>תאריך רכישה אחרון</th>
+       <th>מותגים מועדפים</th>
+       <th style="text-align:center;">פעולה</th>
       </tr>
      </thead>
      <tbody>
@@ -4062,41 +4062,41 @@ function renderBranchesReport(container, sales) {
      <!-- Main Financials -->
      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;background:#f8fafc;padding:12px;border-radius:10px;">
       <div>
-       <span style="font-size:11px;color:#64748b;display:block;">Sales Revenue</span>
+       <span style="font-size:11px;color:#64748b;display:block;">הכנסות ממכירות</span>
        <strong style="font-size:18px;color:#db2777;">₪ ${Math.round(b.sales).toLocaleString()}</strong>
       </div>
       <div>
-       <span style="font-size:11px;color:#64748b;display:block;">Gross Profit</span>
+       <span style="font-size:11px;color:#64748b;display:block;">רווח גולמי</span>
        <strong style="font-size:18px;color:#16a34a;">₪ ${Math.round(b.profit).toLocaleString()}</strong>
        <span class="badge bg" style="font-size:10px;margin-left:4px;">${b.margin}%</span>
       </div>
       <div>
-       <span style="font-size:11px;color:#64748b;display:block;">COGS (Cost)</span>
+       <span style="font-size:11px;color:#64748b;display:block;">עלות הסחורה שנמכרה</span>
        <span style="font-size:14px;font-weight:600;color:#475569;">₪ ${Math.round(b.cogs).toLocaleString()}</span>
       </div>
       <div>
-       <span style="font-size:11px;color:#64748b;display:block;">Avg Ticket (AOV)</span>
+       <span style="font-size:11px;color:#64748b;display:block;">ממוצע לעסקה</span>
        <span style="font-size:14px;font-weight:600;color:#0284c7;">₪ ${b.aov.toFixed(2)}</span>
       </div>
      </div>
 
      <!-- Operational Volumes -->
      <div style="font-size:12.5px;color:#475569;display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f1f5f9;">
-      <span>Transactions / Units:</span>
+      <span>עסקאות / יחידות:</span>
       <strong>${b.orders} orders / ${b.units} units</strong>
      </div>
      <div style="font-size:12.5px;color:#475569;display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f1f5f9;">
-      <span>Unique Customers:</span>
-      <strong>${b.custCount} identified</strong>
+      <span>לקוחות ייחודיים:</span>
+      <strong>${b.custCount} מזוהים</strong>
      </div>
      <div style="font-size:12.5px;color:#475569;display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f1f5f9;">
-      <span>Current Stock on Hand:</span>
+      <span>מלאי נוכחי:</span>
       <strong>${b.stockUnits} units (₪ ${Math.round(b.stockValCost).toLocaleString()})</strong>
      </div>
 
      <!-- Top Products in Branch -->
      <div style="margin-top:10px;font-size:11.5px;color:#64748b;">
-      <strong style="color:#0f172a;display:block;margin-bottom:2px;">Top Products:</strong>
+      <strong style="color:#0f172a;display:block;margin-bottom:2px;">מוצרים מובילים:</strong>
       ${b.topProds.length ? b.topProds.map(p => '<div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">• ' + esc(p) + '</div>').join('') : '<div>None in period</div>'}
      </div>
     </div>
@@ -4115,17 +4115,17 @@ function renderBranchesReport(container, sales) {
     <table>
      <thead>
       <tr>
-       <th>Branch Name</th>
-       <th style="text-align:right;">Sales Revenue &#8362;</th>
-       <th style="text-align:right;">COGS &#8362;</th>
-       <th style="text-align:right;">Gross Profit &#8362;</th>
-       <th style="text-align:center;">Margin %</th>
-       <th style="text-align:center;">Units Sold</th>
-       <th style="text-align:center;">Orders</th>
-       <th style="text-align:right;">Avg Ticket &#8362;</th>
-       <th style="text-align:center;">Stock Units</th>
-       <th style="text-align:right;">Stock Valuation (Cost) &#8362;</th>
-       <th style="text-align:center;">Action</th>
+       <th>שם הסניף</th>
+       <th style="text-align:right;">הכנסות ממכירות &#8362;</th>
+       <th style="text-align:right;">עלות הסחורה שנמכרה &#8362;</th>
+       <th style="text-align:right;">רווח גולמי &#8362;</th>
+       <th style="text-align:center;">שיעור רווח %</th>
+       <th style="text-align:center;">יחידות שנמכרו</th>
+       <th style="text-align:center;">עסקאות</th>
+       <th style="text-align:right;">ממוצע לעסקה &#8362;</th>
+       <th style="text-align:center;">יחידות במלאי</th>
+       <th style="text-align:right;">שווי מלאי (עלות) &#8362;</th>
+       <th style="text-align:center;">פעולה</th>
       </tr>
      </thead>
      <tbody>
@@ -4145,7 +4145,7 @@ function renderBranchesReport(container, sales) {
        </tr>
       `).join('')}
       <tr style="background:#f8fafc;font-weight:800;border-top:2px solid #cbd5e1;">
-       <td>Total / All Branches</td>
+       <td>סה״כ / כל הסניפים</td>
        <td style="text-align:right;color:#db2777;">₪ ${Math.round(branchData.reduce((s, b) => s + b.sales, 0)).toLocaleString()}</td>
        <td style="text-align:right;color:#64748b;">₪ ${Math.round(branchData.reduce((s, b) => s + b.cogs, 0)).toLocaleString()}</td>
        <td style="text-align:right;color:#16a34a;">₪ ${Math.round(branchData.reduce((s, b) => s + b.profit, 0)).toLocaleString()}</td>
@@ -4172,7 +4172,7 @@ function renderEmployeesReport(container, sales) {
 
  sales.forEach(tx => {
   const f = tx.fields;
-  const emp = (f[F.TX.EMP] || 'General Staff').trim();
+  const emp = (f[F.TX.EMP] || 'עובד כללי').trim();
   const qty = Math.abs(f[F.TX.QTY] || 1);
   const prod = resolveProdFromTx(tx);
   const paidPrice = getTxPrice(tx, prod);
@@ -4224,8 +4224,8 @@ function renderEmployeesReport(container, sales) {
  container.innerHTML = `
   <!-- KPIs -->
   <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));gap:12px;margin-bottom:18px;">
-   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">עובדים פעילים בקופה</div><div class="dash-kpi-val" style="font-size:22px;">${rows.length}</div><div class="dash-kpi-sub">Operating cash registers</div></div>
-   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">סה״כ מכירות עובדים</div><div class="dash-kpi-val" style="font-size:22px;color:#db2777;">₪ ${Math.round(totSales).toLocaleString()}</div><div class="dash-kpi-sub">${sales.length} transactions processed</div></div>
+   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">עובדים פעילים בקופה</div><div class="dash-kpi-val" style="font-size:22px;">${rows.length}</div><div class="dash-kpi-sub">קופות פעילות</div></div>
+   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">סה״כ מכירות עובדים</div><div class="dash-kpi-val" style="font-size:22px;color:#db2777;">₪ ${Math.round(totSales).toLocaleString()}</div><div class="dash-kpi-sub">${sales.length} עסקאות שבוצעו</div></div>
    <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">עובד/ת מוביל/ה</div><div class="dash-kpi-val" style="font-size:20px;color:#16a34a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${rows.length ? esc(rows[0].name) : '--'}</div><div class="dash-kpi-sub">${rows.length ? '₪ ' + Math.round(rows[0].sales).toLocaleString() : '--'}</div></div>
   </div>
 
@@ -4241,15 +4241,15 @@ function renderEmployeesReport(container, sales) {
     <table>
      <thead>
       <tr>
-       <th>Employee / Salesperson</th>
-       <th style="text-align:center;">Transactions</th>
-       <th style="text-align:center;">Units Sold</th>
-       <th style="text-align:right;">Total Sales &#8362;</th>
-       <th style="text-align:right;">Gross Profit &#8362;</th>
-       <th style="text-align:center;">Margin %</th>
-       <th style="text-align:right;">Average Basket &#8362;</th>
-       <th>Branches Operated</th>
-       <th style="text-align:right;">Est. Sales / Work Day &#8362;</th>
+       <th>עובד / איש מכירות</th>
+       <th style="text-align:center;">עסקאות</th>
+       <th style="text-align:center;">יחידות שנמכרו</th>
+       <th style="text-align:right;">סך המכירות &#8362;</th>
+       <th style="text-align:right;">רווח גולמי &#8362;</th>
+       <th style="text-align:center;">שיעור רווח %</th>
+       <th style="text-align:right;">סל ממוצע &#8362;</th>
+       <th>סניפים פעילים</th>
+       <th style="text-align:right;">מכירות ליום עבודה &#8362;</th>
       </tr>
      </thead>
      <tbody>
@@ -4359,15 +4359,15 @@ function renderDailyReport(container, sales) {
     <table>
      <thead>
       <tr>
-       <th>Date</th>
-       <th>Day</th>
-       <th style="text-align:center;">Transactions</th>
-       <th style="text-align:center;">Units Sold</th>
-       <th style="text-align:right;">Sales Revenue &#8362;</th>
-       <th style="text-align:right;">COGS &#8362;</th>
-       <th style="text-align:right;">Gross Profit &#8362;</th>
-       <th style="text-align:center;">Margin %</th>
-       <th>Top Selling Product of the Day</th>
+       <th>תאריך</th>
+       <th>יום</th>
+       <th style="text-align:center;">עסקאות</th>
+       <th style="text-align:center;">יחידות שנמכרו</th>
+       <th style="text-align:right;">הכנסות ממכירות &#8362;</th>
+       <th style="text-align:right;">עלות הסחורה שנמכרה &#8362;</th>
+       <th style="text-align:right;">רווח גולמי &#8362;</th>
+       <th style="text-align:center;">שיעור רווח %</th>
+       <th>מוצר מוביל יומי</th>
       </tr>
      </thead>
      <tbody>
@@ -4803,7 +4803,7 @@ function exportActiveReportToCSV() {
   const empMap = {};
   sales.forEach(tx => {
    const f = tx.fields;
-   const emp = (f[F.TX.EMP] || 'General Staff').trim();
+   const emp = (f[F.TX.EMP] || 'עובד כללי').trim();
    const qty = Math.abs(f[F.TX.QTY] || 1);
    const prod = resolveProdFromTx(tx);
    const paidPrice = getTxPrice(tx, prod);
@@ -4856,7 +4856,7 @@ function exportActiveReportToCSV() {
 }
 
 // ── RENDER PRODUCTS ────────────────────────────────────────────
-function popBrands(){const brands=[...new Set(allP.map(p=>p.fields[F.P.BR]).filter(Boolean))].sort();document.getElementById('p-br').innerHTML='<option value="">All Brands</option>'+brands.map(b=>`<option>${esc(b)}</option>`).join('');}
+function popBrands(){const brands=[...new Set(allP.map(p=>p.fields[F.P.BR]).filter(Boolean))].sort();document.getElementById('p-br').innerHTML='<option value="">כל המותגים</option>'+brands.map(b=>`<option>${esc(b)}</option>`).join('');}
 function filterProds(){
  const q=document.getElementById('p-q').value.toLowerCase(),br=document.getElementById('p-br').value,sf=document.getElementById('p-st').value;
  filtP=allP.filter(p=>{const f=p.fields;if(q&&![f[F.P.SKU],f[F.P.NM],f[F.P.BR],f[F.P.SH]].some(v=>v&&String(v).toLowerCase().includes(q)))return false;if(br&&f[F.P.BR]!==br)return false;if(sf==='low'&&!isLow(f))return false;if(sf==='ok'&&isLow(f))return false;return true;});
@@ -4910,9 +4910,9 @@ function openHistory(productId, productName){
   pillsEl.innerHTML = `
    <div><strong>List Price:</strong> ₪ ${sp}</div>
    <div><strong>Cost Price:</strong> ₪ ${cp}</div>
-   <div><strong>Total Units Sold:</strong> ${totalSoldUnits}</div>
+   <div><strong>סה״כ יחידות שנמכרו:</strong> ${totalSoldUnits}</div>
    <div><strong>Total Revenue:</strong> <span style="font-weight:700;color:#db2777;">₪ ${Math.round(totalSalesRev).toLocaleString()}</span></div>
-   <div><strong>Total Profit:</strong> <span style="font-weight:700;color:#16a34a;">₪ ${Math.round(totalSalesProfit).toLocaleString()}</span> (${totalSalesMargin}% Margin)</div>
+   <div><strong>Total Profit:</strong> <span style="font-weight:700;color:#16a34a;">₪ ${Math.round(totalSalesProfit).toLocaleString()}</span> (${totalSalesMargin}% שיעור רווח)</div>
   `;
  }
 
