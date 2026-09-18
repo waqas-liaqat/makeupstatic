@@ -380,8 +380,8 @@
    </button>
 
    <!-- Export to Excel Button -->
-   <button class="btn btn-ok" onclick="exportCurrentDashboardCSV()" title="ייצוא סיכום לאקסל" style="padding:7px 13px;border-radius:10px;font-size:12.5px;font-weight:600;">
-    📥 Excel
+   <button class="btn btn-ok" onclick="exportTopBarExcel()" title="ייצוא לאקסל" style="padding:7px 13px;border-radius:10px;font-size:12.5px;font-weight:600;">
+    📥 ייצוא לאקסל
    </button>
 
    <!-- User Profile Badge matching mockup -->
@@ -722,7 +722,7 @@
      <table>
       <thead>
        <tr>
-        <th>Date &amp; Time</th><th>Product</th><th>Branch</th><th>Type</th><th>Qty</th><th>Source</th><th>Reference</th><th>Customer</th>
+        <th>תאריך ושעה</th><th>מוצר</th><th>גוון</th><th>סניף</th><th>סוג</th><th>כמות</th><th>מקור</th><th>אסמכתא</th><th>לקוח</th>
        </tr>
       </thead>
       <tbody id="recent-tx"></tbody>
@@ -737,9 +737,10 @@
  <div class="fbar">
  <input class="fsrch" type="text" id="p-q" placeholder="🔍 חיפוש לפי מק״ט, שם, מותג, גוון..." oninput="filterProds()"/>
  <select id="p-br" onchange="filterProds()" style="min-width:140px;"><option value="">כל המותגים</option></select>
- <select id="p-st" onchange="filterProds()" style="min-width:140px;"><option value="">כל רמות המלאי</option><option value="low"> Low Stock</option><option value="ok"> OK</option></select>
+ <select id="p-st" onchange="filterProds()" style="min-width:140px;"><option value="">כל רמות המלאי</option><option value="low">מלאי נמוך</option><option value="ok">תקין</option></select>
+ <button class="btn btn-ok btn-sm" onclick="exportProductsExcel()" style="margin-left:8px;">📥 ייצוא מוצרים לאקסל</button>
+ <button class="btn btn-s btn-sm" onclick="openModal('m-sm')" style="margin-left:8px;" title="צפייה במיפויים שמורים">מיפויים שמורים (<span id="sm-cnt-btn">0</span>)</button>
  <span style="font-size:13px;color:#64748b;margin-left:auto;white-space:nowrap;"><span id="p-cnt">--</span> מוצרים</span>
- <button class="btn btn-s btn-sm" onclick="openModal('m-sm')" style="margin-left:8px;" title="View all confirmed invoice-to-product mappings"> Saved Mappings (<span id="sm-cnt-btn">0</span>)</button>
  </div>
  <div class="card"><div style="overflow-x:auto;"><table><thead><tr>
  <th>מק״ט</th><th>מותג</th><th>שם המוצר</th><th>גוון</th>
@@ -752,16 +753,17 @@
  <div class="page" id="page-transactions">
  <div class="fbar">
  <select id="tx-br" translate="no" onchange="filterTx()" style="min-width:140px;"><option value="">כל הסניפים</option><option value="Beitar">ביתר עילית</option><option value="Beit Shemesh">בית שמש</option><option value="Jerusalem">ירושלים</option></select>
- <select id="tx-ty" onchange="filterTx()" style="min-width:155px;"><option value="">כל הסוגים</option><option value="Sale">Sale</option><option value="Stock Received">Stock Received</option><option value="Transfer">Transfer</option><option value="Manual Correction">Manual Correction</option></select>
- <select id="tx-src" onchange="filterTx()" style="min-width:145px;"><option value="">All Sources</option><option>POS</option><option>AI Message</option><option>Purchase Order</option><option>Manual</option></select>
+ <select id="tx-ty" onchange="filterTx()" style="min-width:155px;"><option value="">כל הסוגים</option><option value="Sale">מכירה (Sale)</option><option value="Stock Received">קבלת מלאי (Stock Received)</option><option value="Transfer">העברה (Transfer)</option><option value="Manual Correction">תיקון ידני (Manual Correction)</option></select>
+ <select id="tx-src" onchange="filterTx()" style="min-width:145px;"><option value="">כל המקורות</option><option value="POS">קופה (POS)</option><option value="AI Message">הודעת AI</option><option value="Purchase Order">הזמנת רכש</option><option value="Manual">ידני</option></select>
  <input type="date" id="tx-fr" onchange="filterTx()" style="min-width:130px;"/>
  <input type="date" id="tx-to" onchange="filterTx()" style="min-width:130px;"/>
- <button class="btn btn-s btn-sm" onclick="clrTxF()">Clear</button>
- <span style="font-size:13px;color:#64748b;margin-left:auto;white-space:nowrap;"><span id="tx-cnt">--</span> records</span>
+ <button class="btn btn-s btn-sm" onclick="clrTxF()">איפוס</button>
+ <button class="btn btn-ok btn-sm" onclick="exportTransactionsExcel()" style="margin-left:8px;">📥 ייצוא עסקאות לאקסל</button>
+ <span style="font-size:13px;color:#64748b;margin-left:auto;white-space:nowrap;"><span id="tx-cnt">--</span> רשומות</span>
  </div>
  <div class="card">
  <div style="overflow-x:auto;"><table><thead><tr>
- <th>תאריך ושעה</th><th>מוצר</th><th>סניף</th><th>סוג</th><th style="text-align:center;">כמות</th><th>מקור</th><th>אסמכתא</th><th>לקוח</th><th>עובד / איש מכירות</th><th>הערות</th>
+ <th>תאריך ושעה</th><th>מוצר</th><th>גוון</th><th>סניף</th><th>סוג</th><th style="text-align:center;">כמות</th><th>מקור</th><th>אסמכתא</th><th>לקוח</th><th>עובד / איש מכירות</th><th>הערות</th>
  </tr></thead><tbody id="tx-body"></tbody></table></div>
  <div class="pager">
  <button class="btn btn-s btn-sm" id="tx-prev" onclick="chgPg(-1)">הקודם &rarr;</button>
@@ -1551,10 +1553,10 @@
 
 // ── CONFIG ─────────────────────────────────────────────────────
 const LOCAL_CONFIG = window.MAKEUPSTATIC_CONFIG || {};
-const AT_TOKEN = LOCAL_CONFIG.AT_TOKEN || atob('cGF0eDBnd0ZxeUQxQjhBaDEuZGNjMDc5YThjODI3ZTJmMDliY2MxNmZjZDhlNzk2N2NmOWVmMTI5OTNiMWM3NjdkYWNmNTQ0NjkzYmFmZTJmYQ==');
-const AT_BASE = 'appivKVm0EYXvid1p';
-const OPENAI_KEY = LOCAL_CONFIG.OPENAI_KEY || atob('c2stcHJvai01SXp3U1VIcUw0SnlCNUZSMUFVQ3NBdGlKSGNSOVFoT3pLWS12SU13ckUwN0lZb3dhQzRtOVNXZWp5UUdseDI2UnEyWjJNaS1MR1QzQmxia0ZKeU5XMkw2RGkwYm04QnpORHFfWmFNT3YxNGZGOGNvOXE2YWdZb2ktX0Rqb0p1NUszTFpvc3FmWTlRQkVhMzROVVVybkVLOVR5Y0E=');
-const MISTRAL_KEY = LOCAL_CONFIG.MISTRAL_KEY || atob('TTVNV0tKZ2lpUkdHUURSQXlvbFRxRHlNeWRIUEZIV2g=');
+const AT_TOKEN = LOCAL_CONFIG.AT_TOKEN || '';
+const AT_BASE = LOCAL_CONFIG.AT_BASE || 'appivKVm0EYXvid1p';
+const OPENAI_KEY = LOCAL_CONFIG.OPENAI_KEY || '';
+const MISTRAL_KEY = LOCAL_CONFIG.MISTRAL_KEY || '';
 const API = `https://api.airtable.com/v0/${AT_BASE}`;
 
 const TBL = { P:'tbldVXyKnRuW3OAVe', TX:'tblRTwZRoIn1k08Ji', PO:'tblp1lQYKMRK44vTl', AI:'tbl0ZFGabsWg9wAHP', CU:'tblA5Z7T3thkn9Nc0', SM:'tbl0m3GwlHm8iRFmc' };
@@ -1594,23 +1596,86 @@ let posStep=1,posF1=null,posF2=null,posF2Skip=false,posRows=[],posInvMap={},posP
 let ocrFile=null,ocrType='sale',ocrItems=[];
 
 // ── AIRTABLE API ────────────────────────────────────────────────
-const HDR = {'Authorization':`Bearer ${AT_TOKEN}`,'Content-Type':'application/json'};
+const HDR = AT_TOKEN ? {'Authorization':`Bearer ${AT_TOKEN}`,'Content-Type':'application/json'} : {'Content-Type':'application/json'};
 async function atGet(tbl,extra={}) {
  let recs=[],off=null;
  do {
- const u=new URL(`${API}/${tbl}`);u.searchParams.set('returnFieldsByFieldId','true');
- for(const[k,v]of Object.entries(extra))u.searchParams.set(k,v);
- if(off)u.searchParams.set('offset',off);
- const r=await fetch(u,{headers:HDR});if(!r.ok)throw new Error(`AT ${r.status}`);
- const d=await r.json();recs=recs.concat(d.records||[]);off=d.offset||null;
+  let r;
+  if(AT_TOKEN){
+   const u=new URL(`${API}/${tbl}`);u.searchParams.set('returnFieldsByFieldId','true');
+   for(const[k,v]of Object.entries(extra))u.searchParams.set(k,v);
+   if(off)u.searchParams.set('offset',off);
+   r=await fetch(u,{headers:HDR});
+  } else {
+   const u=new URL('/api/airtable',window.location.origin);
+   u.searchParams.set('table',tbl);u.searchParams.set('returnFieldsByFieldId','true');
+   for(const[k,v]of Object.entries(extra))u.searchParams.set(k,v);
+   if(off)u.searchParams.set('offset',off);
+   r=await fetch(u);
+  }
+  if(!r.ok)throw new Error(`AT ${r.status}`);
+  const d=await r.json();recs=recs.concat(d.records||[]);off=d.offset||null;
  } while(off);
  return recs;
 }
-async function atPost(tbl,fields){const r=await fetch(`${API}/${tbl}`,{method:'POST',headers:HDR,body:JSON.stringify({records:[{fields}]})});if(!r.ok)throw new Error(`AT ${r.status}: ${await r.text()}`);return(await r.json()).records[0];}
-async function atPatch(tbl,id,fields){const r=await fetch(`${API}/${tbl}/${id}`,{method:'PATCH',headers:HDR,body:JSON.stringify({fields})});if(!r.ok)throw new Error(`AT ${r.status}: ${await r.text()}`);return await r.json();}
-async function atDelete(tbl,id){const r=await fetch(`${API}/${tbl}/${id}`,{method:'DELETE',headers:HDR});if(!r.ok)throw new Error(`AT ${r.status}: ${await r.text()}`);return await r.json();}
-async function atPostMany(tbl,farr){const res=[];for(let i=0;i<farr.length;i+=10){const ch=farr.slice(i,i+10);const r=await fetch(`${API}/${tbl}`,{method:'POST',headers:HDR,body:JSON.stringify({records:ch.map(f=>({fields:f}))})});if(!r.ok)throw new Error(`AT ${r.status}: ${await r.text()}`);res.push(...(await r.json()).records);}return res;}
-async function atSearch(tbl,formula,maxR=5){const u=new URL(`${API}/${tbl}`);u.searchParams.set('filterByFormula',formula);u.searchParams.set('returnFieldsByFieldId','true');u.searchParams.set('maxRecords',maxR);const r=await fetch(u,{headers:HDR});if(!r.ok)throw new Error(`AT ${r.status}`);return(await r.json()).records||[];}
+async function atPost(tbl,fields){
+ let r;
+ if(AT_TOKEN){
+  r=await fetch(`${API}/${tbl}`,{method:'POST',headers:HDR,body:JSON.stringify({records:[{fields}]})});
+ } else {
+  r=await fetch(`/api/airtable?table=${encodeURIComponent(tbl)}`,{method:'POST',headers:HDR,body:JSON.stringify({records:[{fields}]})});
+ }
+ if(!r.ok)throw new Error(`AT ${r.status}: ${await r.text()}`);
+ return(await r.json()).records[0];
+}
+async function atPatch(tbl,id,fields){
+ let r;
+ if(AT_TOKEN){
+  r=await fetch(`${API}/${tbl}/${id}`,{method:'PATCH',headers:HDR,body:JSON.stringify({fields})});
+ } else {
+  r=await fetch(`/api/airtable?table=${encodeURIComponent(tbl)}&recordId=${encodeURIComponent(id)}`,{method:'PATCH',headers:HDR,body:JSON.stringify({fields})});
+ }
+ if(!r.ok)throw new Error(`AT ${r.status}: ${await r.text()}`);
+ return await r.json();
+}
+async function atDelete(tbl,id){
+ let r;
+ if(AT_TOKEN){
+  r=await fetch(`${API}/${tbl}/${id}`,{method:'DELETE',headers:HDR});
+ } else {
+  r=await fetch(`/api/airtable?table=${encodeURIComponent(tbl)}&recordId=${encodeURIComponent(id)}`,{method:'DELETE'});
+ }
+ if(!r.ok)throw new Error(`AT ${r.status}: ${await r.text()}`);
+ return await r.json();
+}
+async function atPostMany(tbl,farr){
+ const res=[];
+ for(let i=0;i<farr.length;i+=10){
+  const ch=farr.slice(i,i+10);
+  let r;
+  if(AT_TOKEN){
+   r=await fetch(`${API}/${tbl}`,{method:'POST',headers:HDR,body:JSON.stringify({records:ch.map(f=>({fields:f}))})});
+  } else {
+   r=await fetch(`/api/airtable?table=${encodeURIComponent(tbl)}`,{method:'POST',headers:HDR,body:JSON.stringify({records:ch.map(f=>({fields:f}))})});
+  }
+  if(!r.ok)throw new Error(`AT ${r.status}: ${await r.text()}`);
+  res.push(...(await r.json()).records);
+ }
+ return res;
+}
+async function atSearch(tbl,formula,maxR=5){
+ let r;
+ if(AT_TOKEN){
+  const u=new URL(`${API}/${tbl}`);u.searchParams.set('filterByFormula',formula);u.searchParams.set('returnFieldsByFieldId','true');u.searchParams.set('maxRecords',maxR);
+  r=await fetch(u,{headers:HDR});
+ } else {
+  const u=new URL('/api/airtable',window.location.origin);
+  u.searchParams.set('table',tbl);u.searchParams.set('filterByFormula',formula);u.searchParams.set('returnFieldsByFieldId','true');u.searchParams.set('maxRecords',maxR);
+  r=await fetch(u);
+ }
+ if(!r.ok)throw new Error(`AT ${r.status}`);
+ return(await r.json()).records||[];
+}
 
 // ── STOCK UPDATE ─────────────────────────────────────────────────
 // Products stock fields are plain editable numbers (NOT rollups).
@@ -1649,7 +1714,7 @@ async function updateStockMany(ops) {
  }
 }
 
-const PT={'overview':'Executive Dashboard','products':'Products & Inventory','transactions':'Inventory Transactions','purchase-orders':'Purchase Orders','customers':'Customers','approvals':'אישורים ושגיאות','reports':'אנליטיקה ודוחות'};
+const PT={'overview':'לוח בקרה ניהולי (Dashboard)','products':'מוצרים ומלאי','transactions':'תנועות מלאי ועסקאות','purchase-orders':'הזמנות רכש','customers':'לקוחות','approvals':'אישורים ושגיאות','reports':'אנליטיקה ודוחות'};
 function showPage(n){
  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
  document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
@@ -1699,11 +1764,30 @@ function parseHebDate(s){if(!s)return null;try{s=String(s).trim();if(/^\d{4}-\d{
 function normPhone(p){if(!p)return'';const d=String(p).replace(/\D/g,'');return d.length>=9?d.slice(-9):d;}
 function isLow(f){return(f[F.P.MB]>0&&(f[F.P.B]??0)<f[F.P.MB])||(f[F.P.MBS]>0&&(f[F.P.BS]??0)<f[F.P.MBS])||(f[F.P.MJ]>0&&(f[F.P.J]??0)<f[F.P.MJ])||((f[F.P.SHT]||0)>0);}
 
+function hebrewBranchName(br) {
+ if (!br) return '';
+ const s = String(br).trim();
+ if (s === 'Beit Shemesh' || s === 'בית שמש') return 'בית שמש';
+ if (s === 'Jerusalem' || s === 'ירושלים') return 'ירושלים';
+ if (s === 'Beitar' || s === 'Beitar Illit' || s === 'ביתר' || s === 'ביתר עילית') return 'ביתר עילית';
+ return s;
+}
+
+function hebrewTxType(ty) {
+ if (!ty) return '';
+ const s = String(ty).trim();
+ if (s === 'Sale' || s === 'מכירה') return 'מכירה';
+ if (s === 'Stock Received' || s === 'Stock' || s === 'קבלת מלאי' || s === 'PO Receipt') return 'קבלת מלאי';
+ if (s === 'Transfer' || s === 'העברה') return 'העברה';
+ if (s === 'Manual Correction' || s === 'תיקון ידני' || s === 'תיקון מלאי') return 'תיקון ידני';
+ return s;
+}
+
 // ── BADGES ─────────────────────────────────────────────────────
-function brB(b){const m={'Beitar':'bb','Beit Shemesh':'bg','Jerusalem':'bp'};return b?`<span class="badge ${m[b]||'bgr'}">${esc(b)}</span>`:'--';}
-function tyB(t){const m={'Sale':'br','Stock Received':'bg','Transfer':'bb','Manual Correction':'bo'};return t?`<span class="badge ${m[t]||'bgr'}">${esc(t)}</span>`:'--';}
-function srcB(s){const m={'POS':'bt','AI Message':'bp','Purchase Order':'bi','Manual':'bgr'};return s?`<span class="badge ${m[s]||'bgr'}">${esc(s)}</span>`:'--';}
-function stB(s){const m={'Processed':'bg','Needs Approval':'by','Error':'br','Draft':'bgr','Ordered':'bb','Received':'bg'};return s?`<span class="badge ${m[s]||'bgr'}">${esc(s)}</span>`:'--';}
+function brB(b){const m={'Beitar':'bb','ביתר עילית':'bb','Beit Shemesh':'bg','בית שמש':'bg','Jerusalem':'bp','ירושלים':'bp'};const hb=hebrewBranchName(b);return b?`<span class="badge ${m[b]||m[hb]||'bgr'}">${esc(hb)}</span>`:'--';}
+function tyB(t){const m={'Sale':'br','מכירה':'br','Stock Received':'bg','קבלת מלאי':'bg','Transfer':'bb','העברה':'bb','Manual Correction':'bo','תיקון ידני':'bo'};const ht=hebrewTxType(t);return t?`<span class="badge ${m[t]||m[ht]||'bgr'}">${esc(ht)}</span>`:'--';}
+function srcB(s){const m={'POS':'bt','קופה (POS)':'bt','AI Message':'bp','הודעת AI':'bp','Purchase Order':'bi','הזמנת רכש':'bi','Manual':'bgr','ידני':'bgr'};const hs=(s==='POS'?'קופה (POS)':(s==='AI Message'?'הודעת AI':(s==='Purchase Order'?'הזמנת רכש':(s==='Manual'?'ידני':s))));return s?`<span class="badge ${m[s]||'bgr'}">${esc(hs)}</span>`:'--';}
+function stB(s){const m={'Processed':'bg','בוצע':'bg','Needs Approval':'by','ממתין לאישור':'by','Error':'br','שגיאה':'br','Draft':'bgr','טיוטה':'bgr','Ordered':'bb','הוזמן':'bb','Received':'bg','התקבל':'bg'};const hs=(s==='Processed'?'בוצע':(s==='Needs Approval'?'ממתין לאישור':(s==='Error'?'שגיאה':(s==='Draft'?'טיוטה':(s==='Ordered'?'הוזמן':(s==='Received'?'התקבל':s))))));return s?`<span class="badge ${m[s]||'bgr'}">${esc(hs)}</span>`:'--';}
 
 // ── AUTOCOMPLETE ───────────────────────────────────────────────
 function acSrch(inp,ddId,hidId,extra){
@@ -1711,8 +1795,8 @@ function acSrch(inp,ddId,hidId,extra){
  document.getElementById(hidId).value='';
  if(q.length<2){dd.style.display='none';return;}
  const hits=allP.filter(p=>[p.fields[F.P.SKU],p.fields[F.P.NM],p.fields[F.P.BR],p.fields[F.P.SH],p.fields[F.P.BC]].some(v=>v&&String(v).toLowerCase().includes(q))).slice(0,14);
- if(!hits.length){dd.innerHTML='<div style="padding:12px;font-size:13px;color:#94a3b8;">No products found</div>';dd.style.display='block';return;}
- dd.innerHTML=hits.map(p=>{const f=p.fields,sku=esc(f[F.P.SKU]||''),nm=esc(f[F.P.NM]||''),sh=esc(f[F.P.SH]||'');const b=f[F.P.B]??0,bs=f[F.P.BS]??0,j=f[F.P.J]??0;const df=JSON.stringify({b,bs,j}).replace(/'/g,"&#39;");return`<div class="ac-item" data-id="${p.id}" data-lbl="${sku} — ${nm}${sh?' — '+sh:''}" data-f='${df}' data-ex="${esc(extra||'')}" onclick="acSel(this,'${ddId}','${hidId}')"><div class="ac-sku">${sku}</div><div class="ac-nm">${nm}${sh?` <span style="color:#94a3b8;">— ${sh}</span>`:''}</div><div class="ac-sub">Beitar:${b} · Beit Sh:${bs} · Jerusalem:${j}${f[F.P.SP]?' · ₪'+f[F.P.SP]:''}</div></div>`;}).join('');
+ if(!hits.length){dd.innerHTML='<div style="padding:12px;font-size:13px;color:#94a3b8;">לא נמצאו מוצרים</div>';dd.style.display='block';return;}
+ dd.innerHTML=hits.map(p=>{const f=p.fields,sku=esc(f[F.P.SKU]||''),nm=esc(f[F.P.NM]||''),sh=esc(f[F.P.SH]||'');const b=f[F.P.B]??0,bs=f[F.P.BS]??0,j=f[F.P.J]??0;const df=JSON.stringify({b,bs,j}).replace(/'/g,"&#39;");return`<div class="ac-item" data-id="${p.id}" data-lbl="${sku} — ${nm}${sh?' — '+sh:''}" data-f='${df}' data-ex="${esc(extra||'')}" onclick="acSel(this,'${ddId}','${hidId}')"><div class="ac-sku">${sku}</div><div class="ac-nm">${nm}${sh?` <span style="color:#94a3b8;">— ${sh}</span>`:''}</div><div class="ac-sub">ביתר עילית: ${b} · בית שמש: ${bs} · ירושלים: ${j}${f[F.P.SP]?' · ₪'+f[F.P.SP]:''}</div></div>`;}).join('');
  dd.style.display='block';
 }
 function acSel(item,ddId,hidId){
@@ -2063,9 +2147,9 @@ function renderExecutiveDashboard() {
  const recent = sales.slice(0, 15);
  const elRecent = document.getElementById('recent-tx');
  if (elRecent) {
-  elRecent.innerHTML = recent.length
-   ? recent.map(r => txRow(r, true)).join('')
-   : `<tr><td colspan="8"><div class="empty">No sales transactions found in selected range</div></td></tr>`;
+   elRecent.innerHTML = recent.length
+    ? recent.map(r => txRow(r, true)).join('')
+    : `<tr><td colspan="9"><div class="empty">לא נמצאו עסקאות בטווח הנבחר</div></td></tr>`;
  }
 }
 
@@ -4459,6 +4543,7 @@ function exportCurrentDashboardCSV() {
   'תאריך ושעה',
   'שם הסניף',
   'שם המוצר',
+  'גוון',
   'מק״ט',
   'מותג',
   'יחידות שנמכרו',
@@ -4490,6 +4575,7 @@ function exportCurrentDashboardCSV() {
    fmtDT(f[F.TX.DT]),
    hebrewBranchName(f[F.TX.BR]),
    prod ? (prod.fields[F.P.NM] || '') : pNmTx(tx),
+   prod ? (prod.fields[F.P.SH] || '') : '',
    prod ? (prod.fields[F.P.SKU] || '') : (f[F.TX.SKUL] || [''])[0],
    prod ? (prod.fields[F.P.BR] || '') : '',
    qty,
@@ -4508,6 +4594,146 @@ function exportCurrentDashboardCSV() {
  const dtStr = today();
  const brLabel = dashBranch ? hebrewBranchName(dashBranch) : 'כל_הסניפים';
  exportToExcel('עסקאות_דשבורד_' + brLabel + '_' + dtStr + '.xlsx', headers, rows, 'דשבורד');
+}
+
+function exportProductsExcel() {
+ const prods = (filtP && filtP.length) ? filtP : allP;
+ const headers = [
+  'מק״ט',
+  'ברקוד',
+  'מותג',
+  'שם המוצר',
+  'גוון',
+  'מחיר עלות ₪',
+  'מחיר מכירה ₪',
+  'מלאי ביתר עילית',
+  'מלאי בית שמש',
+  'מלאי ירושלים',
+  'סה״כ מלאי',
+  'סטטוס מלאי'
+ ];
+ const rows = prods.map(p => {
+  const f = p.fields;
+  const b = f[F.P.B] ?? 0;
+  const bs = f[F.P.BS] ?? 0;
+  const j = f[F.P.J] ?? 0;
+  const tot = b + bs + j;
+  const lo = isLow(f);
+  return [
+   f[F.P.SKU] || '',
+   f[F.P.BC] || '',
+   f[F.P.BR] || '',
+   f[F.P.NM] || '',
+   f[F.P.SH] || '',
+   f[F.P.CP] != null ? Number(f[F.P.CP]) : '',
+   f[F.P.SP] != null ? Number(f[F.P.SP]) : '',
+   b,
+   bs,
+   j,
+   tot,
+   lo ? 'מלאי נמוך' : 'תקין'
+  ];
+ });
+ exportToExcel(`קטלוג_מוצרים_ומלאי_${today()}.xlsx`, headers, rows, 'מוצרים ומלאי');
+}
+
+function exportTransactionsExcel() {
+ const txList = (filtTX && filtTX.length) ? filtTX : allTX;
+ const headers = [
+  'תאריך ושעה',
+  'סוג פעולה',
+  'שם הסניף',
+  'שם המוצר',
+  'מק״ט',
+  'ברקוד',
+  'גוון',
+  'מותג',
+  'כמות',
+  'מחיר מחירון ₪',
+  'מחיר ששולם בפועל ₪',
+  'סה״כ עסקה ₪',
+  'מחיר עלות ₪',
+  'עלות כוללת (COGS) ₪',
+  'רווח גולמי ₪',
+  'לקוח',
+  'עובד / איש מכירות',
+  'מקור',
+  'אסמכתא',
+  'הערות'
+ ];
+ const rows = txList.map(r => {
+  const f = r.fields;
+  const prod = resolveProdFromTx(r);
+  const pf = prod ? prod.fields : {};
+  const ty = f[F.TX.TY] || '';
+  const qty = f[F.TX.QTY] || 0;
+  const absQty = Math.abs(qty);
+  const sp = pf[F.P.SP] != null ? Number(pf[F.P.SP]) : 0;
+  const cp = pf[F.P.CP] != null ? Number(pf[F.P.CP]) : 0;
+  const paidPrice = getTxPrice(r, prod);
+  const lineRev = ty === 'Sale' ? (absQty * paidPrice) : 0;
+  const lineCost = ty === 'Sale' ? (absQty * cp) : 0;
+  const lineProfit = ty === 'Sale' ? (lineRev - lineCost) : 0;
+  const custName = r._custName || (f[F.TX.CU] ? 'לקוח מקושר' : 'אנונימי');
+
+  return [
+   fmtDT(f[F.TX.DT]),
+   hebrewTxType(ty),
+   hebrewBranchName(f[F.TX.BR] || ''),
+   pNmTx(r),
+   pf[F.P.SKU] || (Array.isArray(f[F.TX.SKUL]) ? f[F.TX.SKUL].join(', ') : (f[F.TX.SKUL] || '')),
+   pf[F.P.BC] || '',
+   pf[F.P.SH] || '',
+   pf[F.P.BR] || '',
+   qty,
+   sp || '',
+   ty === 'Sale' ? paidPrice.toFixed(2) : '',
+   ty === 'Sale' ? lineRev.toFixed(2) : '',
+   cp || '',
+   ty === 'Sale' ? lineCost.toFixed(2) : '',
+   ty === 'Sale' ? lineProfit.toFixed(2) : '',
+   custName,
+   f[F.TX.EMP] || '',
+   f[F.TX.SRC] || '',
+   f[F.TX.REF] || '',
+   f[F.TX.NO] || ''
+  ];
+ });
+ exportToExcel(`יומן_עסקאות_${today()}.xlsx`, headers, rows, 'עסקאות');
+}
+
+function exportCustomersExcel() {
+ const custList = (filtCU && filtCU.length) ? filtCU : allCU;
+ const headers = ['שם לקוח', 'טלפון', 'טלפון משני', 'אימייל', 'סוג לקוח', 'נקודות מועדון', 'מקור', 'תאריך הצטרפות'];
+ const rows = custList.map(c => {
+  const f = c.fields;
+  return [
+   f[F.CU.NM] || '',
+   f[F.CU.PH] || '',
+   f[F.CU.PHE] || '',
+   f[F.CU.EM] || '',
+   f[F.CU.TY] || '',
+   f[F.CU.PT] ?? 0,
+   f[F.CU.SRC] || '',
+   f[F.CU.CR] || ''
+  ];
+ });
+ exportToExcel(`רשימת_לקוחות_${today()}.xlsx`, headers, rows, 'לקוחות');
+}
+
+function exportTopBarExcel() {
+ const activePage = document.querySelector('.page.active')?.id || '';
+ if (activePage === 'page-products') {
+  exportProductsExcel();
+ } else if (activePage === 'page-transactions') {
+  exportTransactionsExcel();
+ } else if (activePage === 'page-reports') {
+  exportActiveReportToCSV();
+ } else if (activePage === 'page-customers') {
+  exportCustomersExcel();
+ } else {
+  exportCurrentDashboardCSV();
+ }
 }
 
 function exportProduct360CSV() {
@@ -4896,7 +5122,13 @@ function renderProds(){
 }
 
 // ── RENDER TRANSACTIONS ────────────────────────────────────────
-function txRow(r,short=false){const f=r.fields,qty=f[F.TX.QTY],qs=qty!=null?(qty>0?`+${qty}`:String(qty)):'--',qc=qty<0?'color:#ef4444;font-weight:700;':(qty>0?'color:#10b981;font-weight:700;':'');if(short)return`<tr><td style="white-space:nowrap;font-size:12.5px;">${fmtDT(f[F.TX.DT])}</td><td style="font-size:13px;max-width:180px;">${esc(pNmTx(r))}</td><td>${brB(f[F.TX.BR])}</td><td>${tyB(f[F.TX.TY])}</td><td style="text-align:center;font-size:15px;${qc}">${qs}</td><td>${srcB(f[F.TX.SRC])}</td><td style="font-size:12.5px;color:#64748b;">${esc(f[F.TX.REF]||'--')}</td><td>${cuHtml(r)}</td></tr>`;return`<tr><td style="white-space:nowrap;font-size:12.5px;">${fmtDT(f[F.TX.DT])}</td><td style="font-size:13px;max-width:160px;">${esc(pNmTx(r))}</td><td>${brB(f[F.TX.BR])}</td><td>${tyB(f[F.TX.TY])}</td><td style="text-align:center;font-size:15px;${qc}">${qs}</td><td>${srcB(f[F.TX.SRC])}</td><td style="font-size:12.5px;color:#64748b;">${esc(f[F.TX.REF]||'--')}</td><td>${cuHtml(r)}</td><td style="font-size:12.5px;color:#334155;">${esc(f[F.TX.EMP]||'--')}</td><td style="font-size:12px;color:#94a3b8;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${esc(f[F.TX.NO]||'')}">${esc(f[F.TX.NO]||'--')}</td></tr>`;}
+function txRow(r,short=false){
+ const f=r.fields,qty=f[F.TX.QTY],qs=qty!=null?(qty>0?`+${qty}`:String(qty)):'--',qc=qty<0?'color:#ef4444;font-weight:700;':(qty>0?'color:#10b981;font-weight:700;':'');
+ const prod=resolveProdFromTx(r);
+ const shade=prod?.fields?.[F.P.SH] || '--';
+ if(short)return`<tr><td style="white-space:nowrap;font-size:12.5px;">${fmtDT(f[F.TX.DT])}</td><td style="font-size:13px;max-width:180px;">${esc(pNmTx(r))}</td><td style="font-size:12.5px;color:#64748b;">${esc(shade)}</td><td>${brB(f[F.TX.BR])}</td><td>${tyB(f[F.TX.TY])}</td><td style="text-align:center;font-size:15px;${qc}">${qs}</td><td>${srcB(f[F.TX.SRC])}</td><td style="font-size:12.5px;color:#64748b;">${esc(f[F.TX.REF]||'--')}</td><td>${cuHtml(r)}</td></tr>`;
+ return`<tr><td style="white-space:nowrap;font-size:12.5px;">${fmtDT(f[F.TX.DT])}</td><td style="font-size:13px;max-width:160px;">${esc(pNmTx(r))}</td><td style="font-size:12.5px;color:#64748b;">${esc(shade)}</td><td>${brB(f[F.TX.BR])}</td><td>${tyB(f[F.TX.TY])}</td><td style="text-align:center;font-size:15px;${qc}">${qs}</td><td>${srcB(f[F.TX.SRC])}</td><td style="font-size:12.5px;color:#64748b;">${esc(f[F.TX.REF]||'--')}</td><td>${cuHtml(r)}</td><td style="font-size:12.5px;color:#334155;">${esc(f[F.TX.EMP]||'--')}</td><td style="font-size:12px;color:#94a3b8;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${esc(f[F.TX.NO]||'')}">${esc(f[F.TX.NO]||'--')}</td></tr>`;
+}
 let currentHistProdId = '';
 
 function openHistory(productId, productName){
@@ -5053,10 +5285,10 @@ function chgPg(d){const tot=Math.ceil(filtTX.length/TX_PP)||1;txPage=Math.max(1,
 function renderTX(){
  document.getElementById('tx-cnt').textContent=filtTX.length;
  const tot=Math.max(1,Math.ceil(filtTX.length/TX_PP));
- document.getElementById('tx-pgi').textContent=`Page ${txPage} of ${tot}`;
+ document.getElementById('tx-pgi').textContent=`עמוד ${txPage} מתוך ${tot}`;
  document.getElementById('tx-prev').disabled=txPage<=1;document.getElementById('tx-next').disabled=txPage>=tot;
  const pg=filtTX.slice((txPage-1)*TX_PP,txPage*TX_PP);
- document.getElementById('tx-body').innerHTML=pg.length?pg.map(r=>txRow(r)).join(''):`<tr><td colspan="10"><div class="empty">No transactions found</div></td></tr>`;
+ document.getElementById('tx-body').innerHTML=pg.length?pg.map(r=>txRow(r)).join(''):`<tr><td colspan="11"><div class="empty">לא נמצאו עסקאות</div></td></tr>`;
 }
 
 // ── RENDER PURCHASE ORDERS ─────────────────────────────────────
@@ -5499,9 +5731,12 @@ Return ONLY valid JSON array. No markdown. No explanations.`;
   // Chain: 1) Proxy → 2) Mistral Pixtral → 3) OpenAI gpt-4o
   try{
    resp=await fetch('/api/ocr',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,image_data_url:`data:${imgData.mime};base64,${imgData.base64}`,model:'gpt-4o',max_tokens:16000})});
-   if(!resp.ok&&resp.status===404)throw new Error('no proxy');
-   if(!resp.ok)throw new Error('proxy error');
+   if(!resp.ok){
+    const errData=await resp.json().catch(()=>null);
+    throw new Error(errData?.error||`HTTP ${resp.status}`);
+   }
   }catch(proxyErr){
+   if(OPENAI_KEY){
     if(MISTRAL_KEY){
      try{
       document.getElementById('ocr-msg').textContent=' Scanning with Mistral OCR...';
@@ -5511,59 +5746,10 @@ Return ONLY valid JSON array. No markdown. No explanations.`;
       const extractedMarkdown=(ocrData.pages||[]).map(p=>p.markdown).join('\n\n');
       if(!extractedMarkdown)throw new Error('Empty OCR result');
       document.getElementById('ocr-msg').textContent=' Structuring data with GPT-4o...';
-      const textPrompt=`You are a precise data extractor. Below is the OCR text extracted from an invoice by Mistral OCR:
-
---- BEGIN OCR TEXT ---
-${extractedMarkdown}
---- END OCR TEXT ---
-
-${prompt}
-
-CRITICAL EXTRACTION RULES:
-1. SUPPLIER & DATE (MANDATORY):
-   - Extract the supplier/company name from the invoice header (e.g. at the top of the invoice) into the "supplier" property of EVERY item.
-   - Extract the invoice date from the invoice header/metadata (e.g. "04/02/2026", "27/07/2025", "09/09/2026") into the "invoice_date" property of EVERY item.
-
-2. PRODUCT ROWS & FREE GIFTS / TESTERS:
-   - Extract every single product line (including free tester / bonus / gift rows with price 0.00).
-   - If a product is a gift, tester, or bonus ("בונוס", "מתנה", "טסטר", or price 0.00): set unit_price = 0.00, line_total = 0.00, is_gift = true.
-   - For quantities: numbers with .00 (e.g. 10.00, 2.00, 5.00, 1.00) are integer quantities 10, 2, 5, 1 (NOT 20, NOT 100).
-   - Exclude summary lines like "סה\"כ פריטים", "הנחה:", "לתשלום:", "מע\"מ" from product items, or mark them with is_product: false.
-
-3. BARCODE EXTRACTION (HIGH PRIORITY):
-   - Check the barcode column ("בר קוד", "ברקוד", "Barcode", "EAN", "UPC", "קוד בינלאומי").
-   - ALSO inspect the row for any 7 to 14 digit number (EAN-13, UPC, etc., e.g. 5901905031346, 4043993458034). If found, extract ALL digits into "barcode".
-   - If NO barcode appears on the row, return "" (empty string). DO NOT invent a barcode and DO NOT put the item code/SKU into the barcode field.
-
-4. PRICES, RECEIPT DISCOUNTS, AND NET ACTUAL PRICE:
-   - Extract catalog / list / shelf price ("מחיר מחירון", "מחיר לצרכן", "מחיר", "מחירון") into "list_price" as number.
-   - RECEIPT-WIDE DISCOUNT (e.g. "הנחה: הנחת 10% לחברי מועדון -61.40", "% הנחה", "הנחת מועדון"):
-     * Extract "receipt_discount_pct": number (e.g. 10, or 0 if none) on all items.
-     * Extract "receipt_discount_amount": number (e.g. 61.40, or 0 if none) on all items.
-     * Extract "receipt_total": number (e.g. 552.60 from "לתשלום:" or "סה\"כ לתשלום:") on all items.
-     * If a receipt-wide discount exists (e.g. 10%), apply it to each item:
-       - Set "discount_pct" = receipt_discount_pct (e.g. 10).
-       - Set "unit_price" = list_price * (1 - discount_pct/100) (e.g. 144 -> 129.60, 99 -> 89.10, 159 -> 143.10, 79 -> 71.10, 133 -> 119.70). Round to 2 decimal places.
-       - Set "line_total" = qty * unit_price.
-   - For supplier invoices with item discounts: extract "discount_pct", and set "unit_price" to the net unit cost after discount.
-
-5. EMPLOYEE / CASHIER vs CUSTOMER (CRITICAL):
-   - "מוכר/ת", "מוכר", "קופאי/ת", "קופאי", "עובד/ת", "עובד", "נציג/ה" means CASHIER / SALESPERSON.
-     Extract this name (e.g. "רבקי רבינוביץ", "עובד כללי") into "employee" property on EVERY item.
-   - If the receipt contains an explicit customer section or label ("לקוח:", "לקוח/ה:", "לכבוד:", "שם לקוח:") or customer phone ("טלפון:"):
-     * Extract the customer name (e.g. "שרי דייטש") into "customer_name" on EVERY item.
-     * Extract the customer phone (e.g. "0534198810") into "customer_phone" on EVERY item.
-   - If NO customer section/label appears on the receipt, "customer_name" MUST be "" (empty string). NEVER put the cashier/seller into customer_name!
-   - NEVER put the customer name into "employee"! The customer and employee must be distinct.
-
-6. FORMAT:
-   - Numbers must be pure numbers without thousands commas (write 1188.00, never 1,188.00).
-   - Return ONLY a valid JSON array of objects. No markdown fences. No explanations.`;
-
+      const textPrompt=`You are a precise data extractor. Below is the OCR text extracted from an invoice by Mistral OCR:\n\n--- BEGIN OCR TEXT ---\n${extractedMarkdown}\n--- END OCR TEXT ---\n\n${prompt}`;
       resp=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Authorization':`Bearer ${OPENAI_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({model:'gpt-4o',messages:[{role:'user',content:textPrompt}],max_tokens:16000})});
       apiUsed='mistral-ocr+gpt4o';
      }catch(ocrErr){
-      console.warn('Mistral OCR failed, falling back to OpenAI Vision:', ocrErr);
       document.getElementById('ocr-msg').textContent=' Mistral OCR failed, using OpenAI Vision...';
       resp=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Authorization':`Bearer ${OPENAI_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({model:'gpt-4o',messages:[{role:'user',content:[{type:'text',text:prompt},{type:'image_url',image_url:{url:`data:${imgData.mime};base64,${imgData.base64}`,detail:'high'}}]}],max_tokens:16000})});
       apiUsed='openai';
@@ -5572,6 +5758,9 @@ CRITICAL EXTRACTION RULES:
      resp=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Authorization':`Bearer ${OPENAI_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({model:'gpt-4o',messages:[{role:'user',content:[{type:'text',text:prompt},{type:'image_url',image_url:{url:`data:${imgData.mime};base64,${imgData.base64}`,detail:'high'}}]}],max_tokens:16000})});
      apiUsed='openai';
     }
+   } else {
+    throw new Error(`שגיאה בעיבוד מסמך (OCR): ${proxyErr.message}`);
+   }
   }
   if(!resp.ok){const errTxt=await resp.text();throw new Error(`API error (${apiUsed}) ${resp.status}: ${errTxt}`);}
   const data=await resp.json();
@@ -5660,7 +5849,11 @@ CRITICAL EXTRACTION RULES:
      retryResp=await fetch('/api/ocr',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:retryPrompt,image_data_url:`data:${imgData.mime};base64,${imgData.base64}`,model:'gpt-4o',max_tokens:16000})});
      if(!retryResp.ok)throw new Error('retry proxy failed');
     }catch(e){
-     retryResp=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Authorization':`Bearer ${OPENAI_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({model:'gpt-4o',messages:[{role:'user',content:[{type:'text',text:retryPrompt},{type:'image_url',image_url:{url:`data:${imgData.mime};base64,${imgData.base64}`,detail:'high'}}]}],max_tokens:16000})});
+     if(OPENAI_KEY){
+      retryResp=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Authorization':`Bearer ${OPENAI_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({model:'gpt-4o',messages:[{role:'user',content:[{type:'text',text:retryPrompt},{type:'image_url',image_url:{url:`data:${imgData.mime};base64,${imgData.base64}`,detail:'high'}}]}],max_tokens:16000})});
+     } else {
+      throw e;
+     }
     }
     if(!retryResp.ok){
      const errTxt=await retryResp.text().catch(()=>'');

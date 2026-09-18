@@ -19,11 +19,12 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Missing prompt or image_data_url' });
     }
 
-    const defaultOpenAI = Buffer.from('c2stcHJvai01SXp3U1VIcUw0SnlCNUZSMUFVQ3NBdGlKSGNSOVFoT3pLWS12SU13ckUwN0lZb3dhQzRtOVNXZWp5UUdseDI2UnEyWjJNaS1MR1QzQmxia0ZKeU5XMkw2RGkwYm04QnpORHFfWmFNT3YxNGZGOGNvOXE2YWdZb2ktX0Rqb0p1NUszTFpvc3FmWTlRQkVhMzROVVVybkVLOVR5Y0E=', 'base64').toString('ascii');
-    const defaultMistral = Buffer.from('TTVNV0tKZ2lpUkdHUURSQXlvbFRxRHlNeWRIUEZIV2g=', 'base64').toString('ascii');
+    const openAiKey = process.env.OPENAI_API_KEY || process.env.OPENAI_KEY;
+    const mistralKey = process.env.MISTRAL_API_KEY || process.env.MISTRAL_KEY;
 
-    const openAiKey = process.env.OPENAI_KEY || defaultOpenAI;
-    const mistralKey = process.env.MISTRAL_KEY || defaultMistral;
+    if (!openAiKey) {
+      return res.status(500).json({ error: 'OPENAI_API_KEY is not configured in Vercel environment variables.' });
+    }
 
     // ── TWO-STAGE HYBRID PIPELINE ──
     // Stage 1: Mistral OCR (extracts raw text & tables with 100% precision)
