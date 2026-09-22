@@ -367,10 +367,10 @@
    <!-- Branch Selector -->
    <div style="display:inline-block;">
     <select id="dash-branch-sel" onchange="onDashBranchChange(this.value)" style="padding:7px 12px;border:1px solid #d1d5db;border-radius:10px;font-size:12.5px;font-weight:600;background:#f8fafc;color:#1e293b;outline:none;cursor:pointer;">
-     <option value="">📍 All Branches</option>
-     <option value="Beit Shemesh">📍 Beit Shemesh</option>
-     <option value="Jerusalem">📍 Jerusalem</option>
-     <option value="Beitar">📍 Beitar Illit</option>
+     <option value="">📍 כל הסניפים (All Branches)</option>
+     <option value="Beitar">📍 ביתר עילית (Beitar)</option>
+     <option value="Beit Shemesh">📍 בית שמש (Beit Shemesh)</option>
+     <option value="Jerusalem">📍 ירושלים (Jerusalem)</option>
     </select>
    </div>
 
@@ -735,16 +735,30 @@
  <!-- ── PRODUCTS ──────────────────────────────────────── -->
  <div class="page" id="page-products">
  <div class="fbar">
- <input class="fsrch" type="text" id="p-q" placeholder="🔍 חיפוש לפי מק״ט, שם, מותג, גוון..." oninput="filterProds()"/>
+ <input class="fsrch" type="text" id="p-q" placeholder="🔍 חיפוש לפי מק״ט, שם, מותג, גוון, ברקוד..." oninput="filterProds()"/>
+ <select id="p-branch" onchange="filterProds()" style="min-width:145px;font-weight:600;">
+  <option value="">כל הסניפים (All)</option>
+  <option value="Beitar">ביתר עילית (Beitar)</option>
+  <option value="Beit Shemesh">בית שמש (Beit Shemesh)</option>
+  <option value="Jerusalem">ירושלים (Jerusalem)</option>
+ </select>
  <select id="p-br" onchange="filterProds()" style="min-width:140px;"><option value="">כל המותגים</option></select>
- <select id="p-st" onchange="filterProds()" style="min-width:140px;"><option value="">כל רמות המלאי</option><option value="low">מלאי נמוך</option><option value="ok">תקין</option></select>
+ <select id="p-st" onchange="filterProds()" style="min-width:145px;">
+  <option value="">כל רמות המלאי</option>
+  <option value="in_stock">במלאי (In Stock &gt; 0)</option>
+  <option value="out_of_stock">אזל מהמלאי (Out of Stock = 0)</option>
+  <option value="low">מלאי נמוך (Low Stock)</option>
+  <option value="neg">מלאי שלילי (Negative &lt; 0)</option>
+ </select>
+ <button class="btn btn-s btn-sm" onclick="clrProdFilters()" title="איפוס כל המסננים">איפוס</button>
  <button class="btn btn-ok btn-sm" onclick="exportProductsExcel()" style="margin-left:8px;">📥 ייצוא מוצרים לאקסל</button>
  <button class="btn btn-s btn-sm" onclick="openModal('m-sm')" style="margin-left:8px;" title="צפייה במיפויים שמורים">מיפויים שמורים (<span id="sm-cnt-btn">0</span>)</button>
- <span style="font-size:13px;color:#64748b;margin-left:auto;white-space:nowrap;"><span id="p-cnt">--</span> מוצרים</span>
+ <span id="p-branch-summary" style="font-size:12px;font-weight:700;color:#db2777;margin-right:auto;margin-left:8px;"></span>
+ <span style="font-size:13px;color:#64748b;white-space:nowrap;"><span id="p-cnt">--</span> מוצרים</span>
  </div>
- <div class="card"><div style="overflow-x:auto;"><table><thead><tr>
+ <div class="card"><div style="overflow-x:auto;"><table><thead id="prod-head"><tr>
  <th>מק״ט</th><th>מותג</th><th>שם המוצר</th><th>גוון</th>
- <th style="text-align:center;"> Beitar</th><th style="text-align:center;"> Beit Sh.</th><th style="text-align:center;"> Jerusalem</th>
+ <th style="text-align:center;">ביתר עילית</th><th style="text-align:center;">בית שמש</th><th style="text-align:center;">ירושלים</th>
  <th style="text-align:center;">סה״כ</th><th style="text-align:right;">מחיר &#8362;</th><th>סטטוס</th><th>פעולות</th>
  </tr></thead><tbody id="prod-body"></tbody></table></div></div>
  </div>
@@ -857,10 +871,10 @@
     <div class="fld" style="margin:0;">
      <label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">סניף</label>
      <select id="rf-branch" onchange="onReportFilterChange()" style="padding:7px 8px;font-size:12.5px;border-radius:8px;border:1px solid #d1d5db;">
-      <option value="">כל הסניפים</option>
-      <option value="Beitar">Beitar</option>
-      <option value="Beit Shemesh">Beit Shemesh</option>
-      <option value="Jerusalem">Jerusalem</option>
+      <option value="">כל הסניפים (All Branches)</option>
+      <option value="Beitar">ביתר עילית (Beitar)</option>
+      <option value="Beit Shemesh">בית שמש (Beit Shemesh)</option>
+      <option value="Jerusalem">ירושלים (Jerusalem)</option>
      </select>
     </div>
     <!-- 5. Brand -->
@@ -1336,10 +1350,10 @@
     <div style="display:flex;align-items:center;gap:6px;font-size:12.5px;">
      <span style="font-weight:600;color:#64748b;">סינון סניף:</span>
      <select id="p360-branch-filter" onchange="applyP360DateFilter()" style="padding:5px 8px;font-size:12px;border:1px solid #d1d5db;border-radius:7px;">
-      <option value="">All Branches</option>
-      <option value="Beitar">Beitar</option>
-      <option value="Beit Shemesh">Beit Shemesh</option>
-      <option value="Jerusalem">Jerusalem</option>
+      <option value="">כל הסניפים (All)</option>
+      <option value="Beitar">ביתר עילית (Beitar)</option>
+      <option value="Beit Shemesh">בית שמש (Beit Shemesh)</option>
+      <option value="Jerusalem">ירושלים (Jerusalem)</option>
      </select>
     </div>
    </div>
@@ -3167,6 +3181,7 @@ function resetReportFilters() {
  repProduct = '';
  repCustomer = '';
  repEmployee = '';
+ repInvFilter = 'all';
 
  const pPreset = document.getElementById('rf-preset');
  if (pPreset) pPreset.value = 'all';
@@ -3796,20 +3811,30 @@ function renderProductsReport(container, sales) {
 function renderInventoryReport(container) {
  let prods = [...allP];
 
- // Filter by brand if selected in Universal Filter
+ // Filter by brand or product if selected in Universal Filter
  if (repBrand) prods = prods.filter(p => p.fields[F.P.BR] === repBrand);
  if (repProduct) prods = prods.filter(p => p.id === repProduct);
 
+ const isBranchSel = !!repBranch;
+ const brName = isBranchSel ? hebrewBranchName(repBranch) : '';
+
  // Calculate stock & counts
- let lowCount = 0, negCount = 0;
+ let inStockCount = 0, outStockCount = 0, lowCount = 0, negCount = 0;
  const rows = prods.map(p => {
   const f = p.fields;
   const b = f[F.P.B] ?? 0, bs = f[F.P.BS] ?? 0, j = f[F.P.J] ?? 0, tot = b + bs + j;
   const cp = f[F.P.CP] || 0;
   const sp = f[F.P.SP] || 0;
-  const isLowStock = isLow(f);
-  const isNegative = b < 0 || bs < 0 || j < 0 || tot < 0;
 
+  const bStock = isBranchSel ? getProductBranchStock(f, repBranch) : tot;
+  const bMin = isBranchSel ? getProductBranchMin(f, repBranch) : 0;
+  const isLowStock = isBranchSel ? (bMin > 0 && bStock < bMin) : isLow(f);
+  const isNegative = isBranchSel ? (bStock < 0) : (b < 0 || bs < 0 || j < 0 || tot < 0);
+  const isOut = isBranchSel ? (bStock === 0) : (tot === 0);
+  const isInStock = bStock > 0;
+
+  if (isInStock) inStockCount++;
+  if (isOut) outStockCount++;
   if (isLowStock) lowCount++;
   if (isNegative) negCount++;
 
@@ -3818,25 +3843,34 @@ function renderInventoryReport(container) {
    sku: f[F.P.SKU] || '--',
    name: f[F.P.NM] || '--',
    brand: f[F.P.BR] || '--',
+   shade: f[F.P.SH] || '--',
    cp,
    sp,
    b, bs, j, tot,
-   valCost: tot * cp,
-   valRetail: tot * sp,
+   bStock,
+   bMin,
+   valCost: bStock * cp,
+   valRetail: bStock * sp,
    isLowStock,
-   isNegative
+   isNegative,
+   isOut,
+   isInStock
   };
  });
 
- // Apply Quick Filter (All / Low / Negative)
+ // Apply Quick Filter (All / In Stock / Out of Stock / Low / Negative)
  let filteredRows = rows;
- if (repInvFilter === 'low') {
+ if (repInvFilter === 'in_stock') {
+  filteredRows = rows.filter(r => r.isInStock);
+ } else if (repInvFilter === 'out') {
+  filteredRows = rows.filter(r => r.isOut);
+ } else if (repInvFilter === 'low') {
   filteredRows = rows.filter(r => r.isLowStock);
  } else if (repInvFilter === 'neg') {
   filteredRows = rows.filter(r => r.isNegative);
  }
 
- const totUnits = filteredRows.reduce((s, r) => s + r.tot, 0);
+ const totUnits = filteredRows.reduce((s, r) => s + r.bStock, 0);
  const totValCost = filteredRows.reduce((s, r) => s + r.valCost, 0);
  const totValRetail = filteredRows.reduce((s, r) => s + r.valRetail, 0);
  const potentialProfit = totValRetail - totValCost;
@@ -3846,19 +3880,21 @@ function renderInventoryReport(container) {
   <!-- Quick Filters Header -->
   <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:14px;padding:14px 18px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-    <span style="font-size:13px;font-weight:700;color:#0f172a;">⚡ סינון מלאי מהיר:</span>
+    <span style="font-size:13px;font-weight:700;color:#0f172a;">⚡ סינון מלאי מהיר ${isBranchSel ? `(${brName})` : ''}:</span>
     <button class="btn ${repInvFilter === 'all' ? 'btn-p' : 'btn-s'} btn-xs" onclick="setInvReportFilter('all')" style="padding:5px 12px;font-weight:700;">כל המוצרים (${rows.length})</button>
+    <button class="btn ${repInvFilter === 'in_stock' ? 'btn-p' : 'btn-s'} btn-xs" onclick="setInvReportFilter('in_stock')" style="padding:5px 12px;font-weight:700;color:${repInvFilter === 'in_stock' ? '#fff' : '#16a34a'};">✅ במלאי (${inStockCount})</button>
+    <button class="btn ${repInvFilter === 'out' ? 'btn-p' : 'btn-s'} btn-xs" onclick="setInvReportFilter('out')" style="padding:5px 12px;font-weight:700;color:${repInvFilter === 'out' ? '#fff' : '#ef4444'};">❌ אזלו מהמלאי (${outStockCount})</button>
     <button class="btn ${repInvFilter === 'low' ? 'btn-p' : 'btn-s'} btn-xs" onclick="setInvReportFilter('low')" style="padding:5px 12px;font-weight:700;color:${repInvFilter === 'low' ? '#fff' : '#d97706'};">⚠️ התראות מלאי נמוך (${lowCount})</button>
-    <button class="btn ${repInvFilter === 'neg' ? 'btn-p' : 'btn-s'} btn-xs" onclick="setInvReportFilter('neg')" style="padding:5px 12px;font-weight:700;color:${repInvFilter === 'neg' ? '#fff' : '#ef4444'};">🚨 מלאי שלילי (${negCount})</button>
+    <button class="btn ${repInvFilter === 'neg' ? 'btn-p' : 'btn-s'} btn-xs" onclick="setInvReportFilter('neg')" style="padding:5px 12px;font-weight:700;color:${repInvFilter === 'neg' ? '#fff' : '#dc2626'};">🚨 מלאי שלילי (${negCount})</button>
    </div>
-   <span style="font-size:12px;color:#64748b;">Showing ${filteredRows.length} inventory products</span>
+   <span style="font-size:12px;color:#64748b;">מציג ${filteredRows.length} מוצרים</span>
   </div>
 
   <!-- Valuation KPIs -->
   <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));gap:12px;margin-bottom:18px;">
-   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">סה״כ יחידות במלאי</div><div class="dash-kpi-val" style="font-size:22px;color:#0f172a;">${totUnits.toLocaleString()}</div><div class="dash-kpi-sub">Across 3 branches</div></div>
-   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">שווי מלאי בעלות (סיטונאי)</div><div class="dash-kpi-val" style="font-size:22px;color:#475569;">₪ ${Math.round(totValCost).toLocaleString()}</div><div class="dash-kpi-sub">שווי המלאי לפי עלות</div></div>
-   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">שווי מלאי במחירון (לצרכן)</div><div class="dash-kpi-val" style="font-size:22px;color:#db2777;">₪ ${Math.round(totValRetail).toLocaleString()}</div><div class="dash-kpi-sub">שווי המלאי במחיר מלא</div></div>
+   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">סה״כ יחידות במלאי</div><div class="dash-kpi-val" style="font-size:22px;color:#0f172a;">${totUnits.toLocaleString()}</div><div class="dash-kpi-sub">${isBranchSel ? `בסניף ${brName}` : 'כל 3 הסניפים'}</div></div>
+   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">שווי מלאי בעלות (סיטונאי)</div><div class="dash-kpi-val" style="font-size:22px;color:#475569;">₪ ${Math.round(totValCost).toLocaleString()}</div><div class="dash-kpi-sub">${isBranchSel ? `לפי עלות בסניף ${brName}` : 'שווי המלאי לפי עלות'}</div></div>
+   <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">שווי מלאי במחירון (לצרכן)</div><div class="dash-kpi-val" style="font-size:22px;color:#db2777;">₪ ${Math.round(totValRetail).toLocaleString()}</div><div class="dash-kpi-sub">${isBranchSel ? `לפי מחירון בסניף ${brName}` : 'שווי המלאי במחיר מלא'}</div></div>
    <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">רווח פוטנציאלי במלאי</div><div class="dash-kpi-val" style="font-size:22px;color:#16a34a;">₪ ${Math.round(potentialProfit).toLocaleString()}</div><div class="dash-kpi-sub">${potentialMargin}% רווח פוטנציאלי</div></div>
   </div>
 
@@ -3866,53 +3902,73 @@ function renderInventoryReport(container) {
   <div class="card">
    <div class="card-hdr" style="background:#fcfcfd;">
     <div>
-     <h3 style="font-size:14px;">שווי מלאי וחלוקה בין סניפים</h3>
-     <span style="font-size:12px;color:#64748b;">עלות מול מחיר מכירה</span>
+     <h3 style="font-size:14px;">שווי מלאי ${isBranchSel ? `– סניף ${brName}` : 'וחלוקה בין סניפים'}</h3>
+     <span style="font-size:12px;color:#64748b;">${isBranchSel ? `סקירת כמויות, שווי וסטטוס מלאי עבור סניף ${brName}` : 'עלות מול מחיר מכירה בכל הסניפים'}</span>
     </div>
    </div>
-   <div style="overflow-x:auto;max-height:480px;">
+   <div style="overflow-x:auto;max-height:520px;">
     <table>
      <thead>
       <tr>
        <th>מק״ט</th>
        <th>שם המוצר</th>
+       <th>גוון</th>
        <th>מותג</th>
        <th style="text-align:right;">עלות &#8362;</th>
        <th style="text-align:right;">מחיר מכירה &#8362;</th>
-       <th style="text-align:center;">ביתר</th>
-       <th style="text-align:center;">בית שמש</th>
-       <th style="text-align:center;">ירושלים</th>
-       <th style="text-align:center;">סה״כ יחידות</th>
+       ${isBranchSel ? `
+        <th style="text-align:center;background:#fdf2f8;color:#db2777;font-weight:800;font-size:13px;border-bottom:2px solid #db2777;">📍 מלאי ${brName}</th>
+        <th style="text-align:center;color:#64748b;">סה״כ (כל הסניפים)</th>
+       ` : `
+        <th style="text-align:center;">ביתר</th>
+        <th style="text-align:center;">בית שמש</th>
+        <th style="text-align:center;">ירושלים</th>
+        <th style="text-align:center;">סה״כ יחידות</th>
+       `}
        <th style="text-align:right;">שווי מלאי (עלות) &#8362;</th>
        <th style="text-align:right;">שווי מלאי (מחירון) &#8362;</th>
-       <th style="text-align:center;">סטטוס</th>
+       <th style="text-align:center;">סטטוס ${isBranchSel ? `(${brName})` : ''}</th>
        <th style="text-align:center;">פעולה</th>
       </tr>
      </thead>
      <tbody>
       ${filteredRows.length ? filteredRows.map(r => {
-       const isNeg = r.isNegative;
-       const isLw = r.isLowStock;
-       const statusBadge = isNeg ? '<span class="badge bd">Negative</span>' : (isLw ? '<span class="badge bw">Low Stock</span>' : '<span class="badge bg">In Stock</span>');
+       let statusBadge;
+       if (isBranchSel) {
+        if (r.bStock < 0) statusBadge = `<span class="badge bd" style="background:#fee2e2;color:#dc2626;font-weight:700;">שלילי (${r.bStock})</span>`;
+        else if (r.bStock === 0) statusBadge = `<span class="badge br">אזל מהמלאי</span>`;
+        else if (r.isLowStock) statusBadge = `<span class="badge bw" style="background:#fef3c7;color:#b45309;font-weight:700;">מלאי נמוך (${r.bStock}/${r.bMin})</span>`;
+        else statusBadge = `<span class="badge bg">במלאי (${r.bStock})</span>`;
+       } else {
+        statusBadge = r.isNegative ? '<span class="badge bd">שלילי</span>' : (r.tot === 0 ? '<span class="badge br">אזל מהמלאי</span>' : (r.isLowStock ? '<span class="badge bw">מלאי נמוך</span>' : '<span class="badge bg">במלאי</span>'));
+       }
+
+       const isWarn = isBranchSel ? (r.bStock <= 0 || r.isLowStock) : (r.tot <= 0 || r.isLowStock);
 
        return `
-        <tr${isLw ? ' class="row-low"' : ''}>
+        <tr${isWarn ? ' class="row-low"' : ''}>
          <td class="mono" style="color:#db2777;font-weight:700;">${esc(r.sku)}</td>
          <td style="font-weight:600;font-size:13px;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${esc(r.name)}">${esc(r.name)}</td>
+         <td style="font-size:12.5px;color:#64748b;">${esc(r.shade)}</td>
          <td style="font-size:12.5px;color:#64748b;">${esc(r.brand)}</td>
          <td style="text-align:right;color:#64748b;">₪ ${r.cp}</td>
          <td style="text-align:right;font-weight:600;">₪ ${r.sp}</td>
-         <td style="text-align:center;${r.b < 0 ? 'color:#ef4444;font-weight:700;' : ''}">${r.b}</td>
-         <td style="text-align:center;${r.bs < 0 ? 'color:#ef4444;font-weight:700;' : ''}">${r.bs}</td>
-         <td style="text-align:center;${r.j < 0 ? 'color:#ef4444;font-weight:700;' : ''}">${r.j}</td>
-         <td style="text-align:center;font-weight:800;font-size:14px;color:${isNeg ? '#ef4444' : '#0f172a'};">${r.tot}</td>
+         ${isBranchSel ? `
+          <td style="text-align:center;font-weight:800;font-size:14.5px;background:#fdf2f8;color:${r.bStock < 0 ? '#dc2626' : (r.bStock === 0 ? '#ef4444' : '#db2777')};">${r.bStock}${r.bMin ? `<span style="font-size:10px;color:#94a3b8;">/min${r.bMin}</span>` : ''}</td>
+          <td style="text-align:center;font-weight:600;color:#64748b;" title="ביתר: ${r.b} · בית שמש: ${r.bs} · ירושלים: ${r.j}">${r.tot}</td>
+         ` : `
+          <td style="text-align:center;${r.b < 0 ? 'color:#ef4444;font-weight:700;' : ''}">${r.b}</td>
+          <td style="text-align:center;${r.bs < 0 ? 'color:#ef4444;font-weight:700;' : ''}">${r.bs}</td>
+          <td style="text-align:center;${r.j < 0 ? 'color:#ef4444;font-weight:700;' : ''}">${r.j}</td>
+          <td style="text-align:center;font-weight:800;font-size:14px;color:${r.isNegative ? '#ef4444' : '#0f172a'};">${r.tot}</td>
+         `}
          <td style="text-align:right;color:#64748b;">₪ ${Math.round(r.valCost).toLocaleString()}</td>
          <td style="text-align:right;font-weight:700;color:#db2777;">₪ ${Math.round(r.valRetail).toLocaleString()}</td>
          <td style="text-align:center;">${statusBadge}</td>
          <td style="text-align:center;"><button class="btn btn-s btn-xs" onclick="openProduct360('${r.pId}')">🔍 360°</button></td>
         </tr>
        `;
-      }).join('') : `<tr><td colspan="13"><div class="empty">No inventory products match the selected quick filter</div></td></tr>`}
+      }).join('') : `<tr><td colspan="${isBranchSel ? 12 : 14}"><div class="empty">לא נמצאו מוצרים התואמים את הסינון שנבחר</div></td></tr>`}
      </tbody>
     </table>
    </div>
@@ -4598,6 +4654,9 @@ function exportCurrentDashboardCSV() {
 
 function exportProductsExcel() {
  const prods = (filtP && filtP.length) ? filtP : allP;
+ const selBranch = document.getElementById('p-branch')?.value || '';
+ const brName = selBranch ? hebrewBranchName(selBranch) : '';
+
  const headers = [
   'מק״ט',
   'ברקוד',
@@ -4609,9 +4668,13 @@ function exportProductsExcel() {
   'מלאי ביתר עילית',
   'מלאי בית שמש',
   'מלאי ירושלים',
-  'סה״כ מלאי',
-  'סטטוס מלאי'
+  'סה״כ מלאי'
  ];
+ if (selBranch) {
+  headers.push(`מלאי סניף (${brName})`, `סטטוס סניף (${brName})`);
+ }
+ headers.push('סטטוס כללי');
+
  const rows = prods.map(p => {
   const f = p.fields;
   const b = f[F.P.B] ?? 0;
@@ -4619,7 +4682,8 @@ function exportProductsExcel() {
   const j = f[F.P.J] ?? 0;
   const tot = b + bs + j;
   const lo = isLow(f);
-  return [
+
+  const row = [
    f[F.P.SKU] || '',
    f[F.P.BC] || '',
    f[F.P.BR] || '',
@@ -4630,11 +4694,25 @@ function exportProductsExcel() {
    b,
    bs,
    j,
-   tot,
-   lo ? 'מלאי נמוך' : 'תקין'
+   tot
   ];
+
+  if (selBranch) {
+   const bStock = getProductBranchStock(f, selBranch);
+   const bMin = getProductBranchMin(f, selBranch);
+   let bStatus = 'במלאי';
+   if (bStock < 0) bStatus = `שלילי (${bStock})`;
+   else if (bStock === 0) bStatus = 'אזל מהמלאי';
+   else if (bMin > 0 && bStock < bMin) bStatus = `מלאי נמוך (${bStock}/${bMin})`;
+   row.push(bStock, bStatus);
+  }
+
+  row.push(lo ? 'מלאי נמוך' : (tot <= 0 ? 'אזל מהמלאי' : 'תקין'));
+  return row;
  });
- exportToExcel(`קטלוג_מוצרים_ומלאי_${today()}.xlsx`, headers, rows, 'מוצרים ומלאי');
+
+ const fnameBr = selBranch ? `_${brName.replace(/\s+/g, '_')}` : '';
+ exportToExcel(`קטלוג_מוצרים_ומלאי${fnameBr}_${today()}.xlsx`, headers, rows, 'מוצרים ומלאי');
 }
 
 function exportTransactionsExcel() {
@@ -4964,34 +5042,90 @@ function exportActiveReportToCSV() {
   });
   exportToExcel('ביצועי_מוצרים_' + dtStr + '.xlsx', headers, rows, 'מוצרים');
  } else if (activeReportTab === 'inventory') {
-  let prods = [...allP];
-  if (repBrand) prods = prods.filter(p => p.fields[F.P.BR] === repBrand);
-  if (repProduct) prods = prods.filter(p => p.id === repProduct);
-  if (repInvFilter === 'low') prods = prods.filter(p => isLow(p.fields));
-  else if (repInvFilter === 'neg') prods = prods.filter(p => {
-   const f = p.fields;
-   return (f[F.P.B] ?? 0) < 0 || (f[F.P.BS] ?? 0) < 0 || (f[F.P.J] ?? 0) < 0;
-  });
+   let prods = [...allP];
+   if (repBrand) prods = prods.filter(p => p.fields[F.P.BR] === repBrand);
+   if (repProduct) prods = prods.filter(p => p.id === repProduct);
 
-  const headers = ['מק״ט', 'שם המוצר', 'מותג', 'מחיר עלות ₪', 'מחיר מכירה ₪', 'מלאי ביתר עילית', 'מלאי בית שמש', 'מלאי ירושלים', 'מלאי נוכחי', 'שווי מלאי לפי עלות ₪', 'שווי מלאי לפי מחירון ₪'];
-  const rows = prods.map(p => {
-   const f = p.fields;
-   const b = f[F.P.B] ?? 0, bs = f[F.P.BS] ?? 0, j = f[F.P.J] ?? 0, tot = b + bs + j;
-   const cp = f[F.P.CP] || 0;
-   const sp = f[F.P.SP] || 0;
-   return [
-    f[F.P.SKU] || '',
-    f[F.P.NM] || '',
-    f[F.P.BR] || '',
-    cp,
-    sp,
-    b, bs, j, tot,
-    (tot * cp).toFixed(2),
-    (tot * sp).toFixed(2)
+   const isBranchSel = !!repBranch;
+   const brName = isBranchSel ? hebrewBranchName(repBranch) : '';
+
+   if (repInvFilter === 'in_stock') {
+    prods = prods.filter(p => (isBranchSel ? getProductBranchStock(p.fields, repBranch) : ((p.fields[F.P.B] ?? 0) + (p.fields[F.P.BS] ?? 0) + (p.fields[F.P.J] ?? 0))) > 0);
+   } else if (repInvFilter === 'out') {
+    prods = prods.filter(p => (isBranchSel ? getProductBranchStock(p.fields, repBranch) : ((p.fields[F.P.B] ?? 0) + (p.fields[F.P.BS] ?? 0) + (p.fields[F.P.J] ?? 0))) === 0);
+   } else if (repInvFilter === 'low') {
+    prods = prods.filter(p => isBranchSel ? (getProductBranchMin(p.fields, repBranch) > 0 && getProductBranchStock(p.fields, repBranch) < getProductBranchMin(p.fields, repBranch)) : isLow(p.fields));
+   } else if (repInvFilter === 'neg') {
+    prods = prods.filter(p => {
+     if (isBranchSel) return getProductBranchStock(p.fields, repBranch) < 0;
+     const f = p.fields;
+     return (f[F.P.B] ?? 0) < 0 || (f[F.P.BS] ?? 0) < 0 || (f[F.P.J] ?? 0) < 0;
+    });
+   }
+
+   const headers = [
+    'מק״ט',
+    'גוון',
+    'שם המוצר',
+    'מותג',
+    'מחיר עלות ₪',
+    'מחיר מכירה ₪',
+    'מלאי ביתר עילית',
+    'מלאי בית שמש',
+    'מלאי ירושלים',
+    'סה״כ מלאי'
    ];
-  }).sort((a, b) => parseFloat(b[10]) - parseFloat(a[10]));
-  exportToExcel('שווי_מלאי_' + dtStr + '.xlsx', headers, rows, 'מלאי');
- } else if (activeReportTab === 'customers') {
+   if (isBranchSel) {
+    headers.push(`מלאי סניף (${brName})`, `סטטוס סניף (${brName})`, `שווי מלאי סניף (עלות) ₪`, `שווי מלאי סניף (מחירון) ₪`);
+   } else {
+    headers.push('שווי מלאי (עלות) ₪', 'שווי מלאי (מחירון) ₪', 'סטטוס כללי');
+   }
+
+   const rows = prods.map(p => {
+    const f = p.fields;
+    const b = f[F.P.B] ?? 0, bs = f[F.P.BS] ?? 0, j = f[F.P.J] ?? 0, tot = b + bs + j;
+    const cp = f[F.P.CP] || 0;
+    const sp = f[F.P.SP] || 0;
+    const lo = isLow(f);
+    const row = [
+     f[F.P.SKU] || '',
+     f[F.P.SH] || '',
+     f[F.P.NM] || '',
+     f[F.P.BR] || '',
+     cp,
+     sp,
+     b, bs, j, tot
+    ];
+
+    if (isBranchSel) {
+     const bStock = getProductBranchStock(f, repBranch);
+     const bMin = getProductBranchMin(f, repBranch);
+     let bStatus = 'במלאי';
+     if (bStock < 0) bStatus = `שלילי (${bStock})`;
+     else if (bStock === 0) bStatus = 'אזל מהמלאי';
+     else if (bMin > 0 && bStock < bMin) bStatus = `מלאי נמוך (${bStock}/${bMin})`;
+     row.push(
+      bStock,
+      bStatus,
+      (bStock * cp).toFixed(2),
+      (bStock * sp).toFixed(2)
+     );
+    } else {
+     row.push(
+      (tot * cp).toFixed(2),
+      (tot * sp).toFixed(2),
+      lo ? 'מלאי נמוך' : (tot <= 0 ? 'אזל מהמלאי' : 'תקין')
+     );
+    }
+    return row;
+   }).sort((a, b) => {
+    const valIdx = isBranchSel ? 12 : 10;
+    return parseFloat(b[valIdx]) - parseFloat(a[valIdx]);
+   });
+
+   const fnameBr = isBranchSel ? `_${brName.replace(/\s+/g, '_')}` : '';
+   exportToExcel(`שווי_מלאי${fnameBr}_${dtStr}.xlsx`, headers, rows, 'מלאי');
+  } else if (activeReportTab === 'customers') {
   const custMap = {};
   allCU.forEach(cu => {
    custMap[cu.id] = { name: cu.fields[F.CU.NM] || 'Customer', phone: cu.fields[F.CU.PH] || '--', orders: 0, spend: 0, units: 0, lastDt: '' };
@@ -5109,16 +5243,176 @@ function exportActiveReportToCSV() {
 }
 
 // ── RENDER PRODUCTS ────────────────────────────────────────────
+// ── BRANCH STOCK HELPERS ─────────────────────────────────────────
+function getProductBranchStock(f, branch) {
+ if (!f) return 0;
+ if (branch === 'Beitar') return f[F.P.B] ?? 0;
+ if (branch === 'Beit Shemesh') return f[F.P.BS] ?? 0;
+ if (branch === 'Jerusalem') return f[F.P.J] ?? 0;
+ return (f[F.P.B] ?? 0) + (f[F.P.BS] ?? 0) + (f[F.P.J] ?? 0);
+}
+
+function getProductBranchMin(f, branch) {
+ if (!f) return 0;
+ if (branch === 'Beitar') return f[F.P.MB] ?? 0;
+ if (branch === 'Beit Shemesh') return f[F.P.MBS] ?? 0;
+ if (branch === 'Jerusalem') return f[F.P.MJ] ?? 0;
+ return 0;
+}
+
+function isBranchLow(f, branch) {
+ if (!branch) return isLow(f);
+ const st = getProductBranchStock(f, branch);
+ const min = getProductBranchMin(f, branch);
+ return (min > 0 && st < min) || st <= 0;
+}
+
+// ── RENDER PRODUCTS ────────────────────────────────────────────
 function popBrands(){const brands=[...new Set(allP.map(p=>p.fields[F.P.BR]).filter(Boolean))].sort();document.getElementById('p-br').innerHTML='<option value="">כל המותגים</option>'+brands.map(b=>`<option>${esc(b)}</option>`).join('');}
+
 function filterProds(){
- const q=document.getElementById('p-q').value.toLowerCase(),br=document.getElementById('p-br').value,sf=document.getElementById('p-st').value;
- filtP=allP.filter(p=>{const f=p.fields;if(q&&![f[F.P.SKU],f[F.P.NM],f[F.P.BR],f[F.P.SH]].some(v=>v&&String(v).toLowerCase().includes(q)))return false;if(br&&f[F.P.BR]!==br)return false;if(sf==='low'&&!isLow(f))return false;if(sf==='ok'&&isLow(f))return false;return true;});
+ const q = (document.getElementById('p-q')?.value || '').toLowerCase().trim();
+ const selBranch = document.getElementById('p-branch')?.value || '';
+ const br = document.getElementById('p-br')?.value || '';
+ const sf = document.getElementById('p-st')?.value || '';
+
+ filtP = allP.filter(p => {
+  const f = p.fields;
+  // 1. Text search: SKU, Name, Brand, Shade, Barcode
+  if (q && ![f[F.P.SKU], f[F.P.NM], f[F.P.BR], f[F.P.SH], f[F.P.BC]].some(v => v && String(v).toLowerCase().includes(q))) return false;
+  
+  // 2. Brand filter
+  if (br && f[F.P.BR] !== br) return false;
+
+  // 3. Stock evaluation for selected branch (or total across all branches if All)
+  const bStock = getProductBranchStock(f, selBranch);
+  const bMin = getProductBranchMin(f, selBranch);
+  const isBneg = bStock < 0;
+  const isBlow = selBranch ? (bMin > 0 && bStock < bMin) : isLow(f);
+
+  // 4. Stock status filter
+  if (sf === 'in_stock' && bStock <= 0) return false;
+  if (sf === 'out_of_stock' && bStock > 0) return false;
+  if (sf === 'low' && (!isBlow || bStock <= 0)) return false;
+  if (sf === 'neg' && !isBneg) return false;
+  if (sf === 'ok' && isBlow) return false;
+
+  return true;
+ });
+
  renderProds();
 }
+
+function clrProdFilters(){
+ if (document.getElementById('p-q')) document.getElementById('p-q').value = '';
+ if (document.getElementById('p-branch')) document.getElementById('p-branch').value = '';
+ if (document.getElementById('p-br')) document.getElementById('p-br').value = '';
+ if (document.getElementById('p-st')) document.getElementById('p-st').value = '';
+ filterProds();
+}
+
 function renderProds(){
- document.getElementById('p-cnt').textContent=filtP.length;
- const sc=(v,m)=>{const isNeg=v<0;const lo=!isNeg&&m>0&&v<m;return`<td style="text-align:center;${isNeg?'color:#dc2626;font-weight:800;background:#fef2f2;':lo?'color:#ef4444;font-weight:700;':''}">${v}${m?`<span style="font-size:10px;color:${lo?'#ef4444':'#94a3b8'};">/min${m}</span>`:''}</td>`;};
- document.getElementById('prod-body').innerHTML=filtP.length?filtP.map(p=>{const f=p.fields,b=f[F.P.B]??0,bs=f[F.P.BS]??0,j=f[F.P.J]??0,mb=f[F.P.MB]??0,mbs=f[F.P.MBS]??0,mj=f[F.P.MJ]??0,lo=isLow(f);return`<tr${lo?' class="row-low"':''}><td class="mono" style="color:#db2777;font-weight:700;">${esc(f[F.P.SKU]||'--')}</td><td style="font-size:13px;">${esc(f[F.P.BR]||'--')}</td><td style="font-weight:500;">${esc(f[F.P.NM]||'--')}</td><td style="font-size:13px;color:#64748b;">${esc(f[F.P.SH]||'--')}</td>${sc(b,mb)}${sc(bs,mbs)}${sc(j,mj)}<td style="text-align:center;font-weight:700;">${b+bs+j}</td><td style="text-align:right;">&#8362;${f[F.P.SP]??'--'}</td><td>${lo?'<span class="badge br">Low</span>':'<span class="badge bg">OK</span>'}</td><td><button class="btn btn-s btn-xs" onclick="openProduct360('${p.id}')" title="360° Analytics & Stock" style="margin-right:4px;">360°</button><button class="btn btn-s btn-xs" onclick="openHistory('${p.id}','${esc(f[F.P.NM]||'')}')">📋 History</button></td></tr>`;}).join(''):`<tr><td colspan="10"><div class="empty"><div class="ei"></div>No products found</div></td></tr>`;
+ const selBranch = document.getElementById('p-branch')?.value || '';
+ document.getElementById('p-cnt').textContent = filtP.length;
+
+ // Summary by selected branch
+ let inStockCnt = 0, outStockCnt = 0, totalUnits = 0;
+ filtP.forEach(p => {
+  const st = getProductBranchStock(p.fields, selBranch);
+  if (st > 0) inStockCnt++;
+  else outStockCnt++;
+  totalUnits += st;
+ });
+ const elSum = document.getElementById('p-branch-summary');
+ if (elSum) {
+  const brName = selBranch ? hebrewBranchName(selBranch) : 'כל הסניפים';
+  elSum.innerHTML = `📍 <strong>${brName}</strong>: <span style="color:#16a34a;">${inStockCnt} במלאי</span> · <span style="color:#ef4444;">${outStockCnt} אזלו</span> · <span style="color:#0f172a;">${totalUnits} יח׳ סה״כ</span>`;
+ }
+
+ // Dynamic Table Header
+ const elHead = document.getElementById('prod-head');
+ if (elHead) {
+  if (selBranch) {
+   const brName = hebrewBranchName(selBranch);
+   elHead.innerHTML = `<tr>
+    <th>מק״ט</th><th>מותג</th><th>שם המוצר</th><th>גוון</th>
+    <th style="text-align:center;background:#fdf2f8;color:#db2777;font-weight:800;font-size:13px;border-bottom:2px solid #db2777;">📍 מלאי ${brName}</th>
+    <th style="text-align:center;color:#64748b;">סה״כ (כל הסניפים)</th>
+    <th style="text-align:right;">מחיר &#8362;</th>
+    <th style="text-align:center;">סטטוס (${brName})</th>
+    <th>פעולות</th>
+   </tr>`;
+  } else {
+   elHead.innerHTML = `<tr>
+    <th>מק״ט</th><th>מותג</th><th>שם המוצר</th><th>גוון</th>
+    <th style="text-align:center;">ביתר עילית</th>
+    <th style="text-align:center;">בית שמש</th>
+    <th style="text-align:center;">ירושלים</th>
+    <th style="text-align:center;">סה״כ</th>
+    <th style="text-align:right;">מחיר &#8362;</th>
+    <th>סטטוס</th>
+    <th>פעולות</th>
+   </tr>`;
+  }
+ }
+
+ const sc = (v, m, isMain = false) => {
+  const isNeg = v < 0;
+  const isZero = v === 0;
+  const lo = !isNeg && m > 0 && v < m;
+  const bg = isMain ? (isNeg ? 'background:#fef2f2;' : (isZero ? 'background:#fff1f2;' : 'background:#fdf2f8;')) : (isNeg ? 'background:#fef2f2;' : '');
+  const color = isNeg ? 'color:#dc2626;font-weight:800;' : (isZero ? 'color:#ef4444;font-weight:700;' : (lo ? 'color:#d97706;font-weight:700;' : (isMain ? 'color:#db2777;font-weight:800;' : '')));
+  return `<td style="text-align:center;font-size:${isMain?'14.5px':'13px'};${bg}${color}">${v}${m ? `<span style="font-size:10px;color:${lo?'#ef4444':'#94a3b8'};">/min${m}</span>` : ''}</td>`;
+ };
+
+ if (!filtP.length) {
+  document.getElementById('prod-body').innerHTML = `<tr><td colspan="${selBranch ? 9 : 11}"><div class="empty"><div class="ei"></div>לא נמצאו מוצרים התואמים את הסינון</div></td></tr>`;
+  return;
+ }
+
+ document.getElementById('prod-body').innerHTML = filtP.map(p => {
+  const f = p.fields;
+  const b = f[F.P.B] ?? 0, bs = f[F.P.BS] ?? 0, j = f[F.P.J] ?? 0;
+  const mb = f[F.P.MB] ?? 0, mbs = f[F.P.MBS] ?? 0, mj = f[F.P.MJ] ?? 0;
+  const tot = b + bs + j;
+
+  if (selBranch) {
+   const bStock = getProductBranchStock(f, selBranch);
+   const bMin = getProductBranchMin(f, selBranch);
+   const isRowWarn = bStock <= 0 || (bMin > 0 && bStock < bMin);
+
+   let statusBadge;
+   if (bStock < 0) statusBadge = `<span class="badge bd" style="background:#fee2e2;color:#dc2626;font-weight:700;">שלילי (${bStock})</span>`;
+   else if (bStock === 0) statusBadge = `<span class="badge br">אזל מהמלאי</span>`;
+   else if (bMin > 0 && bStock < bMin) statusBadge = `<span class="badge by" style="background:#fef3c7;color:#b45309;font-weight:700;">מלאי נמוך (${bStock}/${bMin})</span>`;
+   else statusBadge = `<span class="badge bg">במלאי (${bStock})</span>`;
+
+   return `<tr${isRowWarn ? ' class="row-low"' : ''}>
+    <td class="mono" style="color:#db2777;font-weight:700;">${esc(f[F.P.SKU]||'--')}</td>
+    <td style="font-size:13px;">${esc(f[F.P.BR]||'--')}</td>
+    <td style="font-weight:500;">${esc(f[F.P.NM]||'--')}</td>
+    <td style="font-size:13px;color:#64748b;">${esc(f[F.P.SH]||'--')}</td>
+    ${sc(bStock, bMin, true)}
+    <td style="text-align:center;font-weight:600;color:#64748b;" title="ביתר: ${b} · בית שמש: ${bs} · ירושלים: ${j}">${tot}</td>
+    <td style="text-align:right;">&#8362;${f[F.P.SP]??'--'}</td>
+    <td style="text-align:center;">${statusBadge}</td>
+    <td><button class="btn btn-s btn-xs" onclick="openProduct360('${p.id}')" title="360° Analytics & Stock" style="margin-right:4px;">360°</button><button class="btn btn-s btn-xs" onclick="openHistory('${p.id}','${esc(f[F.P.NM]||'')}')">📋 History</button></td>
+   </tr>`;
+  }
+
+  const lo = isLow(f);
+  return `<tr${lo ? ' class="row-low"' : ''}>
+   <td class="mono" style="color:#db2777;font-weight:700;">${esc(f[F.P.SKU]||'--')}</td>
+   <td style="font-size:13px;">${esc(f[F.P.BR]||'--')}</td>
+   <td style="font-weight:500;">${esc(f[F.P.NM]||'--')}</td>
+   <td style="font-size:13px;color:#64748b;">${esc(f[F.P.SH]||'--')}</td>
+   ${sc(b,mb)}${sc(bs,mbs)}${sc(j,mj)}
+   <td style="text-align:center;font-weight:700;">${tot}</td>
+   <td style="text-align:right;">&#8362;${f[F.P.SP]??'--'}</td>
+   <td>${lo ? '<span class="badge br">מלאי נמוך</span>' : '<span class="badge bg">תקין</span>'}</td>
+   <td><button class="btn btn-s btn-xs" onclick="openProduct360('${p.id}')" title="360° Analytics & Stock" style="margin-right:4px;">360°</button><button class="btn btn-s btn-xs" onclick="openHistory('${p.id}','${esc(f[F.P.NM]||'')}')">📋 History</button></td>
+  </tr>`;
+ }).join('');
 }
 
 // ── RENDER TRANSACTIONS ────────────────────────────────────────
