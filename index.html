@@ -11,19 +11,19 @@
  *{font-family:'Heebo','Rubik','Inter',-apple-system,BlinkMacSystemFont,sans-serif;box-sizing:border-box;}
  body{margin:0;background:#f1f5f9;direction:rtl;text-align:right;}
  #app{display:flex;height:100vh;overflow:hidden;direction:rtl;}
- /* Sidebar */
+ /* סרגל צד */
  #sidebar{width:230px;background:#0f172a;display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;}
  .nav-sec{font-size:10px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.1em;padding:14px 16px 4px;}
  .nav-item{display:flex;align-items:center;gap:10px;padding:9px 14px;border-radius:8px;margin:1px 8px;color:#94a3b8;cursor:pointer;font-size:13.5px;font-weight:500;transition:all .15s;}
  .nav-item:hover{color:#e2e8f0;background:rgba(255,255,255,.07);}
  .nav-item.active{color:#831843;background:#ffd5e2;font-weight:700;}
- /* Main area */
+ /* אזור ראשי */
  #main{flex:1;display:flex;flex-direction:column;overflow:hidden;height:100vh;background:#f8fafc;}
  #topbar{background:#fff;border-bottom:1px solid #e2e8f0;padding:10px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-shrink:0;height:auto;min-height:62px;box-sizing:border-box;position:relative;z-index:100;}
  #page-title{font-size:19px;font-weight:700;color:#0f172a;white-space:nowrap;}
  #content{flex:1;overflow-y:auto;padding:20px 24px;position:relative;background:#f8fafc;}
  .page{display:none;}.page.active{display:block;}
- /* Cards */
+ /* כרטיסים */
  .card{background:#fff;border-radius:14px;border:1px solid #e2e8f0;overflow:hidden;box-shadow:0 1px 4px rgba(15,23,42,0.03);}
  .card-hdr{padding:14px 18px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between;}
  .card-hdr h3{font-size:14px;font-weight:700;color:#0f172a;margin:0;}
@@ -32,7 +32,7 @@
  .kpi-lbl{font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
  .kpi-val{font-size:30px;font-weight:800;color:#0f172a;line-height:1;}
  .kpi-sub{font-size:12px;color:#94a3b8;margin-top:5px;}
- /* Table */
+ /* טבלאות */
  table{border-collapse:collapse;width:100%;}
  th{background:#f8fafc;padding:9px 12px;text-align:right;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #e2e8f0;white-space:nowrap;}
  td{padding:10px 12px;font-size:13.5px;color:#1e293b;border-bottom:1px solid #f1f5f9;vertical-align:middle;text-align:right;}
@@ -40,12 +40,12 @@
  .row-low td:first-child{border-right:3px solid #f97316;padding-right:9px;border-left:none;}
  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;direction:ltr;display:inline-block;}
  .ltr-val{direction:ltr;display:inline-block;}
- /* Badges */
+ /* תגיות */
  .badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:9999px;font-size:11.5px;font-weight:600;white-space:nowrap;}
  .bb{background:#dbeafe;color:#1e40af;}.bg{background:#dcfce7;color:#15803d;}.br{background:#fee2e2;color:#991b1b;}
  .by{background:#fef3c7;color:#92400e;}.bp{background:#ede9fe;color:#6d28d9;}.bt{background:#ccfbf1;color:#0f766e;}
  .bo{background:#ffedd5;color:#9a3412;}.bgr{background:#f1f5f9;color:#475569;}.bi{background:#fce7f3;color:#9d174d;}
- /* Buttons */
+ /* כפתורים */
  button{cursor:pointer;}
  .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;border:none;transition:all .15s;white-space:nowrap;}
  .btn:disabled{opacity:.55;cursor:not-allowed;}
@@ -54,7 +54,7 @@
  .btn-ok{background:#10b981;color:#fff;}.btn-ok:hover:not(:disabled){background:#059669;}
  .btn-d{background:#ef4444;color:#fff;}.btn-d:hover:not(:disabled){background:#dc2626;}
  .btn-sm{padding:5px 10px;font-size:12px;}.btn-xs{padding:3px 8px;font-size:11px;border-radius:6px;}
- /* Forms */
+ /* טפסים */
  .fld{margin-bottom:14px;}.fld label{display:block;font-size:12.5px;font-weight:600;color:#374151;margin-bottom:5px;}
  .fld input,.fld select,.fld textarea{width:100%;padding:8px 11px;border:1px solid #d1d5db;border-radius:8px;font-size:13.5px;color:#0f172a;background:#fff;outline:none;transition:border-color .15s;}
  .fld input:focus,.fld select:focus,.fld textarea:focus{border-color:#db2777;box-shadow:0 0 0 3px rgba(219,39,119,.15);}
@@ -62,7 +62,7 @@
  .g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
  .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
  .g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;}
- /* Modals */
+ /* חלונות מודאליים */
  .modal-ov{display:none;position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:200;align-items:center;justify-content:center;padding:16px;}
  .modal-ov.open{display:flex;}
  .modal{background:#fff;border-radius:18px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 25px 60px rgba(15,23,42,0.28);}
@@ -72,42 +72,42 @@
  .m-hdr p{font-size:12.5px;color:#64748b;margin:4px 0 0;}
  .m-x{background:none;border:none;font-size:20px;color:#94a3b8;cursor:pointer;padding:0;flex-shrink:0;}.m-x:hover{color:#0f172a;}
  .m-body{padding:20px 24px;}.m-foot{padding:16px 24px;border-top:1px solid #f1f5f9;display:flex;justify-content:flex-end;gap:8px;}
- /* Autocomplete */
+ /* השלמה אוטומטית */
  .ac-wrap{position:relative;}
  .ac-dd{display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid #e2e8f0;border-radius:10px;box-shadow:0 12px 32px rgba(0,0,0,.12);z-index:500;max-height:220px;overflow-y:auto;}
  .ac-item{padding:9px 14px;cursor:pointer;font-size:13px;border-bottom:1px solid #f8fafc;}.ac-item:last-child{border-bottom:none;}.ac-item:hover{background:#fff1f5;}
  .ac-sku{font-weight:700;color:#db2777;font-size:12px;}.ac-nm{color:#0f172a;font-weight:500;}.ac-sub{color:#94a3b8;font-size:11.5px;margin-top:2px;}
- /* Dropzone */
+ /* אזור גרירת קבצים */
  .dz{border:2px dashed #cbd5e1;border-radius:12px;padding:28px 20px;text-align:center;cursor:pointer;transition:all .15s;}
  .dz:hover,.dz.dg{border-color:#db2777;background:#fff1f5;}
- /* Steps */
+ /* שלבים */
  .step-wrap{display:flex;align-items:flex-start;gap:0;margin-bottom:20px;}
  .step-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin:0 auto;}
  .s-done{background:#10b981;color:#fff;}.s-act{background:linear-gradient(135deg,#db2777,#e11d48);color:#fff;}.s-pend{background:#e2e8f0;color:#94a3b8;}
  .step-line{flex:1;height:2px;background:#e2e8f0;margin-top:14px;}.step-line.done{background:#10b981;}
  .step-lbl{font-size:11px;font-weight:600;color:#64748b;text-align:center;margin-top:4px;}
- /* Filters */
+ /* מסננים */
  .fbar{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:12px 16px;margin-bottom:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
  .fbar input,.fbar select{padding:7px 11px;border:1px solid #d1d5db;border-radius:8px;font-size:13px;color:#0f172a;outline:none;}
  .fbar input:focus,.fbar select:focus{border-color:#db2777;box-shadow:0 0 0 3px rgba(219,39,119,.12);}
  .fsrch{flex:1;min-width:200px;}
- /* Tabs */
+ /* לשוניות */
  .tab-bar{background:#f1f5f9;border-radius:10px;padding:3px;display:inline-flex;margin-bottom:14px;}
  .tab-btn{padding:7px 16px;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;color:#64748b;border:none;background:transparent;transition:all .15s;}
  .tab-btn.active{background:#fff;color:#db2777;box-shadow:0 1px 4px rgba(219,39,119,.18);font-weight:700;}
- /* Toast */
+ /* הודעות קופצות */
  #toast-c{position:fixed;bottom:20px;left:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;}
  .toast{padding:12px 18px;border-radius:10px;font-size:13.5px;font-weight:500;color:#fff;box-shadow:0 8px 24px rgba(0,0,0,.18);max-width:380px;animation:tIn .3s ease;display:flex;align-items:center;gap:8px;}
  @keyframes tIn{from{transform:translateX(110%);opacity:0;}to{transform:none;opacity:1;}}
  .t-ok{background:#10b981;}.t-err{background:#ef4444;}.t-info{background:#3b82f6;}.t-warn{background:#f59e0b;}
- /* Spinner */
+ /* מחוון טעינה */
  .spin{width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:sp .65s linear infinite;display:inline-block;flex-shrink:0;}
  .spin-d{width:20px;height:20px;border:2px solid #fce7f3;border-top-color:#db2777;border-radius:50%;animation:sp .65s linear infinite;display:inline-block;}
  @keyframes sp{to{transform:rotate(360deg);}}
- /* Pager */
+ /* דפדוף */
  .pager{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;border-top:1px solid #f1f5f9;}
  .pager-info{font-size:13px;color:#64748b;}
- /* Misc */
+ /* שונות */
  .empty{text-align:center;padding:48px 24px;color:#94a3b8;font-size:14px;}
  .ei{font-size:36px;margin-bottom:10px;}
  .mono{font-family:'Courier New',monospace;font-size:12.5px;}
@@ -121,7 +121,7 @@
  .img-prev{max-width:100%;max-height:200px;border-radius:8px;border:1px solid #e2e8f0;display:block;margin:0 auto 12px;}
  .ocr-raw{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px;font-size:12.5px;line-height:1.7;white-space:pre-wrap;max-height:200px;overflow-y:auto;}
  ::-webkit-scrollbar{width:5px;height:5px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px;}
- /* Executive Dashboard & Mockup Styles */
+ /* סגנונות לוח בקרה ניהולי */
  .nav-item.active{color:#831843!important;background:#ffd5e2!important;font-weight:700;}
  .nav-item.active svg{stroke:#831843;}
  .dash-kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px;}
@@ -139,7 +139,7 @@
  .dash-tables-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:20px;}
  @media(max-width:1100px){.dash-tables-row{grid-template-columns:1fr;}}
 
- /* Branded Loading Overlay & Spinner */
+ /* שכבת טעינה ממותגת וספינר */
  .dash-loading-ov{position:absolute;inset:0;background:rgba(248,250,252,0.92);backdrop-filter:blur(3px);z-index:90;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;border-radius:12px;transition:opacity .25s ease;}
  .dash-spinner{width:42px;height:42px;border:3.5px solid #fce7f3;border-top-color:#db2777;border-right-color:#f43f5e;border-radius:50%;animation:dashSpin .75s linear infinite;}
  @keyframes dashSpin{to{transform:rotate(360deg);}}
@@ -170,7 +170,7 @@
  .bar-col{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;cursor:pointer;transition:transform .15s;}
  .bar-col:hover{transform:scaleY(1.02);}
  
-  /* Executive Alerts & Notifications Styling */
+  /* עיצוב התראות והודעות ניהוליות */
   .dash-alerts-grid{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:20px;transition:all .2s ease;}
   .dash-alert-card{flex:1 1 340px;background:#ffffff;border-radius:14px;padding:12px 18px;align-items:center;justify-content:space-between;gap:16px;box-shadow:0 2px 8px rgba(15,23,42,0.04);transition:all .2s cubic-bezier(0.4,0,0.2,1);border:1px solid transparent;}
   .dash-alert-card:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(15,23,42,0.08);}
@@ -214,7 +214,7 @@
 <body>
 <div id="app">
 
-<!-- ════ SIDEBAR ════════════════════════════════════════════ -->
+<!-- ════ סרגל צד ════════════════════════════════════════════ -->
 <div id="sidebar">
  <div style="padding:22px 16px 16px;border-bottom:1px solid rgba(255,255,255,.08);text-align:center;">
   <div style="font-size:32px;font-weight:900;color:#ffffff;letter-spacing:1px;font-family:'Segoe UI',sans-serif;line-height:1;">מיקאפ</div>
@@ -320,10 +320,10 @@
  </div>
 </div>
 
-<!-- ════ MAIN ════════════════════════════════════════════════ -->
+<!-- ════ אזור ראשי ════════════════════════════════════════════ -->
 <div id="main">
  <div id="topbar">
-  <!-- Left: Titles -->
+  <!-- צד שמאל: כותרות -->
   <div style="display:flex;align-items:center;gap:12px;min-width:180px;">
    <div id="topbar-overview-hdr">
     <h1 style="font-size:22px;font-weight:800;color:#0f172a;margin:0;letter-spacing:-0.4px;" id="welcome-heading">Welcome, Mosh!</h1>
@@ -334,9 +334,9 @@
    </div>
   </div>
 
-  <!-- Right: Filters, Buttons & User Profile -->
+  <!-- צד ימין: מסננים, כפתורים ופרופיל משתמש -->
   <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-   <!-- Date Range Preset Dropdown -->
+   <!-- תפריט בחירת טווח תאריכים -->
    <div id="topbar-date-wrap" style="position:relative;display:inline-block;">
     <button class="btn btn-s" id="dash-date-btn" onclick="toggleDateDropdown()" style="padding:7px 12px;border-radius:10px;font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:6px;background:#f8fafc;border:1px solid #d1d5db;">
      <span style="font-size:14px;">📅</span>
@@ -364,7 +364,7 @@
     </div>
    </div>
 
-   <!-- Branch Selector -->
+   <!-- בורר סניפים -->
    <div style="display:inline-block;">
     <select id="dash-branch-sel" onchange="onDashBranchChange(this.value)" style="padding:7px 12px;border:1px solid #d1d5db;border-radius:10px;font-size:12.5px;font-weight:600;background:#f8fafc;color:#1e293b;outline:none;cursor:pointer;">
      <option value="">📍 כל הסניפים (All Branches)</option>
@@ -374,17 +374,17 @@
     </select>
    </div>
 
-   <!-- Refresh Button -->
+   <!-- כפתור רענון -->
    <button class="btn btn-s" id="refresh-btn" onclick="refreshAll()" title="Refresh All Data from Airtable" style="padding:7px 11px;border-radius:10px;border:1px solid #d1d5db;background:#f8fafc;">
     <span id="r-ico">🔄</span><span id="last-upd" style="display:none;"></span>
    </button>
 
-   <!-- Export to Excel Button -->
+   <!-- כפתור ייצוא לאקסל -->
    <button class="btn btn-ok" onclick="exportTopBarExcel()" title="ייצוא לאקסל" style="padding:7px 13px;border-radius:10px;font-size:12.5px;font-weight:600;">
     📥 ייצוא לאקסל
    </button>
 
-   <!-- User Profile Badge matching mockup -->
+   <!-- תגית פרופיל משתמש -->
    <div style="display:flex;align-items:center;gap:9px;padding-left:10px;border-left:1px solid #e2e8f0;">
     <div style="width:36px;height:36px;border-radius:50%;background:#db2777;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;">M</div>
     <div>
@@ -397,7 +397,7 @@
 
  <div id="content">
 
-  <!-- ── GLOBAL DATA LOADING OVERLAY ─────────────────────── -->
+  <!-- ── שכבת טעינת נתונים גלובלית ─────────────────────── -->
   <div id="data-loading-overlay" class="dash-loading-ov">
    <div class="dash-spinner"></div>
    <div style="text-align:center;">
@@ -406,11 +406,11 @@
    </div>
   </div>
 
-  <!-- ── OVERVIEW / EXECUTIVE DASHBOARD ─────────────────── -->
+  <!-- ── סקירה כללית / לוח בקרה ניהולי ─────────────────── -->
   <div class="page active" id="page-overview">
-   <!-- ── EXECUTIVE NOTIFICATIONS & ALERTS WRAPPER ─────────────────── -->
+   <!-- ── מעטפת התראות והודעות ניהוליות ─────────────────── -->
    <div id="overview-alerts-wrap" class="dash-alerts-grid" style="display:none;">
-    <!-- Negative Stock Alert Card -->
+    <!-- כרטיס התראת מלאי שלילי -->
     <div id="neg-banner" class="dash-alert-card dash-alert-neg" style="display:none;">
      <div class="dash-alert-left">
       <div class="dash-alert-icon-box neg-icon">
@@ -435,7 +435,7 @@
      </div>
     </div>
 
-    <!-- Low Stock Alert Card -->
+    <!-- כרטיס התראת מלאי נמוך -->
     <div id="low-banner" class="dash-alert-card dash-alert-low" style="display:none;">
      <div class="dash-alert-left">
       <div class="dash-alert-icon-box low-icon">
@@ -460,7 +460,7 @@
      </div>
     </div>
 
-    <!-- Pending POS Queue Card -->
+    <!-- כרטיס תור עסקאות קופה ממתינות -->
     <div id="pend-banner" class="dash-alert-card dash-alert-pend" style="display:none;">
      <div class="dash-alert-left">
       <div class="dash-alert-icon-box pend-icon">
@@ -486,9 +486,9 @@
     </div>
    </div>
 
-   <!-- ROW 1: 5 KPI CARDS MATCHING MOCKUP -->
+   <!-- שורה 1: כרטיסי KPI ומדדים ראשיים -->
    <div class="dash-kpi-row">
-    <!-- 1. Actual Paid Price (VAT Inclusive) -->
+    <!-- 1. מחיר ששולם בפועל (כולל מע״מ) -->
     <div class="dash-kpi">
      <div class="dash-kpi-hdr">
       <span class="dash-kpi-title">סה״כ מכירות (בפועל)</span>
@@ -498,7 +498,7 @@
      <div class="dash-kpi-sub">כולל מע״מ (לפי קבלות)</div>
     </div>
 
-    <!-- 2. VAT Included (18%) -->
+    <!-- 2. מע״מ כלול (18%) -->
     <div class="dash-kpi">
      <div class="dash-kpi-hdr">
       <span class="dash-kpi-title">מע״מ כלול (18%)</span>
@@ -508,7 +508,7 @@
      <div class="dash-kpi-sub">מע״מ ישראלי 18%</div>
     </div>
 
-    <!-- 3. Net Sales (Excluding VAT) -->
+    <!-- 3. מכירות נטו (ללא מע״מ) -->
     <div class="dash-kpi">
      <div class="dash-kpi-hdr">
       <span class="dash-kpi-title">מכירות נטו (ללא מע״מ)</span>
@@ -518,7 +518,7 @@
      <div class="dash-kpi-sub">בסיס הכנסות לאחר מע״מ</div>
     </div>
 
-    <!-- 4. Cost of Goods Sold (Wholesale Cost) -->
+    <!-- 4. עלות הסחורה שנמכרה (עלות סיטונאית) -->
     <div class="dash-kpi">
      <div class="dash-kpi-hdr">
       <span class="dash-kpi-title">עלות המוצרים שנמכרו</span>
@@ -528,7 +528,7 @@
      <div class="dash-kpi-sub">עלות רכש סיטונאי (COGS)</div>
     </div>
 
-    <!-- 5. רווח גולמי (לאחר מע״מ) after VAT -->
+    <!-- 5. רווח גולמי (לאחר מע״מ) -->
     <div class="dash-kpi" style="border:2px solid #86efac;background:#f0fdf4;">
      <div class="dash-kpi-hdr">
       <span class="dash-kpi-title" style="color:#15803d;font-weight:800;">רווח גולמי (לאחר מע״מ)</span>
@@ -540,7 +540,7 @@
      </div>
     </div>
 
-    <!-- 6. Total Transactions -->
+    <!-- 6. סה״כ עסקאות -->
     <div class="dash-kpi">
      <div class="dash-kpi-hdr">
       <span class="dash-kpi-title">סה״כ עסקאות</span>
@@ -550,7 +550,7 @@
      <div class="dash-kpi-sub">קבלות והזמנות שהושלמו</div>
     </div>
 
-    <!-- 7. Unique Customers -->
+    <!-- 7. לקוחות ייחודיים -->
     <div class="dash-kpi">
      <div class="dash-kpi-hdr">
       <span class="dash-kpi-title">לקוחות ייחודיים</span>
@@ -561,9 +561,9 @@
     </div>
    </div>
 
-   <!-- ROW 2: 3 VISUAL CHARTS MATCHING MOCKUP -->
+   <!-- שורה 2: 3 גרפים ויזואליים -->
    <div class="dash-charts-row">
-    <!-- Chart 1: Sales Over Time -->
+    <!-- גרף 1: מכירות לאורך זמן -->
     <div class="card" style="padding:18px 20px;">
      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
       <h3 style="font-size:15px;font-weight:700;color:#0f172a;margin:0;">Sales Over Time</h3>
@@ -574,22 +574,22 @@
       </select>
      </div>
      <div id="chart-overtime-container" style="height:220px;position:relative;width:100%;">
-      <!-- Dynamic SVG Line Chart -->
+      <!-- גרף קווי דינמי SVG -->
      </div>
     </div>
 
-    <!-- Chart 2: Sales by Branch -->
+    <!-- גרף 2: מכירות לפי סניף -->
     <div class="card" style="padding:18px 20px;">
      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
       <h3 style="font-size:15px;font-weight:700;color:#0f172a;margin:0;">Sales by Branch</h3>
       <span style="font-size:11px;color:#64748b;">Click branch to drill down</span>
      </div>
      <div id="chart-branch-container" style="height:220px;display:flex;align-items:flex-end;justify-content:space-around;padding-top:20px;padding-bottom:10px;">
-      <!-- Dynamic Branch Bars with labels -->
+      <!-- עמודות סניפים דינמיות עם תוויות -->
      </div>
     </div>
 
-    <!-- Chart 3: Sales by Brand -->
+    <!-- גרף 3: מכירות לפי מותג -->
     <div class="card" style="padding:18px 20px;">
      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
       <h3 style="font-size:15px;font-weight:700;color:#0f172a;margin:0;">Sales by Brand</h3>
@@ -599,14 +599,14 @@
       </select>
      </div>
      <div id="chart-brand-container" style="height:220px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
-      <!-- Dynamic Donut SVG and Legend -->
+      <!-- גרף עוגה (דונאט) דינמי ומקרא -->
      </div>
     </div>
    </div>
 
-   <!-- ROW 3: 4 QUICK ACTION CARDS MATCHING MOCKUP -->
+   <!-- שורה 3: 4 כרטיסי פעולות מהירות -->
    <div class="dash-qa-row">
-    <!-- 1. Manual Sale -->
+    <!-- 1. מכירה ידנית -->
     <div class="qa-card qa-card-pink" onclick="openModal('m-tx')">
      <div class="qa-icon" style="background:#ffd5e2;color:#db2777;">🛒</div>
      <div>
@@ -615,7 +615,7 @@
      </div>
     </div>
 
-    <!-- 2. Import POS Sales -->
+    <!-- 2. ייבוא מכירות מהקופה -->
     <div class="qa-card qa-card-amber" onclick="openModal('m-pos')">
      <div class="qa-icon" style="background:#fef3c7;color:#d97706;">📄</div>
      <div>
@@ -624,7 +624,7 @@
      </div>
     </div>
 
-    <!-- 3. Supplier Invoice -->
+    <!-- 3. חשבונית ספק -->
     <div class="qa-card qa-card-rose" onclick="openModal('m-ocr')">
      <div class="qa-icon" style="background:#ffe4e6;color:#e11d48;">🚚</div>
      <div>
@@ -633,7 +633,7 @@
      </div>
     </div>
 
-    <!-- 4. Transfer Between Branches -->
+    <!-- 4. העברות בין סניפים -->
     <div class="qa-card qa-card-purple" onclick="openModal('m-trf')">
      <div class="qa-icon" style="background:#f3e8ff;color:#9333ea;">⇄</div>
      <div>
@@ -643,9 +643,9 @@
     </div>
    </div>
 
-   <!-- ROW 4: 3 SUMMARY TABLES MATCHING MOCKUP (WITH 1-CLICK DRILL DOWNS) -->
+   <!-- שורה 4: 3 טבלאות סיכום עם ניתוח בלחיצה אחת -->
    <div class="dash-tables-row">
-    <!-- Top Selling Products -->
+    <!-- מוצרים נמכרים ביותר -->
     <div class="card">
      <div class="card-hdr" style="padding:14px 18px;">
       <h3 style="font-size:14px;">Top Selling Products</h3>
@@ -661,13 +661,13 @@
         </tr>
        </thead>
        <tbody id="top-prods-body">
-        <!-- Dynamic Top 5 Products -->
+        <!-- 5 המוצרים המובילים (דינמי) -->
        </tbody>
       </table>
      </div>
     </div>
 
-    <!-- Top Customers -->
+    <!-- לקוחות מובילים -->
     <div class="card">
      <div class="card-hdr" style="padding:14px 18px;">
       <h3 style="font-size:14px;">Top Customers</h3>
@@ -683,13 +683,13 @@
         </tr>
        </thead>
        <tbody id="top-custs-body">
-        <!-- Dynamic Top 5 Customers -->
+        <!-- 5 הלקוחות המובילים (דינמי) -->
        </tbody>
       </table>
      </div>
     </div>
 
-    <!-- Low Inventory Alerts -->
+    <!-- התראות מלאי נמוך -->
     <div class="card">
      <div class="card-hdr" style="padding:14px 18px;">
       <h3 style="font-size:14px;">Low Inventory Alerts</h3>
@@ -705,14 +705,14 @@
         </tr>
        </thead>
        <tbody id="top-low-body">
-        <!-- Dynamic Low Stock Alerts -->
+        <!-- התראות מלאי נמוך דינמיות -->
        </tbody>
       </table>
      </div>
     </div>
    </div>
 
-   <!-- ROW 5: RECENT TRANSACTIONS TABLE -->
+   <!-- שורה 5: טבלת עסקאות אחרונות -->
    <div class="card">
     <div class="card-hdr" style="padding:14px 18px;">
      <h3 style="font-size:14px;">Recent Transactions in Selected Range</h3>
@@ -732,7 +732,7 @@
   </div>
 
 
- <!-- ── PRODUCTS ──────────────────────────────────────── -->
+ <!-- ── מוצרים ──────────────────────────────────────── -->
  <div class="page" id="page-products">
  <div class="fbar">
  <input class="fsrch" type="text" id="p-q" placeholder="🔍 חיפוש לפי מק״ט, שם, מותג, גוון, ברקוד..." oninput="filterProds()"/>
@@ -763,7 +763,7 @@
  </tr></thead><tbody id="prod-body"></tbody></table></div></div>
  </div>
 
- <!-- ── TRANSACTIONS ──────────────────────────────────── -->
+ <!-- ── תנועות ──────────────────────────────────────── -->
  <div class="page" id="page-transactions">
  <div class="fbar">
  <select id="tx-br" translate="no" onchange="filterTx()" style="min-width:140px;"><option value="">כל הסניפים</option><option value="Beitar">ביתר עילית</option><option value="Beit Shemesh">בית שמש</option><option value="Jerusalem">ירושלים</option></select>
@@ -787,7 +787,7 @@
  </div>
  </div>
 
- <!-- ── PURCHASE ORDERS ───────────────────────────────── -->
+ <!-- ── הזמנות רכש ──────────────────────────────────── -->
  <div class="page" id="page-purchase-orders">
  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
  <div class="tab-bar">
@@ -804,7 +804,7 @@
  </tr></thead><tbody id="po-body"></tbody></table></div></div>
  </div>
 
- <!-- ── CUSTOMERS ─────────────────────────────────────── -->
+ <!-- ── לקוחות ──────────────────────────────────────── -->
  <div class="page" id="page-customers">
  <div class="fbar">
  <input class="fsrch" type="text" id="cu-q" placeholder="🔍 חיפוש לפי שם, טלפון או אימייל..." oninput="filterCusts()"/>
@@ -815,7 +815,7 @@
  </tr></thead><tbody id="cu-body"></tbody></table></div></div>
  </div>
 
- <!-- ── APPROVALS ─────────────────────────────────────── -->
+ <!-- ── אישורים ──────────────────────────────────────── -->
  <div class="page" id="page-approvals">
  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
  <div class="card">
@@ -829,9 +829,9 @@
  </div>
  </div>
 
- <!-- ── REPORTS & ANALYTICS (EXECUTIVE MANAGEMENT SUITE) ────── -->
+ <!-- ── דוחות ואנליטיקה (מערכת ניהולית) ────── -->
  <div class="page" id="page-reports">
-  <!-- Universal 6-Way Filter Bar -->
+  <!-- סרגל סינון אוניברסלי -->
   <div class="card" style="padding:14px 18px;margin-bottom:16px;background:#ffffff;border:1px solid #e2e8f0;border-radius:14px;box-shadow:0 1px 4px rgba(15,23,42,0.03);">
    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
     <div style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:#0f172a;">
@@ -844,7 +844,7 @@
     </div>
    </div>
    <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));gap:10px;align-items:flex-end;">
-    <!-- 1. Date Preset -->
+    <!-- 1. הגדרת תאריך מראש -->
     <div class="fld" style="margin:0;">
      <label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">טווח תאריכים</label>
      <select id="rf-preset" onchange="onReportDatePresetChange()" style="padding:7px 8px;font-size:12.5px;border-radius:8px;border:1px solid #d1d5db;">
@@ -857,17 +857,17 @@
       <option value="custom">טווח מותאם אישית...</option>
      </select>
     </div>
-    <!-- 2. Date From -->
+    <!-- 2. מתאריך -->
     <div class="fld" style="margin:0;">
      <label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">מתאריך</label>
      <input type="date" id="rf-from" onchange="onReportFilterChange()" style="padding:6px 8px;font-size:12px;border-radius:8px;border:1px solid #d1d5db;"/>
     </div>
-    <!-- 3. Date To -->
+    <!-- 3. עד תאריך -->
     <div class="fld" style="margin:0;">
      <label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">עד תאריך</label>
      <input type="date" id="rf-to" onchange="onReportFilterChange()" style="padding:6px 8px;font-size:12px;border-radius:8px;border:1px solid #d1d5db;"/>
     </div>
-    <!-- 4. Branch -->
+    <!-- 4. סניף -->
     <div class="fld" style="margin:0;">
      <label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">סניף</label>
      <select id="rf-branch" onchange="onReportFilterChange()" style="padding:7px 8px;font-size:12.5px;border-radius:8px;border:1px solid #d1d5db;">
@@ -877,28 +877,28 @@
       <option value="Jerusalem">ירושלים (Jerusalem)</option>
      </select>
     </div>
-    <!-- 5. Brand -->
+    <!-- 5. מותג -->
     <div class="fld" style="margin:0;">
      <label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">מותג</label>
      <select id="rf-brand" onchange="onReportFilterChange()" style="padding:7px 8px;font-size:12.5px;border-radius:8px;border:1px solid #d1d5db;">
       <option value="">כל המותגים</option>
      </select>
     </div>
-    <!-- 6. Product -->
+    <!-- 6. מוצר -->
     <div class="fld" style="margin:0;">
      <label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">מוצר</label>
      <select id="rf-product" onchange="onReportFilterChange()" style="padding:7px 8px;font-size:12.5px;border-radius:8px;border:1px solid #d1d5db;">
       <option value="">כל המוצרים</option>
      </select>
     </div>
-    <!-- 7. Customer -->
+    <!-- 7. לקוח -->
     <div class="fld" style="margin:0;">
      <label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">לקוח</label>
      <select id="rf-customer" onchange="onReportFilterChange()" style="padding:7px 8px;font-size:12.5px;border-radius:8px;border:1px solid #d1d5db;">
       <option value="">כל הלקוחות</option>
      </select>
     </div>
-    <!-- 8. Salesperson / Employee -->
+    <!-- 8. מוכר/ת / עובד -->
     <div class="fld" style="margin:0;">
      <label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">מוכר/ת</label>
      <select id="rf-employee" onchange="onReportFilterChange()" style="padding:7px 8px;font-size:12.5px;border-radius:8px;border:1px solid #d1d5db;">
@@ -908,7 +908,7 @@
    </div>
   </div>
 
-  <!-- 7 Dedicated Analytics Tabs -->
+  <!-- לשוניות אנליטיקה ייעודיות -->
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px;">
    <div class="tab-bar" style="flex-wrap:wrap;">
     <button class="tab-btn active" id="rtab-sales" onclick="switchReportTab('sales')">📈 מכירות</button>
@@ -922,19 +922,19 @@
    </div>
   </div>
 
-  <!-- Dynamic Content Container -->
+  <!-- מכולת תוכן דינמית -->
   <div id="report-content-container">
-   <!-- Rendered via renderActiveReport() -->
+   <!-- מרונדר באמצעות renderActiveReport() -->
   </div>
  </div>
 
- </div><!-- /content -->
-</div><!-- /main -->
-</div><!-- /app -->
+ </div><!-- /תוכן -->
+</div><!-- /ראשי -->
+</div><!-- /אפליקציה -->
 
-<!-- ════ MODALS ════════════════════════════════════════════════ -->
+<!-- ════ חלונות מודאליים ════════════════════════════════════════════ -->
 
-<!-- ── 1. POS DUAL UPLOAD ────────────────────────────────── -->
+<!-- ── 1. ייבוא כפול מקופה (POS) ────────────────────────────────── -->
 <div class="modal-ov" id="m-pos">
  <div class="modal m-xl">
  <div class="m-hdr">
@@ -944,7 +944,7 @@
  <button class="m-x" onclick="closeModal('m-pos')">&times;</button>
  </div>
  <div class="m-body">
- <!-- Steps -->
+ <!-- שלבים -->
  <div class="step-wrap">
  <div style="flex:1;text-align:center;"><div id="ps1-dot" class="step-dot s-act" style="margin:0 auto;">1</div><div class="step-lbl">סניף ותאריך</div></div>
  <div class="step-line" id="ps1-ln"></div>
@@ -954,7 +954,7 @@
  <div class="step-line" id="ps3-ln"></div>
  <div style="flex:1;text-align:center;"><div id="ps4-dot" class="step-dot s-pend" style="margin:0 auto;">4</div><div class="step-lbl">תצוגה מקדימה וייבוא</div></div>
  </div>
- <!-- Step 1 -->
+ <!-- שלב 1 -->
  <div id="ps-1">
  <div class="a-i" style="margin-bottom:14px;"> Upload <strong>both</strong> POS Excel files together. They are linked by Invoice Number to match each product line to the correct customer.</div>
  <div class="g2">
@@ -963,7 +963,7 @@
  </div>
  <div class="fld"><label>הערות (אופציונלי)</label><input type="text" id="pos-note" placeholder="לדוגמה: מכירות יומיות 19 אוגוסט"/></div>
  </div>
- <!-- Step 2 -->
+ <!-- שלב 2 -->
  <div id="ps-2" style="display:none;">
  <div class="a-i" style="margin-bottom:12px;"><strong>File 1 — Product Lines</strong> (&#1491;&#1493;&#1495; &#1502;&#1499;&#1497;&#1512;&#1493;&#1514; &#1513;&#1493;&#1512;&#1493;&#1514; &#1500;&#1495;&#1504;&#1493;&#1514;)<br>One row per product sold. Headers at row 7: &#1502;&#1505;&#1508;&#1512; &#1495;&#1513;&#1489;&#1493;&#1504;&#1497;&#1514; · &#1511;&#1493;&#1491; &#1508;&#1512;&#1497;&#1496; · &#1499;&#1502;&#1493;&#1514; · &#1514;&#1488;&#1512;&#1497;&#1498;</div>
  <div class="dz" id="dz1" onclick="document.getElementById('fi1').click()"
@@ -975,7 +975,7 @@
  </div>
  <div id="f1-st" style="display:none;margin-top:10px;" class="a-ok"></div>
  </div>
- <!-- Step 3 -->
+ <!-- שלב 3 -->
  <div id="ps-3" style="display:none;">
  <div class="a-i" style="margin-bottom:12px;"><strong>File 2 — Customer Identification</strong> (&#1502;&#1499;&#1497;&#1512;&#1493;&#1514; &#1511;&#1493;&#1508;&#1492; &#1500;&#1508;&#1497; &#1495;&#1514;&#1498;)<br>One row per invoice. Headers at row 3: &#1502;&#1505;&#1508;&#1512; &#1508;&#1514;&#1511;&#1497;&#1514; · &#1513;&#1501; &#1500;&#1511;&#1493;&#1495; · &#1496;&#1500;&#1508;&#1493;&#1503; &#1500;&#1511;&#1493;&#1495;</div>
  <div class="dz" id="dz2" onclick="document.getElementById('fi2').click()"
@@ -988,7 +988,7 @@
  <div id="f2-st" style="display:none;margin-top:10px;" class="a-ok"></div>
  <div style="margin-top:12px;" class="a-w"> If File 2 is not available yet, click <strong>"Skip Customer File"</strong> — sales will be imported without customer linking.</div>
  </div>
- <!-- Step 4 Preview -->
+ <!-- שלב 4 תצוגה מקדימה -->
  <div id="ps-4" style="display:none;">
  <div id="pos-stats" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;"></div>
  <div id="pos-conf" style="display:none;margin-bottom:12px;" class="a-w"></div>
@@ -1008,7 +1008,7 @@
  </div>
 </div>
 
-<!-- ── 2. INVOICE OCR (Sale receipt OR Supplier invoice) ──── -->
+<!-- ── 2. סריקת חשבונית OCR (קבלת מכירה או חשבונית ספק) ──── -->
 <div class="modal-ov" id="m-ocr">
  <div class="modal m-2xl">
  <div class="m-hdr">
@@ -1022,7 +1022,7 @@
  </div>
  <div class="m-body">
  <div id="ocr-s1">
- <!-- Type selector -->
+ <!-- בורר סוג חשבונית -->
  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
  <div id="ocr-type-sale" onclick="setOcrType('sale')" style="border:2px solid #db2777;background:#fff1f5;border-radius:12px;padding:16px;cursor:pointer;text-align:center;">
  <div style="font-size:28px;margin-bottom:6px;">🧾</div>
@@ -1048,12 +1048,12 @@
  <div class="fld"><label>Date *</label><input type="date" id="ocr-dt"/></div>
  </div>
  </div>
- <!-- OCR processing -->
+ <!-- עיבוד OCR -->
  <div id="ocr-s2" style="display:none;">
  <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;"><div class="spin-d"></div><span id="ocr-msg" style="font-size:13.5px;color:#374151;">Analyzing invoice with AI...</span></div>
  <div id="ocr-raw" class="ocr-raw" style="display:none;"></div>
  </div>
- <!-- OCR results -->
+ <!-- תוצאות OCR -->
  <div id="ocr-s3" style="display:none;">
  <div id="ocr-res-banner" class="a-ok" style="margin-bottom:12px;"></div>
  <div id="ocr-skip-msg" style="display:none;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:8px 14px;margin-bottom:10px;font-size:12.5px;color:#1d4ed8;"></div>
@@ -1061,7 +1061,7 @@
   <div class="fld"><label>Supplier / From</label><input type="text" id="ocr-sup" placeholder="Supplier or seller name"/></div>
   <div class="fld"><label>Invoice Date</label><input type="date" id="ocr-inv-dt"/></div>
  </div>
- <!-- Receipt Discount & Totals row for Sale Invoices in Step 3 -->
+ <!-- שורת הנחת קבלה וסיכומים עבור חשבוניות מכירה בשלב 3 -->
  <div id="ocr-s3-sale-disc-row" style="display:none;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:10px 14px;margin-bottom:12px;">
   <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
    <div style="display:flex;align-items:center;gap:10px;">
@@ -1075,7 +1075,7 @@
    <div id="ocr-sale-totals-summary" style="font-size:13px;font-weight:700;color:#166534;"></div>
   </div>
  </div>
- <!-- Customer & Employee row for Sale Invoices in Step 3 -->
+ <!-- שורת לקוח ועובד עבור חשבוניות מכירה בשלב 3 -->
  <div id="ocr-s3-cust-row" style="display:none;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px 14px;margin-bottom:12px;">
   <div style="font-weight:700;font-size:12.5px;color:#374151;margin-bottom:8px;display:flex;align-items:center;gap:8px;">
    <span>👤 Customer &amp; Salesperson Details</span>
@@ -1103,7 +1103,7 @@
  </div>
 </div>
 
-<!-- ── 3. MANUAL TRANSACTION ──────────────────────────────── -->
+<!-- ── 3. עסקה ידנית ──────────────────────────────── -->
 <div class="modal-ov" id="m-tx">
  <div class="modal m-lg">
  <div class="m-hdr">
@@ -1154,7 +1154,7 @@
  </div>
 </div>
 
-<!-- ── PRODUCT HISTORY MODAL (WITH FINANCIAL & MOVEMENT DATA) ──── -->
+<!-- ── מודאל היסטוריית מוצר (נתונים פיננסיים ותנועות מלאי) ──── -->
 <div class="modal-ov" id="m-hist">
  <div class="modal m-2xl">
  <div class="m-hdr">
@@ -1171,7 +1171,7 @@
   </div>
  </div>
  <div class="m-body" style="padding:0;">
-  <!-- Summary Pills -->
+  <!-- תגיות סיכום -->
   <div id="hist-summary-pills" style="padding:12px 20px;background:#f8fafc;border-bottom:1px solid #e2e8f0;display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;"></div>
   <div style="overflow-x:auto;max-height:480px;">
    <table>
@@ -1201,7 +1201,7 @@
  </div>
 </div>
 
-<!-- ── 4. TRANSFER ────────────────────────────────────────── -->
+<!-- ── 4. העברה בין סניפים ────────────────────────────────── -->
 <div class="modal-ov" id="m-trf">
  <div class="modal m-md">
  <div class="m-hdr"><div><h2>🔄 העברת מלאי בין סניפים</h2><p>יוצר 2 עסקאות: יציאה (סניף מקור) + כניסה (סניף יעד).</p></div><button class="m-x" onclick="closeModal('m-trf')">&times;</button></div>
@@ -1231,7 +1231,7 @@
  </div>
 </div>
 
-<!-- ── 5. NEW PO ───────────────────────────────────────────── -->
+<!-- ── 5. הזמנת רכש חדשה ───────────────────────────────────── -->
 <div class="modal-ov" id="m-po">
  <div class="modal m-lg">
  <div class="m-hdr"><div><h2>📦 רכישה ידנית / הזמנת רכש</h2><p>Add multiple products from the same supplier in one order.</p></div><button class="m-x" onclick="closeModal('m-po')">&times;</button></div>
@@ -1258,7 +1258,7 @@
  </div>
 </div>
 
-<!-- ── 6. RECEIVE PO ──────────────────────────────────────── -->
+<!-- ── 6. קבלת הזמנת רכש למלאי ──────────────────────────────── -->
 <div class="modal-ov" id="m-rpo">
  <div class="modal m-sm">
  <div class="m-hdr"><div><h2> Mark PO as Received</h2></div><button class="m-x" onclick="closeModal('m-rpo')">&times;</button></div>
@@ -1275,7 +1275,7 @@
  </div>
 </div>
 
-<!-- ── 7. SUPPLIER MAPPINGS MODAL ─────────────────────────── -->
+<!-- ── 7. מודאל מיפויי ספקים ─────────────────────────── -->
 <div class="modal-ov" id="m-sm">
  <div class="modal m-lg">
   <div class="m-hdr">
@@ -1311,7 +1311,7 @@
  </div>
 </div>
 
-<!-- ── 9. PRODUCT 360° DRILL-DOWN MODAL ───────────────────────── -->
+<!-- ── 9. מודאל ניתוח מוצר 360° ───────────────────────── -->
 <div class="modal-ov" id="m-prod360">
  <div class="modal m-2xl">
   <div class="m-hdr">
@@ -1330,7 +1330,7 @@
    </div>
   </div>
   <div class="m-body">
-   <!-- Inline Date Range & Branch Filter Bar for Product -->
+   <!-- סרגל סינון תאריכים וסניף עבור המוצר -->
    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:10px 14px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
     <div style="display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;color:#0f172a;">
      <span>📅 טווח תאריכים למוצר:</span>
@@ -1358,17 +1358,17 @@
     </div>
    </div>
 
-   <!-- KPIs Grid -->
+   <!-- רשת מדדי KPI -->
    <div id="p360-kpis" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px;margin-bottom:18px;">
-    <!-- Rendered via JS -->
+    <!-- מרונדר באמצעות JS -->
    </div>
 
-   <!-- Current Stock by Branch -->
+   <!-- מלאי נוכחי לפי סניף -->
    <div id="p360-stocks" style="margin-bottom:18px;">
-    <!-- Rendered via JS -->
+    <!-- מרונדר באמצעות JS -->
    </div>
 
-   <!-- Branch Sales Performance Table -->
+   <!-- טבלת ביצועי מכירות לפי סניף -->
    <div class="card" style="margin-bottom:18px;">
     <div class="card-hdr" style="background:#fcfcfd;">
      <h3 style="font-size:13.5px;display:flex;align-items:center;gap:6px;">🏢 ביצועים לפי סניף בתקופה הנבחרת</h3>
@@ -1395,7 +1395,7 @@
     </div>
    </div>
 
-   <!-- Complete Transaction History Table with Financials -->
+   <!-- היסטוריית תנועות מלאה עם נתונים פיננסיים -->
    <div class="card">
     <div class="card-hdr">
      <h3 style="font-size:14px;">יומן תנועות מלא ונתונים פיננסיים (מכירות, קבלות, העברות)</h3>
@@ -1430,7 +1430,7 @@
  </div>
 </div>
 
-<!-- ── 10. CUSTOMER 360° DRILL-DOWN MODAL ─────────────────────── -->
+<!-- ── 10. מודאל ניתוח לקוח 360° ─────────────────────── -->
 <div class="modal-ov" id="m-cust360">
  <div class="modal m-2xl">
   <div class="m-hdr">
@@ -1448,12 +1448,12 @@
    </div>
   </div>
   <div class="m-body">
-   <!-- Customer KPIs -->
+   <!-- מדדי KPI ללקוח -->
    <div id="c360-kpis" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px;">
-    <!-- Rendered via JS -->
+    <!-- מרונדר באמצעות JS -->
    </div>
 
-   <!-- Products Purchased Breakdown -->
+   <!-- פירוט מוצרים שנרכשו -->
    <div class="card" style="margin-bottom:18px;">
     <div class="card-hdr">
      <h3 style="font-size:14px;">פירוט מוצרים שנרכשו</h3>
@@ -1471,7 +1471,7 @@
     </div>
    </div>
 
-   <!-- Transactions Log -->
+   <!-- יומן עסקאות -->
    <div class="card">
     <div class="card-hdr">
      <h3 style="font-size:14px;">כל העסקאות והקבלות</h3>
@@ -1495,7 +1495,7 @@
  </div>
 </div>
 
-<!-- ── 11. BRANCH 360° DRILL-DOWN MODAL ───────────────────────── -->
+<!-- ── 11. מודאל ניתוח סניף 360° ───────────────────────── -->
 <div class="modal-ov" id="m-branch360">
  <div class="modal m-2xl">
   <div class="m-hdr">
@@ -1512,12 +1512,12 @@
    </div>
   </div>
   <div class="m-body">
-   <!-- Branch KPIs -->
+   <!-- מדדי KPI לסניף -->
    <div id="b360-kpis" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px;margin-bottom:18px;">
-    <!-- Rendered via JS -->
+    <!-- מרונדר באמצעות JS -->
    </div>
 
-   <!-- Top Branch Products -->
+   <!-- מוצרים מובילים בסניף -->
    <div class="card" style="margin-bottom:18px;">
     <div class="card-hdr">
      <h3 style="font-size:14px;">מוצרים מובילים במכירות בסניף זה</h3>
@@ -1535,7 +1535,7 @@
     </div>
    </div>
 
-   <!-- Branch Operations Log -->
+   <!-- יומן פעולות סניף -->
    <div class="card">
     <div class="card-hdr">
      <h3 style="font-size:14px;">פעולות ועסקאות בסניף</h3>
@@ -1561,11 +1561,11 @@
 
 <div id="toast-c"></div>
 
-<!-- ════ JAVASCRIPT ════════════════════════════════════════════ -->
+<!-- ════ קוד JAVASCRIPT ════════════════════════════════════════════ -->
 <script>
 'use strict';
 
-// ── CONFIG ─────────────────────────────────────────────────────
+// ── הגדרות תצורה (CONFIG) ──────────────────────────────────────────
 const LOCAL_CONFIG = window.MAKEUPSTATIC_CONFIG || {};
 const AT_TOKEN = LOCAL_CONFIG.AT_TOKEN || '';
 const AT_BASE = LOCAL_CONFIG.AT_BASE || 'appivKVm0EYXvid1p';
@@ -1598,18 +1598,18 @@ const F = {
  SM:{ DESC:'fldA77er9k2LG7cgH', SUP:'fld4ouB3HWedSegBu', BC:'fldNZOyhTYURwmCTb', PR:'fldiUOdGUJIvKvpIk' }
 };
 
-// ── STATE ──────────────────────────────────────────────────────
+// ── מצב המערכת (STATE) ───────────────────────────────────────────
 let allP=[],allTX=[],allPO=[],allAI=[],allCU=[],allSM=[];
 let filtP=[],filtTX=[],filtPO=[],filtCU=[];
 let txPage=1; const TX_PP=50;
 
-// POS state
+// מצב קופה (POS)
 let posStep=1,posF1=null,posF2=null,posF2Skip=false,posRows=[],posInvMap={},posPreview=[];
 
-// OCR state
+// מצב סריקת OCR
 let ocrFile=null,ocrType='sale',ocrItems=[];
 
-// ── AIRTABLE API ────────────────────────────────────────────────
+// ── ממשק API של AIRTABLE ─────────────────────────────────────────
 const HDR = AT_TOKEN ? {'Authorization':`Bearer ${AT_TOKEN}`,'Content-Type':'application/json'} : {'Content-Type':'application/json'};
 async function atGet(tbl,extra={}) {
  let recs=[],off=null;
@@ -1691,25 +1691,25 @@ async function atSearch(tbl,formula,maxR=5){
  return(await r.json()).records||[];
 }
 
-// ── STOCK UPDATE ─────────────────────────────────────────────────
-// Products stock fields are plain editable numbers (NOT rollups).
-// Every transaction must PATCH the product's branch stock directly.
-// Branch field map: Beitar→F.P.B, Beit Shemesh→F.P.BS, Jerusalem→F.P.J
+// ── עדכון מלאי ───────────────────────────────────────────────────
+// שדות המלאי של המוצרים הם מספרים רגילים לעריכה (ולא Rollup).
+// כל תנועה מעדכנת ישירות את מלאי הסניף של המוצר ב-Airtable.
+// מיפוי שדות סניפים: ביתר←F.P.B, בית שמש←F.P.BS, ירושלים←F.P.J
 const BRANCH_FIELD = {'Beitar':F.P.B,'Beit Shemesh':F.P.BS,'Jerusalem':F.P.J};
 async function updateStock(productId, branch, qtyChange) {
  if(!productId||!branch||!qtyChange)return;
  const fld=BRANCH_FIELD[branch];if(!fld){console.warn('Unknown branch:',branch);return;}
- // Get current stock value
+ // קבלת ערך מלאי נוכחי
  const prod=allP.find(p=>p.id===productId);
  const cur=(prod?.fields[fld])??0;
- const newVal=cur+qtyChange;// allow negative stock to flag gaps
+ const newVal=cur+qtyChange;// מאפשר מלאי שלילי לצורך איתור חוסרים
  await atPatch(TBL.P,productId,{[fld]:newVal});
- // Update local cache so UI reflects change immediately
+ // עדכון הזיכרון המקומי לעדכון מיידי של הממשק
  if(prod)prod.fields[fld]=newVal;
 }
 async function updateStockMany(ops) {
- // ops = [{productId, branch, qtyChange}, ...]
- // Group by productId to batch patches correctly
+ // רשימת פעולות: [{productId, branch, qtyChange}, ...]
+ // קיבוץ לפי מזהה מוצר לעדכון מרוכז של שינויים
  const byProd={};
  for(const op of ops){
  if(!op.productId||!op.branch||!op.qtyChange)continue;
@@ -1717,7 +1717,7 @@ async function updateStockMany(ops) {
  const fld=BRANCH_FIELD[op.branch];if(!fld)continue;
  byProd[op.productId][fld]=(byProd[op.productId][fld]||0)+op.qtyChange;
  }
- // Apply each product's accumulated changes
+ // החלת השינויים המצטברים עבור כל מוצר
  for(const[pid,changes]of Object.entries(byProd)){
  const prod=allP.find(p=>p.id===pid);if(!prod)continue;
  const patch={};
@@ -1757,15 +1757,15 @@ function showPage(n){
  if(n==='reports') renderActiveReport();
 }
 
-// ── MODALS ─────────────────────────────────────────────────────
+// ── ניהול חלונות מודאליים ────────────────────────────────────────
 function openModal(id){document.getElementById(id).classList.add('open');document.getElementById(id).querySelectorAll('input[type=date]').forEach(e=>{if(!e.value)e.value=today();});if(id==='m-tx'){txRows=[];txAddRow();}if(id==='m-po'){poRows=[];poAddRow();}}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 document.querySelectorAll('.modal-ov').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open');}));
 
-// ── TOAST ──────────────────────────────────────────────────────
+// ── הודעות קופצות (TOAST) ────────────────────────────────────────
 function toast(msg,type='ok'){const ic={ok:'',err:'',info:'',warn:''};const el=document.createElement('div');el.className=`toast t-${type}`;el.innerHTML=`<span>${ic[type]||''}</span><span>${esc(msg)}</span>`;document.getElementById('toast-c').appendChild(el);setTimeout(()=>{el.style.transition='opacity .4s';el.style.opacity='0';setTimeout(()=>el.remove(),420);},4200);}
 
-// ── UTILS ──────────────────────────────────────────────────────
+// ── פונקציות עזר כלליות (UTILS) ────────────────────────────────────
 const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 const today=()=>new Date().toISOString().split('T')[0];
 const dtISO=d=>new Date(`${d}T12:00:00`).toISOString();
@@ -1797,13 +1797,13 @@ function hebrewTxType(ty) {
  return s;
 }
 
-// ── BADGES ─────────────────────────────────────────────────────
+// ── תגיות (BADGES) ───────────────────────────────────────────────
 function brB(b){const m={'Beitar':'bb','ביתר עילית':'bb','Beit Shemesh':'bg','בית שמש':'bg','Jerusalem':'bp','ירושלים':'bp'};const hb=hebrewBranchName(b);return b?`<span class="badge ${m[b]||m[hb]||'bgr'}">${esc(hb)}</span>`:'--';}
 function tyB(t){const m={'Sale':'br','מכירה':'br','Stock Received':'bg','קבלת מלאי':'bg','Transfer':'bb','העברה':'bb','Manual Correction':'bo','תיקון ידני':'bo'};const ht=hebrewTxType(t);return t?`<span class="badge ${m[t]||m[ht]||'bgr'}">${esc(ht)}</span>`:'--';}
 function srcB(s){const m={'POS':'bt','קופה (POS)':'bt','AI Message':'bp','הודעת AI':'bp','Purchase Order':'bi','הזמנת רכש':'bi','Manual':'bgr','ידני':'bgr'};const hs=(s==='POS'?'קופה (POS)':(s==='AI Message'?'הודעת AI':(s==='Purchase Order'?'הזמנת רכש':(s==='Manual'?'ידני':s))));return s?`<span class="badge ${m[s]||'bgr'}">${esc(hs)}</span>`:'--';}
 function stB(s){const m={'Processed':'bg','בוצע':'bg','Needs Approval':'by','ממתין לאישור':'by','Error':'br','שגיאה':'br','Draft':'bgr','טיוטה':'bgr','Ordered':'bb','הוזמן':'bb','Received':'bg','התקבל':'bg'};const hs=(s==='Processed'?'בוצע':(s==='Needs Approval'?'ממתין לאישור':(s==='Error'?'שגיאה':(s==='Draft'?'טיוטה':(s==='Ordered'?'הוזמן':(s==='Received'?'התקבל':s))))));return s?`<span class="badge ${m[s]||'bgr'}">${esc(hs)}</span>`:'--';}
 
-// ── AUTOCOMPLETE ───────────────────────────────────────────────
+// ── השלמה אוטומטית (AUTOCOMPLETE) ─────────────────────────────────
 function acSrch(inp,ddId,hidId,extra){
  const q=inp.value.toLowerCase().trim();const dd=document.getElementById(ddId);
  document.getElementById(hidId).value='';
@@ -1829,12 +1829,12 @@ function acSel(item,ddId,hidId){
 }
 document.addEventListener('click',e=>{if(!e.target.closest('.ac-wrap'))document.querySelectorAll('.ac-dd').forEach(d=>d.style.display='none');});
 
-// ── HELPERS ────────────────────────────────────────────────────
+// ── פונקציות עזר (HELPERS) ──────────────────────────────────────
 function pNmTx(tx){const f=tx.fields,skus=f[F.TX.SKUL];if(skus&&skus.length){const p=allP.find(x=>x.id===(f[F.TX.PR]||[])[0]);return p?`${skus[0]} — ${p.fields[F.P.NM]||''}`:skus[0];}const lnk=f[F.TX.PR];if(lnk&&lnk.length){const p=allP.find(x=>x.id===lnk[0]);if(p)return`${p.fields[F.P.SKU]||''} — ${p.fields[F.P.NM]||''}`;}return f[F.TX.NM]||'--';}
 function cuHtml(tx){const cs=tx.fields[F.TX.CU];if(!cs||!cs.length)return`<span class="anon-tag"> Anonymous</span>`;const c=allCU.find(x=>x.id===cs[0]);return c?`<span class="cust-tag"> ${esc(c.fields[F.CU.NM]||'?')}</span>`:`<span class="cust-tag"> Customer</span>`;}
 function pNmPO(po){const f=po.fields,skus=f[F.PO.SKUL];if(skus&&skus.length)return skus[0];const lnk=f[F.PO.PR];if(lnk&&lnk.length){const p=allP.find(x=>x.id===lnk[0]);if(p)return`${p.fields[F.P.SKU]||''} — ${p.fields[F.P.NM]||''}`;}return'--';}
 
-// ── DATA LOAD & LOADING STATE ──────────────────────────────────
+// ── טעינת נתונים ומצב טעינה ────────────────────────────────────
 function showLoading(show, msg = 'Loading Boutique Inventory & Sales...', sub = 'Fetching real-time data from Airtable') {
  const ov = document.getElementById('data-loading-overlay');
  const ico = document.getElementById('r-ico');
@@ -1890,7 +1890,7 @@ async function refreshAll(){
  toast('Dashboard refreshed successfully!');
 }
 
-// ── EXECUTIVE DASHBOARD & ANALYTICS STATE ──────────────────────
+// ── מצב נתונים לוח בקרה ניהולי ואנליטיקה ────────────────────────
 let dashDatePreset = 'aug2026';
 let dashDateFrom = '2026-08-01';
 let dashDateTo = '2026-08-31';
@@ -1906,8 +1906,8 @@ let repBrand = '';
 let repProduct = '';
 let repCustomer = '';
 let repEmployee = '';
-let repProfitVatMode = 'inc'; // 'inc' (including 17% VAT) or 'exc' (excluding 17% VAT)
-let repInvFilter = 'all'; // 'all', 'low', 'neg'
+let repProfitVatMode = 'inc'; // 'inc' (כולל מע״מ) או 'exc' (ללא מע״מ)
+let repInvFilter = 'all'; // 'all' (הכל), 'low' (נמוך), 'neg' (שלילי)
 let currentP360Id = null;
 let currentC360Id = null;
 let currentB360Name = null;
@@ -2070,7 +2070,7 @@ function getFilteredSales(dateFrom, dateTo, branch) {
  });
 }
 
-// ── RENDER EXECUTIVE DASHBOARD ─────────────────────────────────
+// ── הצגת לוח בקרה ניהולי ─────────────────────────────────────────
 function renderOverview() {
  renderExecutiveDashboard();
 }
@@ -2095,15 +2095,15 @@ function renderExecutiveDashboard() {
   else if (f[F.TX.CU] && f[F.TX.CU].length) uniqueCusts.add(f[F.TX.CU][0]);
  });
 
- // Exact 18% VAT Extraction Formula (per client specifications):
- // Actual Paid Price is VAT-inclusive. Cost Price is VAT-exclusive.
+ // נוסחת חילוץ מע״מ מדויקת 18% (לפי הנחיות הלקוח):
+ // מחיר ששולם בפועל כולל מע״מ. מחיר עלות אינו כולל מע״מ.
  const VAT_FACTOR = 1.18;
  const netSalesExVat = totalSales / VAT_FACTOR;
  const vatAmount = totalSales - netSalesExVat;
  const grossProfit = netSalesExVat - totalCOGS;
  const marginPct = netSalesExVat > 0 ? (grossProfit / netSalesExVat) * 100 : 0;
 
- // Populate Dashboard KPIs
+ // הזנת מדדי KPI בלוח הבקרה
  const elSales = document.getElementById('k-sales');
  if (elSales) elSales.textContent = `₪ ${Math.round(totalSales).toLocaleString('en-US')}`;
  const elVat = document.getElementById('k-vat');
@@ -2121,7 +2121,7 @@ function renderExecutiveDashboard() {
  const elCusts = document.getElementById('k-custs');
  if (elCusts) elCusts.textContent = uniqueCusts.size.toLocaleString('en-US');
 
- // Warning Banners
+ // באנרים של התראות
  const low = allP.filter(p => isLow(p.fields));
  const neg = allP.filter(p => {
   const f = p.fields;
@@ -2147,17 +2147,17 @@ function renderExecutiveDashboard() {
  }
  syncOverviewAlertsWrap();
 
- // Render Visual Charts
+ // הצגת גרפים ויזואליים
  renderSalesOverTimeChart(sales);
  renderSalesByBranchChart(sales);
  renderSalesByBrandChart(sales);
 
- // Render 3 Summary Tables
+ // הצגת 3 טבלאות סיכום
  renderTopSellingProducts(sales);
  renderTopCustomers(sales);
  renderLowInventoryAlerts(allP);
 
- // Render Recent Transactions in Range
+ // הצגת עסקאות אחרונות בטווח הנבחר
  const recent = sales.slice(0, 15);
  const elRecent = document.getElementById('recent-tx');
  if (elRecent) {
@@ -2167,7 +2167,7 @@ function renderExecutiveDashboard() {
  }
 }
 
-// ── CHART 1: SALES OVER TIME ───────────────────────────────────
+// ── גרף 1: מכירות לאורך זמן ───────────────────────────────────
 function renderSalesOverTimeChart(sales) {
  if (!sales) sales = getFilteredSales(dashDateFrom, dashDateTo, dashBranch);
  const container = document.getElementById('chart-overtime-container');
@@ -2218,7 +2218,7 @@ function renderSalesOverTimeChart(sales) {
   ? `${pathD} L ${points[points.length - 1].x} ${padT + chartH} L ${points[0].x} ${padT + chartH} Z`
   : '';
 
- // Step labels for x-axis
+ // תוויות ציר X
  const step = Math.max(1, Math.floor(dates.length / 6));
  const xLabels = points.filter((_, i) => i % step === 0 || i === points.length - 1).map(p => {
   const parts = p.date.split('-');
@@ -2226,7 +2226,7 @@ function renderSalesOverTimeChart(sales) {
   return `<text x="${p.x}" y="${h - 8}" font-size="11" fill="#94a3b8" text-anchor="middle">${label}</text>`;
  }).join('');
 
- // Horizontal gridlines
+ // קווי רשת אופקיים
  const gridLevels = [0, 0.33, 0.66, 1];
  const gridLines = gridLevels.map(lvl => {
   const y = padT + chartH - lvl * chartH;
@@ -2238,7 +2238,7 @@ function renderSalesOverTimeChart(sales) {
   `;
  }).join('');
 
- // Dots
+ // נקודות נתונים
  const dots = points.map(p => {
   const tipVal = metric === 'txs' ? `${p.val} orders` : `₪${Math.round(p.val).toLocaleString()}`;
   return `
@@ -2265,7 +2265,7 @@ function renderSalesOverTimeChart(sales) {
  `;
 }
 
-// ── CHART 2: SALES BY BRANCH ───────────────────────────────────
+// ── גרף 2: מכירות לפי סניף ───────────────────────────────────
 function renderSalesByBranchChart(sales) {
  if (!sales) sales = getFilteredSales(dashDateFrom, dashDateTo, dashBranch);
  const container = document.getElementById('chart-branch-container');
@@ -2309,7 +2309,7 @@ function renderSalesByBranchChart(sales) {
  }).join('');
 }
 
-// ── CHART 3: SALES BY BRAND ────────────────────────────────────
+// ── גרף 3: מכירות לפי מותג ────────────────────────────────────
 function renderSalesByBrandChart(sales) {
  if (!sales) sales = getFilteredSales(dashDateFrom, dashDateTo, dashBranch);
  const container = document.getElementById('chart-brand-container');
@@ -2339,12 +2339,12 @@ function renderSalesByBrandChart(sales) {
  const totalVal = items.reduce((sum, item) => sum + item.val, 0) || 1;
  const palette = ['#be185d', '#db2777', '#f472b6', '#fb7185', '#fda4af', '#f59e0b', '#cbd5e1', '#94a3b8'];
 
- // Top 5 + Others
+ // 5 מובילים + אחרים
  const topBrands = items.slice(0, 5);
  const otherVal = items.slice(5).reduce((sum, item) => sum + item.val, 0);
  if (otherVal > 0) topBrands.push({ brand: 'Others', val: otherVal });
 
- // Calculate SVG Donut Slices
+ // חישוב גזרות דונאט ב-SVG
  const radius = 55;
  const circumference = 2 * Math.PI * radius;
  let accumulatedPct = 0;
@@ -2391,7 +2391,7 @@ function renderSalesByBrandChart(sales) {
  `;
 }
 
-// ── TOP SELLING PRODUCTS TABLE ─────────────────────────────────
+// ── טבלת מוצרים מובילים במכירות ─────────────────────────────────
 function renderTopSellingProducts(sales) {
  const tbody = document.getElementById('top-prods-body');
  if (!tbody) return;
@@ -2436,7 +2436,7 @@ function renderTopSellingProducts(sales) {
  `).join('');
 }
 
-// ── TOP CUSTOMERS TABLE ────────────────────────────────────────
+// ── טבלת לקוחות מובילים ────────────────────────────────────────
 function renderTopCustomers(sales) {
  const tbody = document.getElementById('top-custs-body');
  if (!tbody) return;
@@ -2460,7 +2460,7 @@ function renderTopCustomers(sales) {
 
  let topList = Object.values(custMap).sort((a, b) => b.spend - a.spend).slice(0, 5);
 
- // If fewer than 5 customers found in sales, supplement with customers from catalogue
+ // אם נמצאו פחות מ-5 לקוחות בעסקאות, השלמה מתוך קטלוג הלקוחות
  if (topList.length < 5 && allCU.length) {
   const existingIds = new Set(topList.map(c => c.cId));
   for (const cu of allCU) {
@@ -2496,7 +2496,7 @@ function renderTopCustomers(sales) {
  `).join('');
 }
 
-// ── LOW INVENTORY ALERTS TABLE ─────────────────────────────────
+// ── טבלת התראות מלאי נמוך ─────────────────────────────────
 function renderLowInventoryAlerts(prods) {
  const tbody = document.getElementById('top-low-body');
  if (!tbody) return;
@@ -2536,9 +2536,9 @@ function renderLowInventoryAlerts(prods) {
  }).join('');
 }
 
-// ── ONE-CLICK 360° DRILL-DOWNS ─────────────────────────────────
+// ── ניתוח מעמיק 360° בלחיצה אחת ─────────────────────────────────
 
-// 1. Product 360°
+// 1. ניתוח מוצר 360°
 let p360DateFrom = '';
 let p360DateTo = '';
 let p360Branch = '';
@@ -2630,12 +2630,12 @@ function renderProduct360Data(productId) {
  document.getElementById('p360-shade-badge').textContent = shade ? `Shade: ${shade}` : (bc ? `BC: ${bc}` : 'Catalogue Item');
  document.getElementById('p360-meta').textContent = `List Price: ₪${sp} · Cost Price: ₪${cp} · Standard Margin: ${stdMargin}% · Barcode: ${bc || '--'}`;
 
- // Stocks
+ // רמות מלאי
  const b = f[F.P.B] ?? 0, bs = f[F.P.BS] ?? 0, j = f[F.P.J] ?? 0, totStock = b + bs + j;
  const valAtCost = totStock * cp;
  const valAtRetail = totStock * sp;
 
- // Filter transactions for this product
+ // סינון עסקאות עבור מוצר זה
  const txForProd = allTX.filter(tx => {
   const pIds = tx.fields[F.TX.PR] || [];
   if (Array.isArray(pIds) ? pIds.includes(prod.id) : pIds === prod.id) return true;
@@ -2644,7 +2644,7 @@ function renderProduct360Data(productId) {
   return false;
  });
 
- // Sales metrics in selected period
+ // מדדי מכירות בתקופה שנבחרה
  const salesForProd = txForProd.filter(tx => {
   if (tx.fields[F.TX.TY] !== 'Sale') return false;
   const dt = (tx.fields[F.TX.DT] || '').split('T')[0];
@@ -2666,7 +2666,7 @@ function renderProduct360Data(productId) {
   pRevenue += qty * price;
   pCOGS += qty * cp;
  });
- // 18% VAT adjustment: Actual Paid Price is VAT-inclusive, Cost Price is VAT-exclusive
+ // התאמת 18% מע״מ: מחיר ששולם כולל מע״מ, מחיר עלות ללא מע״מ
  const pNetExVat = pRevenue / 1.18;
  const pVat = pRevenue - pNetExVat;
  const pProfit = pNetExVat - pCOGS;
@@ -2696,7 +2696,7 @@ function renderProduct360Data(productId) {
   </div>
  `;
 
- // Branch Breakdown Table for this Product
+ // טבלת פירוט סניפים עבור מוצר זה
  const branchNames = [
   { name: 'Beit Shemesh', stock: bs },
   { name: 'Jerusalem', stock: j },
@@ -2762,7 +2762,7 @@ function renderProduct360Data(productId) {
   `;
  }
 
- // Financial Movement Ledger
+ // יומן תנועות פיננסי
  document.getElementById('p360-tx-count').textContent = `${txForProd.length} records`;
  document.getElementById('p360-tx-body').innerHTML = txForProd.length ? txForProd.map(tx => {
   const tf = tx.fields;
@@ -2782,7 +2782,7 @@ function renderProduct360Data(productId) {
    listCell = sp ? ('₪ ' + sp) : '--';
    paidCell = paidPrice ? ('₪ ' + paidPrice.toFixed(2)) : '--';
    costCell = cp ? ('₪ ' + cp) : '--';
-   // 18% VAT Deduction per client specification
+   // ניכוי 18% מע״מ בהתאם להנחיות הלקוח
    const paidExVat = paidPrice / 1.18;
    const profit = absQty * (paidExVat - cp);
    const mPct = paidExVat > 0 ? (((paidExVat - cp) / paidExVat) * 100).toFixed(1) : '0.0';
@@ -2818,7 +2818,7 @@ function renderProduct360Data(productId) {
  }).join('') : `<tr><td colspan="12"><div class="empty">No transaction history for this product</div></td></tr>`;
 }
 
-// 2. Customer 360°
+// 2. ניתוח לקוח 360°
 function openCustomer360(customerId) {
  let cust = allCU.find(c => c.id === customerId);
  if (!cust) cust = allCU.find(c => c.fields[F.CU.PH] === customerId || c.fields[F.CU.NM] === customerId);
@@ -2836,7 +2836,7 @@ function openCustomer360(customerId) {
  document.getElementById('c360-type-badge').textContent = type;
  document.getElementById('c360-meta').textContent = `Email: ${email} · Created: ${fmtD(cf[F.CU.CR])}`;
 
- // Transactions for this customer
+ // עסקאות עבור לקוח זה
  const txForCust = allTX.filter(tx => {
   const cIds = tx.fields[F.TX.CU] || [];
   return Array.isArray(cIds) ? cIds.includes(cust.id) : cIds === cust.id;
@@ -2915,7 +2915,7 @@ function openCustomer360(customerId) {
  openModal('m-cust360');
 }
 
-// 3. Branch 360°
+// 3. ניתוח סניף 360°
 function openBranch360(branchName) {
  currentB360Name = branchName;
  const normName = (branchName === 'Beitar Illit' || branchName === 'Beitar') ? 'Beitar' : branchName;
@@ -2923,7 +2923,7 @@ function openBranch360(branchName) {
  document.getElementById('b360-name').textContent = `Branch 360° — ${branchName}`;
  document.getElementById('b360-meta').textContent = `Comprehensive operations, revenue, margins, and stock valuation for ${branchName}`;
 
- // Filter transactions for this branch
+ // סינון עסקאות עבור סניף זה
  const txForBranch = allTX.filter(tx => {
   const br = tx.fields[F.TX.BR];
   if (normName === 'Beitar') return br === 'Beitar' || br === 'Beitar Illit';
@@ -2964,7 +2964,7 @@ function openBranch360(branchName) {
  const bProfit = bSales - bCOGS;
  const bMargin = bSales > 0 ? ((bProfit / bSales) * 100).toFixed(1) : '0.0';
 
- // Current Branch Inventory Valuation
+ // שווי מלאי נוכחי בסניף
  let branchStockUnits = 0, branchValCost = 0, branchValRetail = 0;
  const fld = normName === 'Beit Shemesh' ? F.P.BS : (normName === 'Jerusalem' ? F.P.J : F.P.B);
  allP.forEach(p => {
@@ -3018,7 +3018,7 @@ function openBranch360(branchName) {
  openModal('m-branch360');
 }
 
-// ── DEDICATED REPORTS PAGE & UNIVERSAL EXPORT ───────────────────
+// ── עמוד דוחות ייעודי וייצוא אוניברסלי ────────────────────────────
 function showReportsTab(tab) {
  showPage('reports');
  switchReportTab(tab);
@@ -3034,7 +3034,7 @@ function switchReportTab(tab) {
 }
 
 function populateReportFilterOptions() {
- // 1. Brands Dropdown
+ // 1. תפריט מותגים
  const brEl = document.getElementById('rf-brand');
  if (brEl) {
   const currentVal = brEl.value;
@@ -3046,7 +3046,7 @@ function populateReportFilterOptions() {
   brEl.innerHTML = h;
  }
 
- // 2. Products Dropdown
+ // 2. תפריט מוצרים
  const prEl = document.getElementById('rf-product');
  if (prEl) {
   const currentVal = prEl.value;
@@ -3064,7 +3064,7 @@ function populateReportFilterOptions() {
   prEl.innerHTML = h;
  }
 
- // 3. Customers Dropdown
+ // 3. תפריט לקוחות
  const cuEl = document.getElementById('rf-customer');
  if (cuEl) {
   const currentVal = cuEl.value;
@@ -3082,7 +3082,7 @@ function populateReportFilterOptions() {
   cuEl.innerHTML = h;
  }
 
- // 4. Employees Dropdown
+ // 4. תפריט עובדים
  const empEl = document.getElementById('rf-employee');
  if (empEl) {
   const currentVal = empEl.value;
@@ -3150,7 +3150,7 @@ function onReportFilterChange() {
  if (cEl) repCustomer = cEl.value;
  if (eEl) repEmployee = eEl.value;
 
- // Update active filters badge
+ // עדכון תגית מסננים פעילים
  let activeCount = 0;
  if (repDateFrom || repDateTo) activeCount++;
  if (repBranch) activeCount++;
@@ -3221,19 +3221,19 @@ function getFilteredReportSales() {
   const f = tx.fields;
   if (f[F.TX.TY] !== 'Sale') return false;
 
-  // 1. Date Range
+  // 1. טווח תאריכים
   const dt = (f[F.TX.DT] || '').split('T')[0];
   if (repDateFrom && dt < repDateFrom) return false;
   if (repDateTo && dt > repDateTo) return false;
 
-  // 2. Branch
+  // 2. סניף
   if (repBranch) {
    const br = f[F.TX.BR] || '';
    const match = repBranch === 'Beitar' ? (br === 'Beitar' || br === 'Beitar Illit') : (br === repBranch);
    if (!match) return false;
   }
 
-  // 3. Product or Brand
+  // 3. מוצר או מותג
   const prod = resolveProdFromTx(tx);
   if (repBrand) {
    const brand = prod ? (prod.fields[F.P.BR] || '') : '';
@@ -3246,14 +3246,14 @@ function getFilteredReportSales() {
    if (!hasId && (!prod || prod.id !== repProduct)) return false;
   }
 
-  // 4. Customer
+  // 4. לקוח
   if (repCustomer) {
    const cIds = f[F.TX.CU] || [];
    const hasCId = Array.isArray(cIds) ? cIds.includes(repCustomer) : cIds === repCustomer;
    if (!hasCId) return false;
   }
 
-  // 5. Employee / Salesperson
+  // 5. עובד / מוכר
   if (repEmployee) {
    const emp = (f[F.TX.EMP] || '').trim();
    if (emp !== repEmployee) return false;
@@ -3267,7 +3267,7 @@ function renderActiveReport() {
  const container = document.getElementById('report-content-container');
  if (!container) return;
 
- // Ensure dropdowns are populated if empty
+ // וידוא שהתפריטים מאוכלסים אם הם ריקים
  const brEl = document.getElementById('rf-brand');
  if (brEl && brEl.options.length <= 1 && allP.length > 0) {
   populateReportFilterOptions();
@@ -3297,7 +3297,7 @@ function renderActiveReport() {
 }
 
 // ─────────────────────────────────────────────────────────────
-// TAB 1: SALES REPORT (Gross, Discounts, Net, AOV, Trend Chart)
+// לשונית 1: דוח מכירות (ברוטו, הנחות, נטו, ממוצע לעסקה, גרף מגמה)
 // ─────────────────────────────────────────────────────────────
 function renderSalesReport(container, sales) {
  let totUnits = 0, totGross = 0, totNet = 0;
@@ -3333,11 +3333,11 @@ function renderSalesReport(container, sales) {
  const aov = txCount > 0 ? (totNet / txCount) : 0;
  const avgPaidPerUnit = totUnits > 0 ? (totNet / totUnits) : 0;
 
- // Sorted daily trend for graph
+ // מגמה יומית ממוינת עבור הגרף
  const trendDays = Object.values(dailyTrend).sort((a, b) => a.date.localeCompare(b.date));
  const maxDailyNet = trendDays.reduce((m, d) => Math.max(m, d.net), 10);
 
- // SVG Trend Chart Generation
+ // יצירת גרף מגמה SVG
  let svgChart = '';
  if (trendDays.length > 1) {
   const w = 840, h = 160, pL = 45, pR = 25, pT = 20, pB = 30;
@@ -3366,15 +3366,15 @@ function renderSalesReport(container, sales) {
         <stop offset="100%" stop-color="#db2777" stop-opacity="0.0"/>
        </linearGradient>
       </defs>
-      <!-- Grid Lines -->
+      <!-- קווי רשת -->
       <line x1="${pL}" y1="${pT}" x2="${w - pR}" y2="${pT}" stroke="#f1f5f9" stroke-width="1"/>
       <line x1="${pL}" y1="${pT + plotH / 2}" x2="${w - pR}" y2="${pT + plotH / 2}" stroke="#f1f5f9" stroke-width="1"/>
       <line x1="${pL}" y1="${pT + plotH}" x2="${w - pR}" y2="${pT + plotH}" stroke="#e2e8f0" stroke-width="1"/>
-      <!-- Area Fill -->
+      <!-- מילוי שטח הגרף -->
       <path d="${areaD}" fill="url(#salesGrad)"/>
-      <!-- Line -->
+      <!-- קו מגמה -->
       <path d="${pathD}" fill="none" stroke="#db2777" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-      <!-- Dots & Dates -->
+      <!-- נקודות ותאריכים -->
       ${pts.map((p, i) => `
        <circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="4" fill="#ffffff" stroke="#db2777" stroke-width="2">
         <title>${fmtD(p.date)}: ₪ ${Math.round(p.net).toLocaleString()} (${p.units} units)</title>
@@ -3390,7 +3390,7 @@ function renderSalesReport(container, sales) {
  }
 
  container.innerHTML = `
-  <!-- Top 6 KPI Cards -->
+  <!-- 6 כרטיסי KPI עליונים -->
   <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));gap:12px;margin-bottom:18px;">
    <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">מכירות מחירון (ברוטו)</div><div class="dash-kpi-val" style="font-size:22px;color:#475569;">₪ ${Math.round(totGross).toLocaleString()}</div><div class="dash-kpi-sub">מחיר מלא לפני הנחות</div></div>
    <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">הנחות ומבצעים</div><div class="dash-kpi-val" style="font-size:22px;color:#f59e0b;">₪ ${Math.round(totDiscounts).toLocaleString()}</div><div class="dash-kpi-sub">${discPct}% שיעור הנחה</div></div>
@@ -3402,7 +3402,7 @@ function renderSalesReport(container, sales) {
 
   ${svgChart}
 
-  <!-- Transactions Ledger -->
+  <!-- יומן עסקאות -->
   <div class="card">
    <div class="card-hdr" style="background:#fcfcfd;">
     <div>
@@ -3465,7 +3465,7 @@ function renderSalesReport(container, sales) {
 }
 
 // ─────────────────────────────────────────────────────────────
-// TAB 2: PROFIT & P&L WATERFALL (With Israeli 17% VAT Options)
+// לשונית 2: רווחיות ודוח רווח והפסד (כולל אפשרויות מע״מ)
 // ─────────────────────────────────────────────────────────────
 function renderProfitReport(container, sales) {
  let totUnits = 0, totGross = 0, totNet = 0, totCOGS = 0;
@@ -3499,8 +3499,8 @@ function renderProfitReport(container, sales) {
  const totDiscounts = Math.max(0, totGross - totNet);
  const discPct = totGross > 0 ? ((totDiscounts / totGross) * 100).toFixed(1) : '0.0';
 
- // Exact 18% Israeli VAT Standard per client instructions:
- // Actual Paid Price is VAT-inclusive. Cost Price is VAT-exclusive.
+ // תקן מע״מ ישראלי 18% לפי הנחיות הלקוח:
+ // מחיר ששולם בפועל כולל מע״מ. מחיר עלות אינו כולל מע״מ.
  const isIncVAT = repProfitVatMode === 'inc';
  const VAT_FACTOR = 1.18;
  const netExVat = totNet / VAT_FACTOR;
@@ -3518,7 +3518,7 @@ function renderProfitReport(container, sales) {
  }).sort((a, b) => b.profit - a.profit);
 
  container.innerHTML = `
-  <!-- VAT Mode Toggle Header -->
+  <!-- כותרת בחירת מצב מע״מ -->
   <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:14px;padding:14px 18px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
    <div>
     <div style="font-size:14px;font-weight:700;color:#0f172a;display:flex;align-items:center;gap:8px;">
@@ -3532,7 +3532,7 @@ function renderProfitReport(container, sales) {
    </div>
   </div>
 
-  <!-- Visual P&L Waterfall Card -->
+  <!-- כרטיס תרשים מפל רווח והפסד (Waterfall) -->
   <div class="card" style="margin-bottom:18px;padding:20px;background:#ffffff;border-radius:14px;box-shadow:0 1px 3px rgba(0,0,0,0.04);">
    <div style="font-size:14px;font-weight:700;color:#0f172a;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;">
     <span>🌊 פירוט חישוב הרווח (דוח מדורג)</span>
@@ -3540,57 +3540,57 @@ function renderProfitReport(container, sales) {
    </div>
 
    <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(135px, 1fr));gap:12px;align-items:stretch;">
-    <!-- Step 1: Gross Sales -->
+    <!-- שלב 1: מכירות ברוטו -->
     <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px;text-align:center;">
      <div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">1. מכירות מחירון (ברוטו)</div>
      <div style="font-size:20px;font-weight:800;color:#334155;margin:6px 0;">₪ ${Math.round(totGross).toLocaleString()}</div>
      <div style="font-size:11px;color:#94a3b8;">100% שווי קטלוגי</div>
     </div>
 
-    <!-- Arrow -->
+    <!-- חץ מעבר -->
     <div style="display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:18px;">↓</div>
 
-    <!-- Step 2: Discounts -->
+    <!-- שלב 2: הנחות ומבצעים -->
     <div style="background:#fffbeb;border:1px solid #fef3c7;border-radius:10px;padding:14px;text-align:center;">
      <div style="font-size:11px;font-weight:700;color:#d97706;text-transform:uppercase;">2. הנחות ומבצעים</div>
      <div style="font-size:20px;font-weight:800;color:#b45309;margin:6px 0;">-₪ ${Math.round(totDiscounts).toLocaleString()}</div>
      <div style="font-size:11px;color:#d97706;">-${discPct}% ממחיר המחירון</div>
     </div>
 
-    <!-- Arrow -->
+    <!-- חץ מעבר -->
     <div style="display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:18px;">↓</div>
 
-    <!-- Step 3: Actual Paid (Inc VAT) -->
+    <!-- שלב 3: שולם בפועל (כולל מע״מ) -->
     <div style="background:#fdf2f8;border:1px solid #fbcfe8;border-radius:10px;padding:14px;text-align:center;">
      <div style="font-size:11px;font-weight:700;color:#be185d;text-transform:uppercase;">3. שולם בפועל (כולל מע״מ)</div>
      <div style="font-size:20px;font-weight:800;color:#db2777;margin:6px 0;">₪ ${Math.round(totNet).toLocaleString()}</div>
      <div style="font-size:11px;color:#be185d;">מע״מ כלול: ₪${Math.round(vatAmount).toLocaleString()}</div>
     </div>
 
-    <!-- Arrow -->
+    <!-- חץ מעבר -->
     <div style="display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:18px;">↓</div>
 
-    <!-- Step 4: Net Sales Ex VAT -->
+    <!-- שלב 4: מכירות נטו ללא מע״מ -->
     <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:10px;padding:14px;text-align:center;">
      <div style="font-size:11px;font-weight:700;color:#0369a1;text-transform:uppercase;">4. מכירות נטו (ללא מע״מ)</div>
      <div style="font-size:20px;font-weight:800;color:#0284c7;margin:6px 0;">₪ ${Math.round(netExVat).toLocaleString()}</div>
      <div style="font-size:11px;color:#0369a1;">בסיס הכנסה לחישוב רווח</div>
     </div>
 
-    <!-- Arrow -->
+    <!-- חץ מעבר -->
     <div style="display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:18px;">↓</div>
 
-    <!-- Step 5: COGS -->
+    <!-- שלב 5: עלות הסחורה שנמכרה (COGS) -->
     <div style="background:#f1f5f9;border:1px solid #cbd5e1;border-radius:10px;padding:14px;text-align:center;">
      <div style="font-size:11px;font-weight:700;color:#475569;text-transform:uppercase;">5. עלות המכר (COGS)</div>
      <div style="font-size:20px;font-weight:800;color:#475569;margin:6px 0;">-₪ ${Math.round(totCOGS).toLocaleString()}</div>
      <div style="font-size:11px;color:#64748b;">${netExVat > 0 ? ((totCOGS / netExVat) * 100).toFixed(1) : 0}% מההכנסות נטו</div>
     </div>
 
-    <!-- Arrow -->
+    <!-- חץ מעבר -->
     <div style="display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:18px;">=</div>
 
-    <!-- Step 6: Gross Profit after VAT -->
+    <!-- שלב 6: רווח גולמי לאחר מע״מ -->
     <div style="background:#f0fdf4;border:2px solid #86efac;border-radius:10px;padding:14px;text-align:center;box-shadow:0 2px 6px rgba(22,163,74,0.1);">
      <div style="font-size:11px;font-weight:700;color:#15803d;text-transform:uppercase;">6. רווח גולמי (לאחר מע״מ)</div>
      <div style="font-size:22px;font-weight:900;color:#16a34a;margin:6px 0;">₪ ${Math.round(grossProfit).toLocaleString()}</div>
@@ -3598,14 +3598,14 @@ function renderProfitReport(container, sales) {
     </div>
    </div>
 
-   <!-- VAT Breakdown Callout Banner -->
+   <!-- באנר פירוט מע״מ -->
    <div style="margin-top:14px;padding:10px 14px;background:#f8fafc;border-radius:8px;font-size:12.5px;color:#475569;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
     <span><strong>🇮🇱 חישוב מע״מ ישראלי (18%):</strong> סה״כ שולם בפועל: <strong>₪ ${Math.round(totNet).toLocaleString()}</strong> · מע״מ כלול (18%): <strong>₪ ${Math.round(vatAmount).toLocaleString()}</strong> · הכנסות נטו ללא מע״מ: <strong>₪ ${Math.round(netExVat).toLocaleString()}</strong> · רווח גולמי: <strong>₪ ${Math.round(grossProfit).toLocaleString()}</strong></span>
     <span class="badge bb">תאימות מלאה לחוק מע״מ</span>
    </div>
   </div>
 
-  <!-- Brand Profitability Contribution Breakdown -->
+  <!-- פירוט תרומת מותגים לרווחיות -->
   <div class="card">
    <div class="card-hdr" style="background:#fcfcfd;">
     <div>
@@ -3719,7 +3719,7 @@ function renderProductsReport(container, sales) {
  const totProfit = totRev - totCost;
  const overallMargin = totRev > 0 ? ((totProfit / totRev) * 100).toFixed(1) : '0.0';
 
- // Top 5 Brands Pills
+ // תגיות 5 המותגים המובילים
  const brandTotals = {};
  rows.forEach(r => {
   const b = r.brand || 'Unbranded';
@@ -3730,7 +3730,7 @@ function renderProductsReport(container, sales) {
  const topBrands = Object.values(brandTotals).sort((a, b) => b.rev - a.rev).slice(0, 5);
 
  container.innerHTML = `
-  <!-- KPIs -->
+  <!-- מדדי KPI -->
   <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));gap:12px;margin-bottom:18px;">
    <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">מוצרים שנמכרו</div><div class="dash-kpi-val" style="font-size:22px;">${rows.length}</div><div class="dash-kpi-sub">Out of ${allP.length} catalogued</div></div>
    <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">יחידות שנמכרו</div><div class="dash-kpi-val" style="font-size:22px;color:#0f172a;">${totUnits}</div><div class="dash-kpi-sub">סה״כ יחידות שנמכרו</div></div>
@@ -3739,7 +3739,7 @@ function renderProductsReport(container, sales) {
    <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">רווח גולמי (לאחר מע״מ)</div><div class="dash-kpi-val" style="font-size:22px;color:#16a34a;">₪ ${Math.round(totProfit).toLocaleString()}</div><div class="dash-kpi-sub">${overallMargin}% שיעור רווח</div></div>
   </div>
 
-  <!-- Best-Selling Brands Bar -->
+  <!-- סרגל מותגים מובילים -->
   <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:12px 16px;margin-bottom:18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
    <span style="font-size:12.5px;font-weight:700;color:#0f172a;">🏆 המותגים המובילים:</span>
    ${topBrands.map((b, i) => `
@@ -3747,7 +3747,7 @@ function renderProductsReport(container, sales) {
    `).join('')}
   </div>
 
-  <!-- Products Table -->
+  <!-- טבלת מוצרים -->
   <div class="card">
    <div class="card-hdr" style="background:#fcfcfd;">
     <div>
@@ -3806,19 +3806,19 @@ function renderProductsReport(container, sales) {
 }
 
 // ─────────────────────────────────────────────────────────────
-// TAB 4: INVENTORY REPORT (Wholesale vs Retail, Quick Filters)
+// לשונית 4: דוח מלאי (עלות מול מחירון לצרכן, מסננים מהירים)
 // ─────────────────────────────────────────────────────────────
 function renderInventoryReport(container) {
  let prods = [...allP];
 
- // Filter by brand or product if selected in Universal Filter
+ // סינון לפי מותג או מוצר אם נבחר במסנן האוניברסלי
  if (repBrand) prods = prods.filter(p => p.fields[F.P.BR] === repBrand);
  if (repProduct) prods = prods.filter(p => p.id === repProduct);
 
  const isBranchSel = !!repBranch;
  const brName = isBranchSel ? hebrewBranchName(repBranch) : '';
 
- // Calculate stock & counts
+ // חישוב כמויות מלאי וספירה
  let inStockCount = 0, outStockCount = 0, lowCount = 0, negCount = 0;
  const rows = prods.map(p => {
   const f = p.fields;
@@ -3858,7 +3858,7 @@ function renderInventoryReport(container) {
   };
  });
 
- // Apply Quick Filter (All / In Stock / Out of Stock / Low / Negative)
+ // החלת סינון מהיר (הכל / במלאי / אזל מהמלאי / נמוך / שלילי)
  let filteredRows = rows;
  if (repInvFilter === 'in_stock') {
   filteredRows = rows.filter(r => r.isInStock);
@@ -3877,7 +3877,7 @@ function renderInventoryReport(container) {
  const potentialMargin = totValRetail > 0 ? ((potentialProfit / totValRetail) * 100).toFixed(1) : '0.0';
 
  container.innerHTML = `
-  <!-- Quick Filters Header -->
+  <!-- כותרת מסננים מהירים -->
   <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:14px;padding:14px 18px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
     <span style="font-size:13px;font-weight:700;color:#0f172a;">⚡ סינון מלאי מהיר ${isBranchSel ? `(${brName})` : ''}:</span>
@@ -3890,7 +3890,7 @@ function renderInventoryReport(container) {
    <span style="font-size:12px;color:#64748b;">מציג ${filteredRows.length} מוצרים</span>
   </div>
 
-  <!-- Valuation KPIs -->
+  <!-- מדדי שווי מלאי KPI -->
   <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));gap:12px;margin-bottom:18px;">
    <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">סה״כ יחידות במלאי</div><div class="dash-kpi-val" style="font-size:22px;color:#0f172a;">${totUnits.toLocaleString()}</div><div class="dash-kpi-sub">${isBranchSel ? `בסניף ${brName}` : 'כל 3 הסניפים'}</div></div>
    <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">שווי מלאי בעלות (סיטונאי)</div><div class="dash-kpi-val" style="font-size:22px;color:#475569;">₪ ${Math.round(totValCost).toLocaleString()}</div><div class="dash-kpi-sub">${isBranchSel ? `לפי עלות בסניף ${brName}` : 'שווי המלאי לפי עלות'}</div></div>
@@ -3898,7 +3898,7 @@ function renderInventoryReport(container) {
    <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">רווח פוטנציאלי במלאי</div><div class="dash-kpi-val" style="font-size:22px;color:#16a34a;">₪ ${Math.round(potentialProfit).toLocaleString()}</div><div class="dash-kpi-sub">${potentialMargin}% רווח פוטנציאלי</div></div>
   </div>
 
-  <!-- Inventory Table -->
+  <!-- טבלת מלאי -->
   <div class="card">
    <div class="card-hdr" style="background:#fcfcfd;">
     <div>
@@ -3977,12 +3977,12 @@ function renderInventoryReport(container) {
 }
 
 // ─────────────────────────────────────────────────────────────
-// TAB 5: CUSTOMERS REPORT (Spend, Tickets, Top Brands/Items)
+// לשונית 5: דוח לקוחות (הוצאה, עסקאות, מותגים ופריטים מובילים)
 // ─────────────────────────────────────────────────────────────
 function renderCustomersReport(container, sales) {
  const custMap = {};
 
- // Seed all customers from database
+ // טעינת כל הלקוחות ממסד הנתונים
  allCU.forEach(cu => {
   custMap[cu.id] = {
    cId: cu.id,
@@ -4044,7 +4044,7 @@ function renderCustomersReport(container, sales) {
  const avgCustSpend = rows.length > 0 ? (totIdentifiedSpend / rows.length) : 0;
 
  container.innerHTML = `
-  <!-- Customer KPIs -->
+  <!-- מדדי KPI ללקוח -->
   <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));gap:12px;margin-bottom:18px;">
    <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">לקוחות פעילים</div><div class="dash-kpi-val" style="font-size:22px;">${rows.length}</div><div class="dash-kpi-sub">Out of ${allCU.length} registered</div></div>
    <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">מכירות מזוהות ללקוחות</div><div class="dash-kpi-val" style="font-size:22px;color:#db2777;">₪ ${Math.round(totIdentifiedSpend).toLocaleString()}</div><div class="dash-kpi-sub">קבלות המקושרות ללקוח</div></div>
@@ -4052,7 +4052,7 @@ function renderCustomersReport(container, sales) {
    <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">סה״כ הזמנות ועסקאות</div><div class="dash-kpi-val" style="font-size:22px;color:#16a34a;">${rows.reduce((s, r) => s + r.orders, 0)}</div><div class="dash-kpi-sub">מספר רכישות</div></div>
   </div>
 
-  <!-- Customer Rankings Table -->
+  <!-- טבלת דירוג לקוחות -->
   <div class="card">
    <div class="card-hdr" style="background:#fcfcfd;">
     <div>
@@ -4102,7 +4102,7 @@ function renderCustomersReport(container, sales) {
 }
 
 // ─────────────────────────────────────────────────────────────
-// TAB 6: BRANCHES COMPARISON REPORT (3 Cards + Comparison Matrix)
+// לשונית 6: דוח השוואת סניפים (3 כרטיסים + מטריצת השוואה)
 // ─────────────────────────────────────────────────────────────
 function renderBranchesReport(container, sales) {
  const branches = [
@@ -4151,7 +4151,7 @@ function renderBranchesReport(container, sales) {
    }
   });
 
-  // Current Branch Stock
+  // מלאי נוכחי בסניף
   let stockUnits = 0, stockValCost = 0, stockValRetail = 0;
   allP.forEach(p => {
    const st = p.fields[brInfo.stockField] ?? 0;
@@ -4187,7 +4187,7 @@ function renderBranchesReport(container, sales) {
  });
 
  container.innerHTML = `
-  <!-- 3 Comparative Branch Scorecard Cards -->
+  <!-- 3 כרטיסי השוואת ביצועי סניפים -->
   <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:16px;margin-bottom:20px;">
    ${branchData.map(b => `
     <div class="card" style="padding:18px;border-radius:14px;border-top:4px solid #db2777;">
@@ -4199,7 +4199,7 @@ function renderBranchesReport(container, sales) {
       <button class="btn btn-s btn-xs" onclick="openBranch360('${b.name}')">🔍 360°</button>
      </div>
 
-     <!-- Main Financials -->
+     <!-- נתונים פיננסיים עיקריים -->
      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;background:#f8fafc;padding:12px;border-radius:10px;">
       <div>
        <span style="font-size:11px;color:#64748b;display:block;">הכנסות ממכירות</span>
@@ -4220,7 +4220,7 @@ function renderBranchesReport(container, sales) {
       </div>
      </div>
 
-     <!-- Operational Volumes -->
+     <!-- היקפי פעילות תפעוליים -->
      <div style="font-size:12.5px;color:#475569;display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f1f5f9;">
       <span>עסקאות / יחידות:</span>
       <strong>${b.orders} orders / ${b.units} units</strong>
@@ -4234,7 +4234,7 @@ function renderBranchesReport(container, sales) {
       <strong>${b.stockUnits} units (₪ ${Math.round(b.stockValCost).toLocaleString()})</strong>
      </div>
 
-     <!-- Top Products in Branch -->
+     <!-- מוצרים מובילים בסניף -->
      <div style="margin-top:10px;font-size:11.5px;color:#64748b;">
       <strong style="color:#0f172a;display:block;margin-bottom:2px;">מוצרים מובילים:</strong>
       ${b.topProds.length ? b.topProds.map(p => '<div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">• ' + esc(p) + '</div>').join('') : '<div>None in period</div>'}
@@ -4243,7 +4243,7 @@ function renderBranchesReport(container, sales) {
    `).join('')}
   </div>
 
-  <!-- Branch Comparison Matrix Table -->
+  <!-- טבלת מטריצת השוואה בין סניפים -->
   <div class="card">
    <div class="card-hdr" style="background:#fcfcfd;">
     <div>
@@ -4305,7 +4305,7 @@ function renderBranchesReport(container, sales) {
 }
 
 // ─────────────────────────────────────────────────────────────
-// TAB 7: EMPLOYEES REPORT (Volume, Basket, Productivity)
+// לשונית 7: דוח עובדים (היקף, סל ממוצע, תפוקה)
 // ─────────────────────────────────────────────────────────────
 function renderEmployeesReport(container, sales) {
  const empMap = {};
@@ -4362,14 +4362,14 @@ function renderEmployeesReport(container, sales) {
  const totSales = rows.reduce((s, r) => s + r.sales, 0);
 
  container.innerHTML = `
-  <!-- KPIs -->
+  <!-- מדדי KPI -->
   <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));gap:12px;margin-bottom:18px;">
    <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">עובדים פעילים בקופה</div><div class="dash-kpi-val" style="font-size:22px;">${rows.length}</div><div class="dash-kpi-sub">קופות פעילות</div></div>
    <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">סה״כ מכירות עובדים</div><div class="dash-kpi-val" style="font-size:22px;color:#db2777;">₪ ${Math.round(totSales).toLocaleString()}</div><div class="dash-kpi-sub">${sales.length} עסקאות שבוצעו</div></div>
    <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">עובד/ת מוביל/ה</div><div class="dash-kpi-val" style="font-size:20px;color:#16a34a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${rows.length ? esc(rows[0].name) : '--'}</div><div class="dash-kpi-sub">${rows.length ? '₪ ' + Math.round(rows[0].sales).toLocaleString() : '--'}</div></div>
   </div>
 
-  <!-- Employee Table -->
+  <!-- טבלת עובדים -->
   <div class="card">
    <div class="card-hdr" style="background:#fcfcfd;">
     <div>
@@ -4414,7 +4414,7 @@ function renderEmployeesReport(container, sales) {
 }
 
 // ─────────────────────────────────────────────────────────────
-// TAB 8: DAILY SUMMARY REPORT (Day-by-Day Sales, Profit, Top Item)
+// לשונית 8: דוח סיכום יומי (מכירות יומיות, רווח, פריט מוביל)
 // ─────────────────────────────────────────────────────────────
 function renderDailyReport(container, sales) {
  const dailyMap = {};
@@ -4453,11 +4453,11 @@ function renderDailyReport(container, sales) {
   const profit = d.rev - d.cost;
   const margin = d.rev > 0 ? ((profit / d.rev) * 100).toFixed(1) : '0.0';
 
-  // Determine top product of the day
+  // איתור המוצר המוביל של היום
   const topProdEntry = Object.entries(d.products).sort((a, b) => b[1] - a[1])[0];
   const topProd = topProdEntry ? (topProdEntry[0] + ' (' + topProdEntry[1] + ' pcs)') : '--';
 
-  // Day of week
+  // יום בשבוע
   let dow = '';
   try {
    const dateObj = new Date(d.date + 'T12:00:00Z');
@@ -4479,7 +4479,7 @@ function renderDailyReport(container, sales) {
  const bestDay = rows.reduce((max, r) => (r.rev > (max?.rev || 0) ? r : max), null);
 
  container.innerHTML = `
-  <!-- KPIs -->
+  <!-- מדדי KPI -->
   <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));gap:12px;margin-bottom:18px;">
    <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">ימי פעילות ומכירה</div><div class="dash-kpi-val" style="font-size:22px;">${rows.length}</div><div class="dash-kpi-sub">With recorded sales</div></div>
    <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">ממוצע מכירות יומי</div><div class="dash-kpi-val" style="font-size:22px;color:#db2777;">₪ ${Math.round(avgDaily).toLocaleString()}</div><div class="dash-kpi-sub">Per operating day</div></div>
@@ -4487,7 +4487,7 @@ function renderDailyReport(container, sales) {
    <div class="dash-kpi" style="padding:14px;"><div class="dash-kpi-title">רווח כולל לתקופה (לאחר מע״מ)</div><div class="dash-kpi-val" style="font-size:22px;color:#0284c7;">₪ ${Math.round(totProfit).toLocaleString()}</div><div class="dash-kpi-sub">Gross margin earned</div></div>
   </div>
 
-  <!-- Daily Table -->
+  <!-- טבלה יומית -->
   <div class="card">
    <div class="card-hdr" style="background:#fcfcfd;">
     <div>
@@ -4532,9 +4532,9 @@ function renderDailyReport(container, sales) {
 }
 
 // ─────────────────────────────────────────────────────────────
-// UNIVERSAL EXCEL / CSV EXPORT UTILITIES (UTF-8 BOM FOR HEBREW)
+// כלי ייצוא אוניברסליים לאקסל ו-CSV (עם UTF-8 BOM לעברית)
 // ─────────────────────────────────────────────────────────────
-// Native Microsoft Excel (.xlsx) Export using SheetJS with RTL support
+// ייצוא מובנה ל-Microsoft Excel (.xlsx) באמצעות SheetJS עם תמיכת RTL
 function hebrewBranchName(br) {
  if (!br) return '';
  const s = String(br).trim();
@@ -4563,7 +4563,7 @@ function exportToExcel(filename, headers, rows, sheetName = 'דוח') {
   console.warn('XLSX export fallback to CSV:', e);
  }
 
- // Fallback to CSV with UTF-8 BOM
+ // ברירת מחדל ל-CSV עם UTF-8 BOM
  exportToCSV(filename, headers, rows);
 }
 
@@ -4920,7 +4920,7 @@ function exportActiveReportToCSV() {
  const sales = getFilteredReportSales();
 
  if (activeReportTab === 'sales') {
-  // 20 Financial & Product Columns per client specification:
+  // 20 עמודות פיננסיות ומוצרים לפי הנחיות הלקוח:
   const headers = [
    'מספר עסקה / אסמכתא',
    'תאריך ושעה',
@@ -5242,8 +5242,8 @@ function exportActiveReportToCSV() {
  }
 }
 
-// ── RENDER PRODUCTS ────────────────────────────────────────────
-// ── BRANCH STOCK HELPERS ─────────────────────────────────────────
+// ── הצגת מוצרים ────────────────────────────────────────────────
+// ── פונקציות עזר למלאי סניפים ───────────────────────────────────
 function getProductBranchStock(f, branch) {
  if (!f) return 0;
  if (branch === 'Beitar') return f[F.P.B] ?? 0;
@@ -5267,7 +5267,7 @@ function isBranchLow(f, branch) {
  return (min > 0 && st < min) || st <= 0;
 }
 
-// ── RENDER PRODUCTS ────────────────────────────────────────────
+// ── הצגת מוצרים ────────────────────────────────────────────────
 function popBrands(){const brands=[...new Set(allP.map(p=>p.fields[F.P.BR]).filter(Boolean))].sort();document.getElementById('p-br').innerHTML='<option value="">כל המותגים</option>'+brands.map(b=>`<option>${esc(b)}</option>`).join('');}
 
 function filterProds(){
@@ -5278,19 +5278,19 @@ function filterProds(){
 
  filtP = allP.filter(p => {
   const f = p.fields;
-  // 1. Text search: SKU, Name, Brand, Shade, Barcode
+  // 1. חיפוש טקסטואלי: מק״ט, שם, מותג, גוון, ברקוד
   if (q && ![f[F.P.SKU], f[F.P.NM], f[F.P.BR], f[F.P.SH], f[F.P.BC]].some(v => v && String(v).toLowerCase().includes(q))) return false;
   
-  // 2. Brand filter
+  // 2. סינון לפי מותג
   if (br && f[F.P.BR] !== br) return false;
 
-  // 3. Stock evaluation for selected branch (or total across all branches if All)
+  // 3. חישוב מלאי עבור הסניף הנבחר (או סה״כ כל הסניפים אם נבחר הכל)
   const bStock = getProductBranchStock(f, selBranch);
   const bMin = getProductBranchMin(f, selBranch);
   const isBneg = bStock < 0;
   const isBlow = selBranch ? (bMin > 0 && bStock < bMin) : isLow(f);
 
-  // 4. Stock status filter
+  // 4. סינון לפי סטטוס מלאי
   if (sf === 'in_stock' && bStock <= 0) return false;
   if (sf === 'out_of_stock' && bStock > 0) return false;
   if (sf === 'low' && (!isBlow || bStock <= 0)) return false;
@@ -5315,7 +5315,7 @@ function renderProds(){
  const selBranch = document.getElementById('p-branch')?.value || '';
  document.getElementById('p-cnt').textContent = filtP.length;
 
- // Summary by selected branch
+ // סיכום נתוני מלאי לפי הסניף הנבחר
  let inStockCnt = 0, outStockCnt = 0, totalUnits = 0;
  filtP.forEach(p => {
   const st = getProductBranchStock(p.fields, selBranch);
@@ -5329,7 +5329,7 @@ function renderProds(){
   elSum.innerHTML = `📍 <strong>${brName}</strong>: <span style="color:#16a34a;">${inStockCnt} במלאי</span> · <span style="color:#ef4444;">${outStockCnt} אזלו</span> · <span style="color:#0f172a;">${totalUnits} יח׳ סה״כ</span>`;
  }
 
- // Dynamic Table Header
+ // כותרת טבלה דינמית
  const elHead = document.getElementById('prod-head');
  if (elHead) {
   if (selBranch) {
@@ -5415,7 +5415,7 @@ function renderProds(){
  }).join('');
 }
 
-// ── RENDER TRANSACTIONS ────────────────────────────────────────
+// ── הצגת תנועות ────────────────────────────────────────────────
 function txRow(r,short=false){
  const f=r.fields,qty=f[F.TX.QTY],qs=qty!=null?(qty>0?`+${qty}`:String(qty)):'--',qc=qty<0?'color:#ef4444;font-weight:700;':(qty>0?'color:#10b981;font-weight:700;':'');
  const prod=resolveProdFromTx(r);
@@ -5585,7 +5585,7 @@ function renderTX(){
  document.getElementById('tx-body').innerHTML=pg.length?pg.map(r=>txRow(r)).join(''):`<tr><td colspan="11"><div class="empty">לא נמצאו עסקאות</div></td></tr>`;
 }
 
-// ── RENDER PURCHASE ORDERS ─────────────────────────────────────
+// ── הצגת הזמנות רכש ─────────────────────────────────────────────
 function filPOs(st,btn){document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');filtPO=st==='all'?[...allPO]:allPO.filter(r=>r.fields[F.PO.STAT]===st);renderPOs();}
 function renderPOs(){
  const tb=document.getElementById('po-body');
@@ -5595,14 +5595,14 @@ function renderPOs(){
 async function markOrd(id){try{await atPatch(TBL.PO,id,{[F.PO.STAT]:'Ordered'});toast('PO marked Ordered');await ldPO();}catch(e){toast(e.message,'err');}}
 function openRPO(id,pn,pid,onum,qty,br){document.getElementById('rpo-id').value=id;document.getElementById('rpo-pid').value=pid;document.getElementById('rpo-br').value=br;document.getElementById('rpo-onum').value=onum;document.getElementById('rpo-info').innerHTML=`<strong>${esc(pn)}</strong><br><span style="font-size:12px;">Order: ${esc(onum)} · Qty: ${qty} · Branch: ${esc(br)}</span>`;document.getElementById('rpo-qty').value=qty;openModal('m-rpo');}
 
-// ── RENDER CUSTOMERS ───────────────────────────────────────────
+// ── הצגת לקוחות ─────────────────────────────────────────────────
 function filterCusts(){const q=document.getElementById('cu-q').value.toLowerCase();filtCU=q?allCU.filter(c=>{const f=c.fields;return[f[F.CU.NM],f[F.CU.PH],f[F.CU.EM]].some(v=>v&&String(v).toLowerCase().includes(q));}):([...allCU]);renderCusts();}
 function renderCusts(){
  document.getElementById('cu-cnt').textContent=filtCU.length;
  document.getElementById('cu-body').innerHTML=filtCU.length?filtCU.map(c=>{const f=c.fields;return`<tr><td style="font-weight:600;"><span class="cl" onclick="openCustomer360('${c.id}')" title="View Customer 360° Profile">${esc(f[F.CU.NM]||'--')}</span></td><td class="mono">${esc(f[F.CU.PH]||'--')}</td><td style="font-size:13px;color:#64748b;">${esc(f[F.CU.EM]||'--')}</td><td>${f[F.CU.TY]?`<span class="badge bi">${esc(f[F.CU.TY])}</span>`:'--'}</td><td style="font-weight:600;color:#db2777;">${f[F.CU.PT]??0}</td><td>${f[F.CU.SRC]?`<span class="badge bgr">${esc(f[F.CU.SRC])}</span>`:'--'}</td><td style="font-size:12px;color:#94a3b8;">${fmtDT(f[F.CU.CR])}</td></tr>`;}).join(''):`<tr><td colspan="7"><div class="empty"><div class="ei"></div>No customers found</div></td></tr>`;
 }
 
-// ── RENDER APPROVALS ───────────────────────────────────────────
+// ── הצגת אישורים ─────────────────────────────────────────────────
 function updApprBadge(){const c=allAI.filter(r=>r.fields[F.AI.STAT]==='Needs Approval').length;const b=document.getElementById('appr-badge');b.textContent=c;b.style.display=c>0?'inline-block':'none';}
 function renderApprov(){
  const appr=allAI.filter(r=>r.fields[F.AI.STAT]==='Needs Approval');
@@ -5617,11 +5617,11 @@ async function apprAI(id){try{await atPatch(TBL.AI,id,{[F.AI.STAT]:'Processed'})
 async function rejAI(id){try{await atPatch(TBL.AI,id,{[F.AI.STAT]:'Error',[F.AI.NO]:'Rejected by manager'});toast('Rejected','info');await ldAI();renderOverview();}catch(e){toast(e.message,'err');}}
 
 // ══════════════════════════════════════════════════════════════
-// POS DUAL UPLOAD
-// File 1: דוח מכירות שורות לחנות — headers row 7
-// col: מספר חשבונית | קוד פריט | תיאור פריט | כמות | מחיר נטו ליחידה | תאריך
-// File 2: מכירות קופה לפי חתך — headers row 3
-// col: מספר פתקית | שם לקוח | טלפון לקוח
+// ייבוא כפול מקופה (POS)
+// קובץ 1: דוח מכירות שורות לחנות — כותרות בשורה 7
+// עמודות: מספר חשבונית | קוד פריט | תיאור פריט | כמות | מחיר נטו ליחידה | תאריך
+// קובץ 2: מכירות קופה לפי חתך — כותרות בשורה 3
+// עמודות: מספר פתקית | שם לקוח | טלפון לקוח
 // ══════════════════════════════════════════════════════════════
 function posSetStep(n){
  posStep=n;
@@ -5690,17 +5690,17 @@ async function buildPreview(){
  }catch(e){toast('File 2 parse warning: '+e.message,'warn');}
  }
 
- // Match customers using new findCust (no auto-creation)
+ // התאמת לקוחות באמצעות findCust (ללא יצירה אוטומטית)
  posPreview=[];let conflicts=[],custNotFound=[],prodNotFound=[];
  for(const row of posRows){
  const ci=posInvMap[row.inv]||{nm:'',ph:''};const cnm=ci.nm,cph=normPhone(ci.ph);
- // Product lookup: SKU first, then name
+ // איתור מוצר: מק״ט תחילה, ולאחר מכן שם
  const pRes=findProd(row.sku, row.desc);
  const prod=pRes.prod;
  if(!prod&&(row.sku||row.desc)){
  const key=row.sku||row.desc;if(!prodNotFound.includes(key))prodNotFound.push(key);
  }
- // Customer lookup
+ // איתור לקוח
  let cId=null,cTag='',cSt='anon';
  if(cnm||cph){
  const cr=findCust(cnm,cph,'');
@@ -5734,7 +5734,7 @@ async function posImport(){
  if(!posPreview.length){toast('No rows to import','err');return;}
  const btn=document.getElementById('pos-imp');setLd(btn,true);
  try{
- // Build TX for ALL rows — rows without product match save without product link
+ // יצירת תנועות (TX) לכל השורות — שורות ללא התאמת מוצר נשמרות ללא קישור למוצר
  const txFields=[];const stockOps=[];let seq=1;
  for(const row of posPreview){
  const dtStr=`${row.dateStr}T${row.timeStr||'12:00'}:00`;
@@ -5774,7 +5774,7 @@ async function posImport(){
 function resetPOS(){posStep=1;posF1=null;posF2=null;posF2Skip=false;posRows=[];posInvMap={};posPreview=[];['fi1','fi2'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});document.getElementById('dz1-ico').textContent='';document.getElementById('dz1-ttl').textContent='Drop File 1 here or click to browse';document.getElementById('dz2-ico').textContent='';document.getElementById('dz2-ttl').textContent='Drop File 2 here or click to browse';document.getElementById('f1-st').style.display='none';document.getElementById('pos-conf').style.display='none';posSetStep(1);}
 
 // ══════════════════════════════════════════════════════════════
-// INVOICE OCR — handles BOTH sale invoices and supplier invoices
+// סריקת חשבוניות OCR — מטפל הן בחשבוניות מכירה והן בחשבוניות ספק
 // ══════════════════════════════════════════════════════════════
 function setOcrType(t){
  ocrType=t;
@@ -5824,10 +5824,10 @@ async function compressOcrImage(file, maxDim=2400, quality=0.92){
    const cvs=document.createElement('canvas'); cvs.width=w; cvs.height=h;
    const ctx=cvs.getContext('2d'); ctx.drawImage(img,0,0,w,h);
 
-   // ── DOCUMENT SCANNER ENHANCER ──
-   // 1. Convert to high-contrast document scan
-   // 2. Normalizes paper to clean white, eliminates desk shadows and glare
-   // 3. Darkens faint dot-matrix characters, decimal points (.00) and barcodes
+   // ── משפר סריקת מסמכים ──
+   // 1. המרה לסריקת מסמך בניגודיות גבוהה
+   // 2. הבהרת הרקע ללבן נקי, הסרת צללים והשתקפויות
+   // 3. הדגשת תווים בהירים, נקודות עשרוניות (.00) וברקודים
    try{
     const imgData=ctx.getImageData(0,0,w,h);
     const d=imgData.data;
@@ -5898,7 +5898,7 @@ async function runOCR(){
   document.getElementById('ocr-msg').textContent=' AI is analyzing document...';
   const isSale=ocrType==='sale';
 
-  // ── SALE INVOICE PROMPT ──────────────────────────────────────────
+  // ── הנחיות ניתוח קבלת מכירה ────────────────────────────────────
   const salePrompt=`You are analyzing a sales invoice or cash register receipt, likely from an Israeli makeup store. The document may be in Hebrew, English, or both.
 
 Extract ALL product line items from this document.
@@ -5955,7 +5955,7 @@ For each product line return:
 
 Return ONLY valid JSON array. No markdown. No explanations.`;
 
-  // ── SUPPLIER INVOICE PROMPT ──────────────────────────────────────
+  // ── הנחיות ניתוח חשבונית ספק ────────────────────────────────────
   const supplierPrompt=`You are analyzing a supplier/purchase invoice, commonly in Hebrew, English, or mixed.
 
 HEBREW INVOICE TABLE STRUCTURE (READS RIGHT-TO-LEFT):
@@ -6022,7 +6022,7 @@ Return ONLY valid JSON array. No markdown. No explanations.`;
   const prompt=isSale?salePrompt:supplierPrompt;
 
   let resp,apiUsed='proxy';
-  // Chain: 1) Proxy → 2) Mistral Pixtral → 3) OpenAI gpt-4o
+  // שרשרת עיבוד: 1) פרוקסי ← 2) Mistral OCR ← 3) OpenAI gpt-4o
   try{
    resp=await fetch('/api/ocr',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,image_data_url:`data:${imgData.mime};base64,${imgData.base64}`,model:'gpt-4o',max_tokens:16000})});
    if(!resp.ok){
@@ -6060,18 +6060,18 @@ Return ONLY valid JSON array. No markdown. No explanations.`;
   const data=await resp.json();
   const rawContent=data.choices?data.choices[0].message.content:'';
 
-  // ── JSON SANITIZER ────────────────────────────────────────────────
-  // Handles: markdown fences (```json ... ```), bad escape sequences,
-  // thousands separators in numbers (e.g. 1,188.00 -> 1188.00),
-  // literal control characters inside strings, trailing commas.
+  // ── ניקוי ותיקון JSON (SANITIZER) ────────────────────────────────
+  // מטפל ב: תגיות קוד (```json ... ```), תווי מילוט לא תקינים,
+  // פסיקים להפרדת אלפים במספרים (לדוגמה 1,188.00 -> 1188.00),
+  // תווי בקרה בתוך מחרוזות, ופסיקים מיותרים בסוף מערך.
   function sanitizeJson(raw){
-   // 1. Strip ALL markdown code fences globally anywhere in the string
+   // 1. הסרת כל תגיות קוד Markdown במחרוזת
    let s=raw.replace(/```[\w]*\n?/g,'').replace(/```/g,'').trim();
-   // 2. Remove invalid JSON escape sequences (keep only valid: " \ / b f n r t uXXXX)
+   // 2. הסרת תווי מילוט בלתי חוקיים ב-JSON
    s=s.replace(/\\([^"\\\/bfnrtu])/g,'$1');
-   // 3. Fix numbers formatted with thousands separators (e.g. : 1,188.00 -> : 1188.00)
+   // 3. תיקון מספרים המכילים פסיקים של אלפים (לדוגמה 1,188.00 -> 1188.00)
    s=s.replace(/:\s*([0-9]{1,3}(?:,[0-9]{3})+(?:\.[0-9]+)?)/g, (m, num) => ': ' + num.replace(/,/g, ''));
-   // 4. Remove literal newlines/tabs inside strings (they break JSON.parse)
+   // 4. הסרת ירידות שורה או טאבים בתוך מחרוזות (השוברים את JSON.parse)
    let out='',inStr=false,esc=false;
    for(let i=0;i<s.length;i++){
     const ch=s[i];
@@ -6081,35 +6081,35 @@ Return ONLY valid JSON array. No markdown. No explanations.`;
     if(inStr&&(ch==='\n'||ch==='\r'||ch==='\t')){out+=' ';continue;}
     out+=ch;
    }
-   // 5. Remove trailing commas before } or ]
+   // 5. הסרת פסיקים מיותרים לפני } או ]
    return out.replace(/,([\s\r\n]*[}\]])/g,'$1');
   }
 
-  // ── JSON EXTRACTOR ────────────────────────────────────────────────
-  // Handles these AI response formats (in order of preference):
-  //   A. Pure JSON array:              [{...}, {...}]
-  //   B. Wrapped object (json_object): {"items": [{...}]} or {"data": [...]}
-  //   C. Single object:                {...}   → wrapped into [{...}]
-  //   D. Auto-repair truncated array:  [..., {...} (unclosed array)
+  // ── חילוץ מבנה JSON ──────────────────────────────────────────────
+  // תומך במבני התשובה הבאים של ה-AI (לפי סדר עדיפות):
+  //   א. מערך JSON ישיר:              [{...}, {...}]
+  //   ב. אובייקט עטוף: {"items": [{...}]} או {"data": [...]}
+  //   ג. אובייקט יחיד:                {...}   ← נעטף ל-[{...}]
+  //   ד. תיקון אוטומטי של מערך קטוע:  [..., {...} (ללא סגירה)
   function extractJsonItems(raw){
    if(!raw || !raw.trim()) throw new Error('AI returned an empty response.');
    const s=sanitizeJson(raw);
-   // A. Direct array [...]
+   // א. מערך ישיר [...]
    const arrM=s.match(/\[[\s\S]*\]/);
    if(arrM){try{const r=JSON.parse(arrM[0]);if(Array.isArray(r)&&r.length>0)return r;}catch(e){}}
-   // B. Object with array value e.g. {"items":[...]} or {"products":[...]}
+   // ב. אובייקט עם ערך מערך, לדוגמה {"items":[...]} או {"products":[...]}
    const objM=s.match(/\{[\s\S]*\}/);
    if(objM){
     try{
      const o=JSON.parse(objM[0]);
-     // Find the first array value in the object
+     // איתור ערך המערך הראשון בתוך האובייקט
      const arr=Object.values(o).find(v=>Array.isArray(v));
      if(arr&&arr.length>0)return arr;
     }catch(e){}
    }
-   // C. Single object {...} — treat as one-item invoice
+   // ג. אובייקט יחיד {...} — נחשב לחשבונית עם פריט בודד
    if(objM){try{const o=JSON.parse(objM[0]);if(typeof o==='object'&&o!==null&&!Array.isArray(o))return[o];}catch(e){}}
-   // D. Repair truncated array: if '[' exists, find last '}' and close with ']'
+   // ד. תיקון מערך קטוע: אם '[' קיים, איתור ה-'}' האחרון וסגירה ב-']'
    if(s.includes('[')){
     const startIdx=s.indexOf('[');
     const partial=s.slice(startIdx);
@@ -6125,8 +6125,8 @@ Return ONLY valid JSON array. No markdown. No explanations.`;
    throw new Error('Could not parse AI response as JSON.');
   }
 
-  // ── PARSE WITH 1 AUTO-RETRY ───────────────────────────────────────
-  // If first attempt fails to parse, retry the API call once automatically.
+  // ── פענוח עם ניסיון חוזר אוטומטי ─────────────────────────────────
+  // אם הניסיון הראשון נכשל בפענוח, ביצוע קריאת API חוזרת באופן אוטומטי.
   async function parseWithRetry(firstContent){
    try{
     return extractJsonItems(firstContent);
@@ -6135,7 +6135,7 @@ Return ONLY valid JSON array. No markdown. No explanations.`;
     document.getElementById('ocr-msg').textContent=' Parsing failed — retrying with AI (attempt 2/2)...';
     document.getElementById('ocr-raw').textContent=`Attempt 1 could not be parsed: ${firstErr.message}\nRetrying...\n\n--- Raw Attempt 1 ---\n${firstContent}`;
     
-    // In retry prompt, add strict reinforcement
+    // בניסיון החוזר, הוספת הנחיות חיזוק קפדניות
     const retryPrompt = prompt + "\n\nCRITICAL REMINDER: Output MUST begin with [ and end with ]. Valid JSON array only. No commentary.";
     
     let retryResp;
@@ -6173,7 +6173,7 @@ Return ONLY valid JSON array. No markdown. No explanations.`;
   if(skippedLines.length){const sm=document.getElementById('ocr-skip-msg');if(sm){sm.style.display='block';sm.textContent=` ${skippedLines.length} non-product line(s) excluded (VAT, discounts, totals).`;}}
   if(!ocrItems.length)throw new Error('No items found in invoice');
 
-  // Detect receipt-wide discount
+  // זיהוי הנחה גורפת לכל הקבלה
   let receiptDiscPct = 0;
   for(const it of ocrItems){
     if(it.receipt_discount_pct > 0){ receiptDiscPct = parseFloat(it.receipt_discount_pct); break; }
@@ -6187,7 +6187,7 @@ Return ONLY valid JSON array. No markdown. No explanations.`;
     }
   }
 
-  // Unit price fallback calculation & numeric sanitize
+  // חישוב ברירת מחדל למחיר יחידה וניקוי ערכים מספריים
   ocrItems.forEach(item => {
     if(item.list_price == null || isNaN(item.list_price)){
       item.list_price = item.unit_price != null ? Number(item.unit_price) : (item.line_total != null ? Number(item.line_total) : null);
@@ -6198,7 +6198,7 @@ Return ONLY valid JSON array. No markdown. No explanations.`;
     if((item.unit_price === null || item.unit_price === undefined || isNaN(item.unit_price)) && item.qty && item.line_total != null) {
       item.unit_price = Math.round((Number(item.line_total) / Number(item.qty)) * 100) / 100;
     }
-    // If sale with receipt discount and unit_price was not discounted, apply discount to unit_price
+    // אם מדובר במכירה עם הנחת קבלה ומחיר היחידה לא עודכן, החלת ההנחה על מחיר היחידה
     if(isSale && receiptDiscPct > 0 && item.list_price > 0 && (item.unit_price == null || item.unit_price === item.list_price)){
       item.unit_price = Math.round(item.list_price * (1 - receiptDiscPct/100) * 100) / 100;
     }
@@ -6207,7 +6207,7 @@ Return ONLY valid JSON array. No markdown. No explanations.`;
     item.line_total = Math.round(q * p * 100) / 100;
   });
 
-  // Set supplier name and invoice date from first item
+  // הגדרת שם הספק ותאריך החשבונית מתוך הפריט הראשון
   const sup=ocrItems[0].supplier||'';
   if(document.getElementById('ocr-sup')) document.getElementById('ocr-sup').value=sup;
   const rawDt=ocrItems[0].invoice_date||'';
@@ -6222,7 +6222,7 @@ Return ONLY valid JSON array. No markdown. No explanations.`;
     if(invDtEl) invDtEl.value=document.getElementById('ocr-dt')?.value||today();
   }
 
-  // Count needs_review rows
+  // ספירת שורות הדורשות בדיקה
   const reviewCount=ocrItems.filter(x=>x.needs_review).length;
 
   if(isSale){
@@ -6233,13 +6233,13 @@ Return ONLY valid JSON array. No markdown. No explanations.`;
    if(!emp){
      for(const it of ocrItems){ if(it.employee){ emp = String(it.employee).trim(); break; } }
    }
-   // Defensive check: If customer equals employee or contains cashier terms
+   // בדיקת הגנה: אם הלקוח זהה לעובד או מכיל כינויי קופאי
    if(emp && nm && (nm.toLowerCase() === emp.toLowerCase() || nm.includes(emp) || emp.includes(nm))){
      if(ph){
-       // Customer phone is present -> nm is definitely the real customer, set generic/empty emp
+       // טלפון הלקוח קיים ← השם הוא בוודאות הלקוח האמיתי, הגדרת עובד כללי
        emp = 'עובד כללי';
      } else {
-       // Anonymous walk-in sale -> keep emp, clear customer!
+       // מכירה אנונימית בקופה ← שמירת העובד ומחיקת הלקוח!
        nm = '';
      }
    }
@@ -6256,7 +6256,7 @@ Return ONLY valid JSON array. No markdown. No explanations.`;
    const s3CRow=document.getElementById('ocr-s3-cust-row');if(s3CRow)s3CRow.style.display='block';
    updOcrCustBadge();
 
-   // Show and configure Receipt Discount row
+   // הצגה והגדרה של שורת הנחת קבלה
    const s3DiscRow=document.getElementById('ocr-s3-sale-disc-row');
    const discInput=document.getElementById('ocr-sale-disc-pct');
    if(s3DiscRow){
@@ -6279,7 +6279,7 @@ Return ONLY valid JSON array. No markdown. No explanations.`;
   document.getElementById('ocr-res-banner').style.borderColor=reviewCount>0?'#fdba74':'';
   document.getElementById('ocr-res-banner').style.color=reviewCount>0?'#9a3412':'';
 
-  // Update table header based on invoice type
+  // עדכון כותרת הטבלה בהתאם לסוג החשבונית
   document.getElementById('ocr-thead-row').innerHTML=isSale
    ?'<th>Barcode</th><th>Description</th><th>Shade</th><th style="text-align:center;">Qty</th><th style="text-align:right;">List &#8362;</th><th style="text-align:right;">Actual Paid &#8362;</th><th style="text-align:right;">Total &#8362;</th><th>Match</th><th></th>'
    :'<th>Barcode</th><th>Description</th><th>Shade</th><th style="text-align:center;">Qty</th><th style="text-align:right;">List &#8362;</th><th style="text-align:right;">Disc %</th><th style="text-align:right;">Cost Price &#8362;</th><th style="text-align:right;">Line Total &#8362;</th><th style="text-align:center;">Valid</th><th>Match</th><th></th>';
@@ -6288,16 +6288,16 @@ Return ONLY valid JSON array. No markdown. No explanations.`;
  }catch(e){document.getElementById('ocr-msg').textContent=' Error: '+e.message;toast('OCR error: '+e.message,'err');}
 }
 
-// ── OCR ALIAS MEMORY ───────────────────────────────────────────
+// ── זיכרון שמות נרדפים ל-OCR ─────────────────────────────────────
 function loadAliasMap(){try{return JSON.parse(localStorage.getItem('ocrAliasMap')||'{}');}catch(e){return{};}}
 function saveAlias(descKey,productId){var m=loadAliasMap();m[String(descKey).toLowerCase().trim()]=productId;localStorage.setItem('ocrAliasMap',JSON.stringify(m));}
 function removeAlias(descKey){var m=loadAliasMap();delete m[String(descKey).toLowerCase().trim()];localStorage.setItem('ocrAliasMap',JSON.stringify(m));}
-// ── OCR BARCODE MEMORY ─────────────────────────────────────────
+// ── זיכרון ברקודים ל-OCR ─────────────────────────────────────────
 function loadBarcodeMap(){try{return JSON.parse(localStorage.getItem('ocrBarcodeMap')||'{}');}catch(e){return{};}}
 function saveBarcode(barcode,productId){if(!barcode||!barcode.trim())return;var m=loadBarcodeMap();m[String(barcode).trim()]=productId;localStorage.setItem('ocrBarcodeMap',JSON.stringify(m));}
 function removeBarcode(barcode){var m=loadBarcodeMap();delete m[String(barcode).trim()];localStorage.setItem('ocrBarcodeMap',JSON.stringify(m));}
 
-// ── PENDING POS QUEUE ──────────────────────────────────────────
+// ── תור עסקאות קופה ממתינות ──────────────────────────────────────
 function loadPending(){try{return JSON.parse(localStorage.getItem('pendingPOS')||'[]');}catch(e){return[];}}
 function savePending(q){localStorage.setItem('pendingPOS',JSON.stringify(q));}
 function addPending(rows){const q=loadPending();rows.forEach(r=>{if(!q.find(x=>x.inv===r.inv&&x.sku===r.sku))q.push(r);});savePending(q);}
@@ -6356,7 +6356,7 @@ async function saveSupplierMapping(supplier, descKey, bc, productId){
   };
   if(bc) flds[F.SM.BC] = String(bc).trim();
 
-  // If mapping already exists in allSM, patch in Airtable instead of duplicate
+  // אם המיפוי כבר קיים בזיכרון, עדכון ב-Airtable במקום יצירת כפילות
   const norm = s => String(s||'').toLowerCase().replace(/[^\p{L}\p{N}]+/gu,' ').trim();
   const nd = norm(descKey);
   const existing = (allSM||[]).find(r => {
@@ -6437,14 +6437,14 @@ async function deleteSupplierMapping(recId){
 }
 
 function findOcrMatch(item){
- // 0. Session unlinked by user: do not auto-match
+ // 0. סשן נותק ע״י המשתמש: ללא התאמה אוטומטית
  if(item._unlinked) return null;
- // 0a. Session-linked (user explicitly linked this session)
+ // 0א. מקושר בסשן הנוכחי (המשתמש קישר במפורש)
  if(item._linkedProd) return item._linkedProd;
  const desc=String(item.description||'').toLowerCase().trim();
  const barcode=String(item.barcode||'').trim();
 
- // 0b. Check Airtable Supplier Mappings (Cloud-synced permanent memory)
+ // 0ב. בדיקת מיפויי ספקים ב-Airtable (זיכרון קבוע מסונכרן בענן)
  if(allSM && allSM.length){
   if(barcode.length>=3){
    const m=allSM.find(r=>String(r.fields[F.SM.BC]||'').trim()===barcode);
@@ -6467,26 +6467,26 @@ function findOcrMatch(item){
   }
  }
 
- // 0c. Persistent alias (user confirmed in a previous session) — by description
+ // 0ג. שם נרדף שמור (שאושר ע״י המשתמש בסשן קודם) — לפי תיאור
  const aliasMap=loadAliasMap();
  if(desc&&aliasMap[desc]){const ap=allP.find(x=>x.id===aliasMap[desc]);if(ap)return Object.assign({},ap,{_fromAlias:true});}
- // 0d. Barcode alias memory
+ // 0ד. זיכרון שמות נרדפים לפי ברקוד
  const barcodeMap=loadBarcodeMap();
  if(barcode&&barcodeMap[barcode]){const bp=allP.find(x=>x.id===barcodeMap[barcode]);if(bp)return Object.assign({},bp,{_fromAlias:true});}
- // 1. Exact barcode match against Airtable Barcode field
+ // 1. התאמת ברקוד מדויקת מול שדה הברקוד ב-Airtable
  if(barcode.length>=3){
   let p=allP.find(x=>String(x.fields[F.P.BC]||'').trim()===barcode);
   if(p)return p;
  }
  const sku=String(item.sku||'').toLowerCase().trim();
- // 2. Exact SKU match - CRITICAL: sku must be non-empty!
+ // 2. התאמת מק״ט מדויקת - חשוב: המק״ט חייב להיות לא ריק!
  if(sku && sku.length>=2){
   let p=allP.find(x=>{
     const ps=String(x.fields[F.P.SKU]||'').toLowerCase().trim();
     return ps && ps===sku;
   });
   if(p)return p;
-  // 3. Partial SKU match — invoice SKU contains or starts with product SKU
+  // 3. התאמת מק״ט חלקית — מק״ט החשבונית מכיל או מתחיל במק״ט המוצר
   if(sku.length>=6){
    p=allP.find(x=>{
      const s=String(x.fields[F.P.SKU]||'').toLowerCase().trim();
@@ -6495,7 +6495,7 @@ function findOcrMatch(item){
    if(p)return p;
   }
  }
-  // 4. Intelligent Shade & Hebrew Token Overlap Matching
+  // 4. התאמה חכמה של גוון וחפיפת מילים בעברית
   if(desc.length>=2){
    const rawShade=String(item.shade||'').trim();
    const numbersInDesc=(desc.match(/\b\d{1,4}\b/g)||[]);
@@ -6518,17 +6518,17 @@ function findOcrMatch(item){
     const pSh=String(prod.fields[F.P.SH]||'').trim().toLowerCase();
     const pBrand=String(prod.fields[F.P.BR]||'').toLowerCase();
 
-    // 1. Variant / Model conflict check (e.g. N01 vs N04, C16 vs C5, shade 20 vs 33)
+    // 1. בדיקת חוסר התאמה של וריאנט / דגם (למשל N01 מול N04, גוון 20 מול 33)
     const prodVars=[...new Set([...extractVariants(pNm),...(pSh?[pSh]:[])])];
     if(descVars.length>0&&prodVars.length>0){
       const variantMatches=descVars.some(v=>prodVars.includes(v));
-      if(!variantMatches) continue; // conflicting variant numbers!
+      if(!variantMatches) continue; // חוסר התאמה במספרי וריאנט!
     }
 
-    // 2. Product Category conflict check (blush vs lipstick, brush vs sponge, etc.)
+    // 2. בדיקת חוסר התאמה בקטגוריית המוצר (סומק מול שפתון, מברשת מול ספוגית וכו׳)
     if(descCats.length>0){
       const prodHasDescCat=descCats.some(c=>pNm.includes(c));
-      if(!prodHasDescCat) continue; // Category mismatch!
+      if(!prodHasDescCat) continue; // חוסר התאמה בקטגוריה!
     }
 
     const pTokens=(pNm+' '+pBrand).split(/[\s\-_,./\\]+/).filter(w=>w.length>=2&&isNaN(w));
@@ -6713,7 +6713,7 @@ function renderOcrItems(isSale){
 }
 
 
-// Confirm an auto-matched item — saves alias permanently to cloud & localStorage
+// אישור פריט שהותאם אוטומטית — שמירת השם הנרדף בענן ובזיכרון המקומי
 function confirmOcrItem(i){
  const item=ocrItems[i];
  const prod=findOcrMatch(item);
@@ -6729,7 +6729,7 @@ function confirmOcrItem(i){
  toast(`✓ Confirmed & remembered: "${descKey}" → ${prod.fields[F.P.NM]||''}`);
 }
 
-// Remove identification — clears session link, forgets alias, marks unlinked
+// הסרת זיהוי — ניקוי הקישור, מחיקת השם הנרדף וסימון כלא-מקושר
 function unlinkOcrItem(i){
  const item=ocrItems[i];
  const descKey=String(item.description||item.sku||'').toLowerCase().trim();
@@ -6793,7 +6793,7 @@ async function ocrImport(){
  const btn=document.getElementById('ocr-import-btn');setLd(btn,true);
  try{
  if(isSale){
-  // 1. Block import if any items are unlinked
+  // 1. חסימת ייבוא אם קיימים פריטים לא מקושרים
   const unmatched = ocrItems.filter(item => !findOcrMatch(item));
   if(unmatched.length){
    toast(`Please link ${unmatched.length} product(s) marked "Not found" using "Link Product" before importing, so stock can be deducted.`,'err');
@@ -6801,7 +6801,7 @@ async function ocrImport(){
    return;
   }
 
-  // 2. Customer resolution (auto-create if new)
+  // 2. שיוך לקוח (יצירה אוטומטית במידה ומדובר בלקוח חדש)
   const cnm=(document.getElementById('ocr-cust-name')?.value||'').trim();
   const cph=(document.getElementById('ocr-cust-phone')?.value||'').trim();
   const cem=(document.getElementById('ocr-cust-email')?.value||'').trim();
@@ -6816,7 +6816,7 @@ async function ocrImport(){
    } else if(cr.how==='conflict'){
     custMsg=`Customer "${cnm}" matched multiple records in Airtable — transaction saved without customer link.`;
    } else {
-    // New customer -> auto-create in Airtable
+    // לקוח חדש ← יצירה אוטומטית ב-Airtable
     try{
      const newCustFlds={
       [F.CU.NM]: cnm || 'Customer',
@@ -6865,8 +6865,8 @@ async function ocrImport(){
   if(custMsg)toast(custMsg,'ok');
   toast(msg,'ok');
  } else {
-  // Supplier invoice (New Inventory): add stock + create PO + auto-create missing products
-  // Block import if any row still needs review
+  // חשבונית ספק (מלאי חדש): הוספת מלאי + יצירת הזמנת רכש + יצירת מוצרים חסרים
+  // חסימת ייבוא אם שורה כלשהי עדיין דורשת בדיקה
   const reviewRows=ocrItems.filter(x=>x.needs_review);
   if(reviewRows.length){
    toast(`Please resolve ${reviewRows.length} row(s) marked "Review Required" before importing.`,'err');
@@ -6880,12 +6880,12 @@ async function ocrImport(){
    const isGift=item.is_gift||parseFloat(item.unit_price)===0;
    const cost=isGift?0:(parseFloat(item.unit_price)||0);
    const listPrice=parseFloat(item.list_price)||0;
-   // Use linked product if available, else try findProd
+   // שימוש במוצר המקושר אם קיים, אחרת ניסיון איתור findProd
    const matchedProd=findOcrMatch(item);
    let pr=matchedProd?{prod:matchedProd}:findProd(item.sku,item.description);
    let prodRec=pr.prod;
    if(!prodRec){
-    // Auto-create missing product in Airtable Products table
+    // יצירה אוטומטית של מוצר חסר בטבלת מוצרים ב-Airtable
     const newFlds={
      [F.P.SKU]:(item.sku||(item.barcode?`BC-${item.barcode.slice(-6)}`:`ITEM-${uid()}`)).trim(),
      [F.P.NM]:(item.description||item.sku||'New Item').trim(),
@@ -6899,7 +6899,7 @@ async function ocrImport(){
     allP.push(prodRec);
     prodCreatedCnt++;
    } else {
-    // Enrich existing product if barcode or prices are missing
+    // העשרת מוצר קיים אם חסרים ברקוד או מחירים
     const updates={};
     if(item.barcode&&!prodRec.fields[F.P.BC]){updates[F.P.BC]=item.barcode.trim();}
     if(cost>0&&(!prodRec.fields[F.P.CP]||prodRec.fields[F.P.CP]===0)){updates[F.P.CP]=cost;}
@@ -6911,7 +6911,7 @@ async function ocrImport(){
      }catch(err){console.warn('Product enrich error:',err);}
     }
    }
-   // Build note with barcode and shade if available
+   // בניית הערה הכוללת ברקוד וגוון במידה וקיימים
    const noteParts=[`${sup||'Supplier'}: ${item.description||item.sku} · OCR Invoice`];
    if(isGift)noteParts.push('🎁 Free Gift / Tester');
    if(item.barcode)noteParts.push(`Barcode: ${item.barcode}`);
@@ -6919,7 +6919,7 @@ async function ocrImport(){
    if(listPrice>0)noteParts.push(`List: ₪${listPrice}`);
    if(item.discount_pct>0)noteParts.push(`Disc: ${item.discount_pct}%`);
    if(item.sku)noteParts.push(`SKU: ${item.sku}`);
-   // Create PO
+   // יצירת הזמנת רכש
    const poF={[F.PO.NUM]:orderNum,[F.PO.SUP]:sup||'Supplier',[F.PO.QTY]:qty,[F.PO.COST]:cost,[F.PO.DT]:dt,[F.PO.DEST]:branch,[F.PO.STAT]:'Received',[F.PO.QREC]:qty,[F.PO.RDATE]:dt,[F.PO.PR]:[prodRec.id]};
    await atPost(TBL.PO,poF);
    stockOps.push({productId:prodRec.id,branch,qtyChange:qty});
@@ -6947,7 +6947,7 @@ async function ocrImport(){
 
 
 // ══════════════════════════════════════════════════════════════
-// MANUAL TRANSACTION
+// עסקה ידנית
 // ══════════════════════════════════════════════════════════════
 function updateTxDisc(){
  const disc=parseFloat(document.getElementById('tx-disc').value)||0;
@@ -6955,16 +6955,16 @@ function updateTxDisc(){
 }
 function updateTxType(){const t=document.getElementById('tx-type').value;const isSale=t==='Sale';document.getElementById('tx-cust-row').style.display=isSale?'grid':'none';document.getElementById('tx-disc-row').style.display=isSale?'block':'none';if(isSale)updateTxDisc();}
 
-// ── CUSTOMER LOOKUP (no auto-creation) ────────────────────────
-// Priority: phone → email → exact name → partial name → not-found
+// ── איתור לקוח (ללא יצירה אוטומטית) ────────────────────────────
+// סדר עדיפויות: טלפון ← אימייל ← שם מדויק ← שם חלקי ← לא נמצא
 function findCust(nm, ph, email) {
  if(!nm && !ph && !email) return {id:null, how:'anon'};
  const nph = normPhone(ph||'');
- // 1. Phone
+ // 1. טלפון
  if(nph){const m=allCU.find(c=>normPhone(c.fields[F.CU.PH]||c.fields[F.CU.PHE]||'')===nph);if(m)return{id:m.id,how:'phone'};}
- // 2. Email
+ // 2. אימייל
  if(email){const em=email.toLowerCase().trim();const m=allCU.find(c=>(c.fields[F.CU.EM]||'').toLowerCase()===em);if(m)return{id:m.id,how:'email'};}
- // 3. Exact name
+ // 3. שם מדויק
  const qn = nm ? nm.toLowerCase().trim() : '';
  if(qn && qn.length >= 2){
   const exact=allCU.filter(c=>{
@@ -6974,7 +6974,7 @@ function findCust(nm, ph, email) {
   if(exact.length===1)return{id:exact[0].id,how:'name'};
   if(exact.length>1)return{id:null,how:'conflict',count:exact.length};
 
-  // 4. Partial name (both strings must have at least 3 characters)
+  // 4. שם חלקי (שתי המחרוזות חייבות להכיל לפחות 3 תווים)
   if(qn.length>=3){
    const partial=allCU.filter(c=>{
     const cn=String(c.fields[F.CU.NM]||'').toLowerCase().trim();
@@ -6987,17 +6987,17 @@ function findCust(nm, ph, email) {
  return {id:null, how:'not-found'};
 }
 
-// ── PRODUCT LOOKUP (no silent skip) ───────────────────────────
-// Priority: exact SKU → partial name → not-found
+// ── איתור מוצר ─────────────────────────────────────────────────
+// סדר עדיפויות: מק״ט מדויק ← שם חלקי ← לא נמצא
 function findProd(sku, description) {
  const norm = s => String(s||'').toLowerCase().replace(/\s+/g,' ').trim();
- // 1. Exact SKU only
+ // 1. מק״ט מדויק בלבד
  if(sku && sku.trim()){
  const s=norm(sku);
  const m=allP.find(p=>norm(p.fields[F.P.SKU]||'')===s);
  if(m)return{prod:m,how:'sku'};
  }
- // 2. Exact name match (spaces normalised — extra/fewer spaces are OK)
+ // 2. התאמת שם מדויקת (רווחים מנורמלים)
  if(description && description.trim()){
  const d=norm(description);
  const hits=allP.filter(p=>norm(p.fields[F.P.NM]||'')===d);
@@ -7008,7 +7008,7 @@ function findProd(sku, description) {
 }
 
 
-// ── MULTI-PRODUCT ROW HELPERS ──────────────────────────────────
+// ── פונקציות עזר לשורות מרובות מוצרים ─────────────────────────────
 let txRows=[];
 function syncTxRowsFromDOM(){
  txRows=txRows.map((r,i)=>{
@@ -7085,21 +7085,21 @@ async function submitTx(){
 
 
 // ══════════════════════════════════════════════════════════════
-// TRANSFER
+// העברה בין סניפים
 // ══════════════════════════════════════════════════════════════
 async function submitTrf(){
  const pid=document.getElementById('trf-pid').value,fr=document.getElementById('trf-fr').value,to=document.getElementById('trf-to').value,qty=parseInt(document.getElementById('trf-qty').value),dt=document.getElementById('trf-dt').value,notes=document.getElementById('trf-notes').value.trim();
  if(!pid){toast('Select a product','err');return;}if(!fr){toast('Select source branch','err');return;}if(!to){toast('Select destination branch','err');return;}if(fr===to){toast('Source and destination must differ','err');return;}if(!qty||qty<1){toast('Enter quantity','err');return;}if(!dt){toast('Enter date','err');return;}
  const btn=document.getElementById('trf-sub');setLd(btn,true);
  try{const ref=`TRF-${dt}-${uid()}`;await atPostMany(TBL.TX,[{[F.TX.NM]:ref+'-OUT',[F.TX.DT]:dtISO(dt),[F.TX.PR]:[pid],[F.TX.BR]:fr,[F.TX.QTY]:-qty,[F.TX.TY]:'Transfer',[F.TX.SRC]:'Manual',[F.TX.REF]:ref,[F.TX.NO]:notes||`Transfer OUT to ${to}`},{[F.TX.NM]:ref+'-IN',[F.TX.DT]:dtISO(dt),[F.TX.PR]:[pid],[F.TX.BR]:to,[F.TX.QTY]:qty,[F.TX.TY]:'Transfer',[F.TX.SRC]:'Manual',[F.TX.REF]:ref,[F.TX.NO]:notes||`Transfer IN from ${fr}`}]);
- // Update stock: deduct from source branch, add to destination branch
+ // עדכון מלאי: ניכוי מסניף המוצא, הוספה לסניף היעד
  await updateStockMany([{productId:pid,branch:fr,qtyChange:-qty},{productId:pid,branch:to,qtyChange:qty}]);
  toast(`Transferred ${qty} unit(s): ${fr} → ${to}`);closeModal('m-trf');showPage('transactions');clr(['trf-pi','trf-pid','trf-fr','trf-to','trf-qty','trf-dt','trf-notes']);document.getElementById('trf-stk').style.display='none';await loadAll();}catch(e){toast(e.message,'err');}
  setLd(btn,false,'Transfer Stock');
 }
 
 // ══════════════════════════════════════════════════════════════
-// PURCHASE ORDER
+// הזמנת רכש
 // ══════════════════════════════════════════════════════════════
 async function submitPO(){
 
@@ -7130,20 +7130,20 @@ async function submitPO(){
 }
 
 // ══════════════════════════════════════════════════════════════
-// RECEIVE PO
+// קבלת הזמנת רכש
 // ══════════════════════════════════════════════════════════════
 async function submitRPO(){
  const id=document.getElementById('rpo-id').value,pid=document.getElementById('rpo-pid').value,br=document.getElementById('rpo-br').value,onum=document.getElementById('rpo-onum').value,qty=parseInt(document.getElementById('rpo-qty').value),dt=document.getElementById('rpo-dt').value;
  if(!qty||qty<1){toast('Enter quantity','err');return;}if(!dt){toast('Enter date','err');return;}
  const btn=document.getElementById('rpo-sub');setLd(btn,true);
  try{await atPatch(TBL.PO,id,{[F.PO.STAT]:'Received',[F.PO.QREC]:qty,[F.PO.RDATE]:dt});if(pid&&br){await atPost(TBL.TX,{[F.TX.NM]:`RECV-${onum}-${uid()}`,[F.TX.DT]:dtISO(dt),[F.TX.PR]:[pid],[F.TX.BR]:br,[F.TX.QTY]:qty,[F.TX.TY]:'Stock Received',[F.TX.SRC]:'Purchase Order',[F.TX.REF]:onum,[F.TX.NO]:`Received from PO ${onum}`});
- // Update product stock
+ // עדכון מלאי המוצר
  await updateStock(pid,br,qty);}
  toast(`PO ${onum} received — ${qty} units added to ${br}`);closeModal('m-rpo');await loadAll();}catch(e){toast(e.message,'err');}
  setLd(btn,false,'Confirm &amp; Add Stock');
 }
 
-// ── INIT ───────────────────────────────────────────────────────
+// ── אתחול מערכת (INIT) ──────────────────────────────────────────
 function initApp(){
  try{
   document.querySelectorAll('input[type=date]').forEach(e=>{if(e)e.value=today();});

@@ -26,9 +26,9 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'OPENAI_API_KEY is not configured in Vercel environment variables.' });
     }
 
-    // ── TWO-STAGE HYBRID PIPELINE ──
-    // Stage 1: Mistral OCR (extracts raw text & tables with 100% precision)
-    // Stage 2: OpenAI GPT-4o (structures the text into exact JSON schema)
+    // ── תהליך היברידי דו-שלבי ──
+    // שלב 1: זיהוי תווים אופטי (Mistral OCR) - חילוץ טקסט גולמי וטבלאות בדיוק מרבי
+    // שלב 2: עיבוד והבניה (OpenAI GPT-4o) - המרת הטקסט למבנה JSON מדויק
     let extractedMarkdown = '';
     try {
       const ocrResp = await fetch('https://api.mistral.ai/v1/ocr', {
@@ -58,10 +58,10 @@ export default async function handler(req, res) {
       console.warn('Mistral OCR call failed, falling back to direct vision:', ocrErr);
     }
 
-    // Stage 2: OpenAI structuring
+    // שלב 2: הבניית נתונים באמצעות OpenAI
     let resp;
     if (extractedMarkdown) {
-      // Mistral succeeded -> Send extracted markdown text to GPT-4o!
+      // תהליך ה-OCR הצליח -> שליחת טקסט ה-Markdown ל-GPT-4o לצורך הבניה!
       const textPrompt = `You are a precise data extractor. Below is the OCR text extracted from an invoice by Mistral OCR:
 
 --- BEGIN OCR TEXT ---
@@ -124,7 +124,7 @@ CRITICAL EXTRACTION RULES:
         })
       });
     } else {
-      // Fallback: Direct OpenAI Vision if Mistral OCR was unavailable
+      // גיבוי: עיבוד ישיר באמצעות OpenAI Vision במידה ו-Mistral אינו זמין
       resp = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
