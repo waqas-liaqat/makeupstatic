@@ -1642,6 +1642,16 @@ async function atPost(tbl,fields){
  if(!r.ok)throw new Error(`AT ${r.status}: ${await r.text()}`);
  return(await r.json()).records[0];
 }
+async function atGetRecord(tbl,id){
+ let r;
+ if(AT_TOKEN){
+  r=await fetch(`${API}/${tbl}/${id}`,{headers:HDR});
+ } else {
+  r=await fetch(`/api/airtable?table=${encodeURIComponent(tbl)}&recordId=${encodeURIComponent(id)}`);
+ }
+ if(!r.ok)return null;
+ return await r.json();
+}
 async function atPatch(tbl,id,fields){
  let r;
  if(AT_TOKEN){
@@ -1696,37 +1706,45 @@ async function atSearch(tbl,formula,maxR=5){
 // כל תנועה מעדכנת ישירות את מלאי הסניף של המוצר ב-Airtable.
 // מיפוי שדות סניפים: ביתר←F.P.B, בית שמש←F.P.BS, ירושלים←F.P.J
 const BRANCH_FIELD = {'Beitar':F.P.B,'Beit Shemesh':F.P.BS,'Jerusalem':F.P.J};
-async function updateStock(productId, branch, qtyChange) {
- if(!productId||!branch||!qtyChange)return;
- const fld=BRANCH_FIELD[branch];if(!fld){console.warn('Unknown branch:',branch);return;}
- // קבלת ערך מלאי נוכחי
- const prod=allP.find(p=>p.id===productId);
- const cur=(prod?.fields[fld])??0;
- const newVal=cur+qtyChange;// מאפשר מלאי שלילי לצורך איתור חוסרים
- await atPatch(TBL.P,productId,{[fld]:newVal});
- // עדכון הזיכרון המקומי לעדכון מיידי של הממשק
- if(prod)prod.fields[fld]=newVal;
-}
-async function updateStockMany(ops) {
- // רשימת פעולות: [{productId, branch, qtyChange}, ...]
- // קיבוץ לפי מזהה מוצר לעדכון מרוכז של שינויים
- const byProd={};
- for(const op of ops){
- if(!op.productId||!op.branch||!op.qtyChange)continue;
- if(!byProd[op.productId])byProd[op.productId]={};
- const fld=BRANCH_FIELD[op.branch];if(!fld)continue;
- byProd[op.productId][fld]=(byProd[op.productId][fld]||0)+op.qtyChange;
+ async function updateStock(productId, branch, qtyChange) {
+  if(!productId||!branch||!qtyChange)return;
+  const fld=BRANCH_FIELD[branch];if(!fld){console.warn('Unknown branch:',branch);return;}
+  // קבלת ערך מלאי נוכחי ישירות מ-Airtable למניעת דריסה במקביל
+  let prod=allP.find(p=>p.id===productId);
+  try{
+   const fresh=await atGetRecord(TBL.P,productId);
+   if(fresh&&fresh.fields){if(prod)prod.fields=Object.assign(prod.fields,fresh.fields);}
+  }catch(e){}
+  const cur=(prod?.fields[fld])??0;
+  const newVal=cur+qtyChange;// מאפשר מלאי שלילי לצורך איתור חוסרים
+  await atPatch(TBL.P,productId,{[fld]:newVal});
+  // עדכון הזיכרון המקומי לעדכון מיידי של הממשק
+  if(prod)prod.fields[fld]=newVal;
  }
- // החלת השינויים המצטברים עבור כל מוצר
- for(const[pid,changes]of Object.entries(byProd)){
- const prod=allP.find(p=>p.id===pid);if(!prod)continue;
- const patch={};
- for(const[fld,delta]of Object.entries(changes)){
- const cur=(prod.fields[fld])??0;patch[fld]=cur+delta;prod.fields[fld]=patch[fld];
+ async function updateStockMany(ops) {
+  // רשימת פעולות: [{productId, branch, qtyChange}, ...]
+  // קיבוץ לפי מזהה מוצר לעדכון מרוכז של שינויים
+  const byProd={};
+  for(const op of ops){
+   if(!op.productId||!op.branch||!op.qtyChange)continue;
+   if(!byProd[op.productId])byProd[op.productId]={};
+   const fld=BRANCH_FIELD[op.branch];if(!fld)continue;
+   byProd[op.productId][fld]=(byProd[op.productId][fld]||0)+op.qtyChange;
+  }
+  // החלת השינויים המצטברים עבור כל מוצר
+  for(const[pid,changes]of Object.entries(byProd)){
+   let prod=allP.find(p=>p.id===pid);if(!prod)continue;
+   try{
+    const fresh=await atGetRecord(TBL.P,pid);
+    if(fresh&&fresh.fields){prod.fields=Object.assign(prod.fields,fresh.fields);}
+   }catch(e){}
+   const patch={};
+   for(const[fld,delta]of Object.entries(changes)){
+    const cur=(prod.fields[fld])??0;patch[fld]=cur+delta;prod.fields[fld]=patch[fld];
+   }
+   await atPatch(TBL.P,pid,patch);
+  }
  }
- await atPatch(TBL.P,pid,patch);
- }
-}
 
 const PT={'overview':'לוח בקרה ניהולי (Dashboard)','products':'מוצרים ומלאי','transactions':'תנועות מלאי ועסקאות','purchase-orders':'הזמנות רכש','customers':'לקוחות','approvals':'אישורים ושגיאות','reports':'אנליטיקה ודוחות'};
 function showPage(n){
@@ -5734,37 +5752,104 @@ async function posImport(){
  if(!posPreview.length){toast('No rows to import','err');return;}
  const btn=document.getElementById('pos-imp');setLd(btn,true);
  try{
- // יצירת תנועות (TX) לכל השורות — שורות ללא התאמת מוצר נשמרות ללא קישור למוצר
- const txFields=[];const stockOps=[];let seq=1;
- for(const row of posPreview){
- const dtStr=`${row.dateStr}T${row.timeStr||'12:00'}:00`;
- const noteStr=[
- `Inv: ${row.inv}`,
- row.price?`Price: ₪${row.price}`:'',
- !row.prod?` Product not matched: SKU "${row.sku}" — please identify and link in Airtable`:'',
- noteBase
- ].filter(Boolean).join(' | ');
- const flds={[F.TX.NM]:`POS-${row.inv}-${String(seq++).padStart(3,'0')}`,[F.TX.DT]:new Date(dtStr).toISOString(),[F.TX.BR]:branch,[F.TX.QTY]:-row.qty,[F.TX.TY]:'Sale',[F.TX.SRC]:'POS',[F.TX.REF]:row.inv,[F.TX.NO]:noteStr};if(row.netPrice>0&&F.TX.ASP)flds[F.TX.ASP]=row.netPrice;
- if(row.prod){flds[F.TX.PR]=[row.prod.id];stockOps.push({productId:row.prod.id,branch,qtyChange:-row.qty});}
- if(row.cId)flds[F.TX.CU]=[row.cId];
- txFields.push(flds);
- }
- await atPostMany(TBL.TX,txFields);
- if(stockOps.length)await updateStockMany(stockOps);
- const custMatched=posPreview.filter(r=>r.cId).length;
- const custNoLink=posPreview.filter(r=>!r.cId&&r.cnm).length;
- const prodNoLink=posPreview.filter(r=>!r.prod).length;
- let msg=` Imported ${txFields.length} transaction(s)`;
- if(custMatched)msg+=` · ${custMatched} linked to customers`;
- if(prodNoLink)msg+=` · ${prodNoLink} product(s) not matched — check Airtable → Inventory Transactions`;
- if(custNoLink)msg+=` · ${custNoLink} customer(s) not matched — check Airtable → Customers`;
- toast(msg,prodNoLink||custNoLink?'warn':'ok');
- if(prodNoLink){
-  const unmatched=posPreview.filter(r=>!r.prod).map(r=>({inv:r.inv,sku:r.sku,desc:r.desc||'',qty:r.qty,price:r.price,netPrice:r.netPrice||r.price||0,dateStr:r.dateStr,branch}));
-  addPending(unmatched);
-  renderPendingBanner();
- }
- closeModal('m-pos');resetPOS();await loadAll();
+  // 1. בדיקת כפילויות / Idempotency & Duplicate Invoice Protection
+  const existingInvs=new Set();
+  (allTX||[]).forEach(tx=>{
+   const f=tx.fields;
+   if(f[F.TX.SRC]==='POS'||(f[F.TX.NM]&&String(f[F.TX.NM]).startsWith('POS-'))){
+    if(f[F.TX.REF])existingInvs.add(String(f[F.TX.REF]).trim());
+   }
+  });
+
+  const incomingInvs=[...new Set(posPreview.map(r=>String(r.inv).trim()).filter(Boolean))];
+  const alreadyImportedInvs=incomingInvs.filter(inv=>existingInvs.has(inv));
+
+  if(alreadyImportedInvs.length===incomingInvs.length&&incomingInvs.length>0){
+   toast(`קובץ זה כבר יובא בעבר! כל ${alreadyImportedInvs.length} החשבוניות כבר קיימות במערכת (למשל #${alreadyImportedInvs[0]}). הייבוא נחסם למניעת כפילויות.`, 'err');
+   setLd(btn,false,' Import Transactions');
+   return;
+  }
+
+  let toImportRows=posPreview;
+  if(alreadyImportedInvs.length>0){
+   const dupCount=posPreview.filter(r=>existingInvs.has(String(r.inv).trim())).length;
+   toImportRows=posPreview.filter(r=>!existingInvs.has(String(r.inv).trim()));
+   toast(`זוהו ${alreadyImportedInvs.length} חשבוניות שכבר יובאו בעבר (${dupCount} שורות סה״כ). מדלג עליהן ומייבא ${toImportRows.length} שורות חדשות בלבד.`, 'warn');
+  }
+
+  if(!toImportRows.length){
+   toast('כל השורות בקובץ כבר קיימות במערכת, לא בוצע ייבוא כפול.', 'info');
+   setLd(btn,false,' Import Transactions');
+   return;
+  }
+
+  // 2. יצירת תנועות (TX) לשורות החדשות
+  const txFields=[];const stockOps=[];let seq=1;
+  const unmatchedIndices=[];
+
+  for(let idx=0; idx<toImportRows.length; idx++){
+   const row=toImportRows[idx];
+   const dtStr=`${row.dateStr}T${row.timeStr||'12:00'}:00`;
+   const noteStr=[
+    `Inv: ${row.inv}`,
+    row.price?`Price: ₪${row.price}`:'',
+    !row.prod?` Product not matched: SKU "${row.sku}" — please identify and link in Airtable`:'',
+    noteBase
+   ].filter(Boolean).join(' | ');
+   const flds={
+    [F.TX.NM]:`POS-${row.inv}-${String(seq++).padStart(3,'0')}`,
+    [F.TX.DT]:new Date(dtStr).toISOString(),
+    [F.TX.BR]:branch,
+    [F.TX.QTY]:-row.qty,
+    [F.TX.TY]:'Sale',
+    [F.TX.SRC]:'POS',
+    [F.TX.REF]:row.inv,
+    [F.TX.NO]:noteStr
+   };
+   if(row.netPrice>0&&F.TX.ASP)flds[F.TX.ASP]=row.netPrice;
+   if(row.prod){
+    flds[F.TX.PR]=[row.prod.id];
+    stockOps.push({productId:row.prod.id,branch,qtyChange:-row.qty});
+   } else {
+    unmatchedIndices.push(idx);
+   }
+   if(row.cId)flds[F.TX.CU]=[row.cId];
+   txFields.push(flds);
+  }
+
+  const createdRecords=await atPostMany(TBL.TX,txFields);
+  if(stockOps.length)await updateStockMany(stockOps);
+
+  const custMatched=toImportRows.filter(r=>r.cId).length;
+  const custNoLink=toImportRows.filter(r=>!r.cId&&r.cnm).length;
+  const prodNoLink=toImportRows.filter(r=>!r.prod).length;
+  let msg=` Imported ${txFields.length} transaction(s)`;
+  if(custMatched)msg+=` · ${custMatched} linked to customers`;
+  if(prodNoLink)msg+=` · ${prodNoLink} product(s) not matched — check Airtable → Inventory Transactions`;
+  if(custNoLink)msg+=` · ${custNoLink} customer(s) not matched — check Airtable → Customers`;
+  toast(msg,prodNoLink||custNoLink?'warn':'ok');
+
+  if(prodNoLink){
+   const unmatched=[];
+   unmatchedIndices.forEach(idx=>{
+    const r=toImportRows[idx];
+    const rec=createdRecords[idx];
+    unmatched.push({
+     txId: rec?rec.id:null,
+     inv: r.inv,
+     sku: r.sku,
+     desc: r.desc||'',
+     qty: r.qty,
+     price: r.price,
+     netPrice: r.netPrice||r.price||0,
+     dateStr: r.dateStr,
+     branch
+    });
+   });
+   addPending(unmatched);
+   renderPendingBanner();
+  }
+  closeModal('m-pos');resetPOS();await loadAll();
  }catch(e){toast('Import failed: '+e.message,'err');}
  setLd(btn,false,' Import Transactions');
 }
@@ -6329,18 +6414,59 @@ function syncOverviewAlertsWrap(){
 }
 async function retryPending(){
  const q=loadPending();if(!q.length)return;
- const branch=q[0].branch||'';
  const matched=[];const stillPending=[];
- q.forEach(r=>{const prod=allP.find(p=>String(p.fields[F.P.SKU]||'').toLowerCase()===r.sku.toLowerCase());if(prod){matched.push({...r,prod});}else{stillPending.push(r);}});
+ q.forEach(r=>{
+  const prod=allP.find(p=>String(p.fields[F.P.SKU]||'').toLowerCase()===String(r.sku||'').toLowerCase());
+  if(prod){matched.push({...r,prod});}
+  else{stillPending.push(r);}
+ });
  if(!matched.length){renderPendingBanner();return;}
  try{
-  const txFields=matched.map((r,i)=>{const flds={[F.TX.NM]:`POS-${r.inv}-RETRY-${i}`,[F.TX.DT]:new Date(r.dateStr+'T12:00:00').toISOString(),[F.TX.BR]:r.branch,[F.TX.QTY]:-r.qty,[F.TX.TY]:'Sale',[F.TX.SRC]:'POS',[F.TX.REF]:r.inv,[F.TX.NO]:`Auto-matched after product was added (SKU: ${r.sku})`};flds[F.TX.PR]=[r.prod.id];if(F.TX.ASP&&r.netPrice>0)flds[F.TX.ASP]=r.netPrice;return flds;});
+  const toPatchWithTx=matched.filter(r=>r.txId);
+  const toCreateNew=matched.filter(r=>!r.txId);
+
+  // 1. קישור המוצר לעסקה הקיימת באמצעות PATCH למניעת רשומות כפולות
+  for(const r of toPatchWithTx){
+   try{
+    await atPatch(TBL.TX, r.txId, {
+     [F.TX.PR]: [r.prod.id],
+     [F.TX.NO]: `Inv: ${r.inv} | Matched to product SKU: ${r.sku} (Auto-resolved)`
+    });
+    const tx=(allTX||[]).find(t=>t.id===r.txId);
+    if(tx){tx.fields[F.TX.PR]=[r.prod.id];}
+   }catch(err){
+    console.warn('Patching existing TX failed, fallback to create:', err);
+    toCreateNew.push(r);
+   }
+  }
+
+  // 2. יצירת עסקאות חדשות רק לשורות ישנות שלא נשמר עבורן txId בעבר
+  if(toCreateNew.length>0){
+   const txFields=toCreateNew.map((r,i)=>{
+    const flds={
+     [F.TX.NM]:`POS-${r.inv}-RETRY-${i}`,
+     [F.TX.DT]:new Date(r.dateStr+'T12:00:00').toISOString(),
+     [F.TX.BR]:r.branch,
+     [F.TX.QTY]:-r.qty,
+     [F.TX.TY]:'Sale',
+     [F.TX.SRC]:'POS',
+     [F.TX.REF]:r.inv,
+     [F.TX.NO]:`Auto-matched after product was added (SKU: ${r.sku})`,
+     [F.TX.PR]:[r.prod.id]
+    };
+    if(F.TX.ASP&&r.netPrice>0)flds[F.TX.ASP]=r.netPrice;
+    return flds;
+   });
+   await atPostMany(TBL.TX,txFields);
+  }
+
+  // עדכון מלאי לכל הפריטים שהותאמו
   const stockOps=matched.map(r=>({productId:r.prod.id,branch:r.branch,qtyChange:-r.qty}));
-  await atPostMany(TBL.TX,txFields);
   await updateStockMany(stockOps);
+
   savePending(stillPending);
   renderPendingBanner();
-  toast(matched.length+' pending sale(s) auto-imported!','ok');
+  toast(matched.length+' pending sale(s) auto-matched and stock updated!','ok');
  }catch(e){console.error('Pending retry failed:',e);}
 }
 
